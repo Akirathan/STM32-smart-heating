@@ -10,19 +10,21 @@
 #ifndef INC_BUTTONS_HPP_
 #define INC_BUTTONS_HPP_
 
+#include <string>
 #include "stm3210c_eval_lcd.h"
 #include "window.hpp"
 
-class button : ControlWindow {
-	std::string name_;
-	bool pushed_;
-	bool focused_;
+class button : public control_window {
+	std::string name;
+	bool pushed = false;
+	bool focused = false;
 	void unset_focus();
 public:
+	button(const coord &coord, const std::string &name);
+	button();
 	virtual void draw() const override;
-	button(const Coord &coord, const std::string &name);
 	virtual Message event_handler(JOYState_TypeDef joy_state) override;
-	virtual void setFocus(Message msg) override;
+	virtual void set_focus(Message msg) override;
 	bool is_pushed() const;
 	void set_pushed(bool b);
 };

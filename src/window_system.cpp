@@ -9,18 +9,23 @@
 
 using namespace std;
 
-WindowSystem::WindowSystem() : windows_{*this}, curr_window_{nullptr}
+window_system::window_system() : windows_{*this}, curr_window{nullptr}
 {
 
 }
 
-AppStatus_TypeDef WindowSystem::pass_control()
+/**
+ * Modules pass control to this method. Windows object then
+ * controls all the user's input and pass control back to system
+ * when some of the windows sends Message::EXIT message.
+ */
+AppStatus_TypeDef window_system::pass_control()
 {
 	/* Window managing */
 	bool end = false;
 	while (!end) {
 		JOYState_TypeDef joy_state = read_joy();
-		Message msg = curr_window_->event_handler(joy_state);
+		Message msg = curr_window->event_handler(joy_state);
 		switch (msg) {
 		case Message::NONE:
 			break;
@@ -44,7 +49,7 @@ AppStatus_TypeDef WindowSystem::pass_control()
 }
 
 /*** System::Windows ***/
-WindowSystem::Windows::Windows(WindowSystem &system) : system{system}, ctrl_window_idx_{0}
+window_system::windows::windows(window_system &system) : system{system}, ctrl_window_idx{0}
 {
 
 }
@@ -52,94 +57,88 @@ WindowSystem::Windows::Windows(WindowSystem &system) : system{system}, ctrl_wind
 /**
  * Returns control window indexer.
  */
-size_t WindowSystem::Windows::ctrl_window_idx_get() const
+size_t window_system::windows::ctrl_window_idx_get() const
 {
-	return ctrl_window_idx_;
+	return ctrl_window_idx;
 }
 
 /**
  * Increases control window indexer.
  */
-void WindowSystem::Windows::ctrl_window_idx_inc()
+void window_system::windows::ctrl_window_idx_inc()
 {
-	if (ctrl_window_idx_ == ctrlWindows_.size() - 1) {
-		ctrl_window_idx_ = 0;
+	if (ctrl_window_idx == ctrl_windows.size() - 1) {
+		ctrl_window_idx = 0;
 	}
 	else {
-		ctrl_window_idx_++;
+		ctrl_window_idx++;
 	}
 }
 
 /**
  * Decreases control window indexer.
  */
-void WindowSystem::Windows::ctrl_window_idx_dec()
+void window_system::windows::ctrl_window_idx_dec()
 {
-	if (ctrl_window_idx_ == 0) {
-		ctrl_window_idx_ = ctrlWindows_.size() - 1;
+	if (ctrl_window_idx == 0) {
+		ctrl_window_idx = ctrl_windows.size() - 1;
 	}
 	else {
-		ctrl_window_idx_--;
+		ctrl_window_idx--;
 	}
 }
 
-void WindowSystem::Windows::previous() {
+void window_system::windows::previous() {
 	ctrl_window_idx_dec();
-	system.curr_window_ = ctrlWindows_[ctrl_window_idx_get()].get();
-	system.curr_window_->setFocus(Message::FOCUS_RIGHT);
+	system.curr_window = ctrl_windows[ctrl_window_idx_get()];
+	system.curr_window->set_focus(Message::FOCUS_RIGHT);
 }
 
 /**
  * Sets curr_window_ for System and focuses to the new curr_window_.
  */
-void WindowSystem::Windows::next()
+void window_system::windows::next()
 {
 	ctrl_window_idx_inc();
-	system.curr_window_ = ctrlWindows_[ctrl_window_idx_get()].get();
-	system.curr_window_->setFocus(Message::FOCUS_LEFT);
+	system.curr_window = ctrl_windows[ctrl_window_idx_get()];
+	system.curr_window->set_focus(Message::FOCUS_LEFT);
 }
 
 /**
  * Adds control window to the internal data representation and draw it.
  */
-window_id WindowSystem::Windows::add_control(unique_ptr<ControlWindow> window)
+void window_system::windows::add_control(control_window *window)
 {
-	ctrlWindows_.push_back(move(window));
+	ctrl_windows.push_back(window);
 
 	// If this is the first added ControlWindow
-	if (ctrlWindows_.size() == 1) {
-		/* Add it to ctrlWindows_ and set focus to it */
-		system.curr_window_ = static_cast<ControlWindow *>(ctrlWindows_[0].get());
-		system.curr_window_->setFocus(Message::FOCUS_LEFT);
+	if (ctrl_windows.size() == 1) {
+		/* Add it to ctrl_windows and set focus to it */
+		system.curr_window = ctrl_windows[0];
+		system.curr_window->set_focus(Message::FOCUS_LEFT);
 	}
 
 	// Draw this control window
-	ctrlWindows_[ctrlWindows_.size()-1]->draw();
+	ctrl_windows[ctrl_windows.size()-1]->draw();
 }
 
 /**
  * Adds static window to the internal data representation and draw it.
  */
-window_id WindowSystem::Windows::add_static(unique_ptr<StaticWindow> window)
+void window_system::windows::add_static(static_window *window)
 {
-	staticWindows_.push_back(move(window));
+	static_windows.push_back(window);
 
 	// Draw this static window
-	staticWindows_[staticWindows_.size()-1]->draw();
+	static_windows[static_windows.size()-1]->draw();
 }
 
-window_id WindowSystem::add_control(std::unique_ptr<ControlWindow> window)
+void window_system::add_control(control_window *window)
 {
-	this->windows_.add_control(move(window));
-	return this->windows_.ctrlWindows_.size() - 1; // Last index to vector
+	return this->windows_.add_control(window);
 }
 
-window_id WindowSystem::add_static(std::unique_ptr<StaticWindow> window)
+void window_system::add_static(static_window *window)
 {
-	this->windows_.add_static(move(window));
-}
-
-ControlWindow& WindowSystem::get_control(window_id ctrl_id) const
-{
-	//return this->windows_.ctrlWindows_.at(ctrl_id);
+	return this->windows_.add_static(move(window));
 }

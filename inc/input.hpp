@@ -10,9 +10,11 @@
 #ifndef INC_INPUT_HPP_
 #define INC_INPUT_HPP_
 
+#include <unistd.h>
 #include "stm3210c_eval.h"
 
 JOYState_TypeDef read_joy();
+void print(char *ptr);
 
 
 #endif /* INC_INPUT_HPP_ */

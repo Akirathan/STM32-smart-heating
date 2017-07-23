@@ -10,35 +10,26 @@
 
 #include <memory>
 #include <vector>
-#include "interval_window.hpp"
+#include "window.hpp"
 #include "input.hpp"
 
-using window_id = uint32_t;
-
-class WindowSystem {
-public:
-	AppStatus_TypeDef pass_control();
-	window_id add_control(std::unique_ptr<ControlWindow> window);
-	window_id add_static(std::unique_ptr<StaticWindow> window);
-	ControlWindow & get_control(window_id ctrl_id) const;
-	WindowSystem();
-private:
+class window_system {
 	friend class Windows;
 
 	/*** Windows ***/
-	class Windows {
-		friend class WindowSystem;
+	class windows {
+		friend class window_system;
 	public:
-		Windows(WindowSystem &system);
+		windows(window_system &system);
 		void previous();
 		void next();
-		window_id add_control(std::unique_ptr<ControlWindow> window);
-		window_id add_static(std::unique_ptr<StaticWindow> window);
+		void add_control(control_window *window);
+		void add_static(static_window *window);
 	private:
-		WindowSystem &system;
-		size_t ctrl_window_idx_;
-		std::vector<std::unique_ptr<ControlWindow>> ctrlWindows_;
-		std::vector<std::unique_ptr<StaticWindow>> staticWindows_;
+		window_system &system;
+		size_t ctrl_window_idx;
+		std::vector<control_window *> ctrl_windows;
+		std::vector<static_window *> static_windows;
 
 		size_t ctrl_window_idx_get() const;
 		void ctrl_window_idx_inc();
@@ -46,7 +37,12 @@ private:
 	} windows_;
 	/******/
 
-	ControlWindow *curr_window_;
+	control_window *curr_window;
+public:
+	AppStatus_TypeDef pass_control();
+	void add_control(control_window *window);
+	void add_static(static_window *window);
+	window_system();
 };
 
 

@@ -16,24 +16,26 @@ CXX = $(TOOLCHAIN_PREFIX)g++
 LD = $(TOOLCHAIN_PREFIX)ld
 OBJCOPY = $(TOOLCHAIN_PREFIX)objcopy
 SIZE = $(TOOLCHAIN_PREFIX)size
-GDB = $(TOOLCHAIN_PREFIX)gdb
+GDB = $(TOOLCHAIN_PREFIX)gdb-py
 AS = $(TOOLCHAIN_PREFIX)as
 OPENOCD = openocd
 
 # Compiler and linker options
 CFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
+CFLAGS += -specs=nano.specs
 CFLAGS += -ffunction-sections -fdata-sections
-#CFLAGS += -DSTM32F107VCTx -DSTM3210C_EVAL -DSTM32F1 -DSTM32 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F107xC
 CFLAGS += -DSTM32F107VCTx -DUSE_HAL_DRIVER -DUSE_STM3210C_EVAL -DSTM3210C_EVAL
 CFLAGS += -g -Wall
 
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics
-CXXFLAGS += -std=c++14 -specs=nano.specs
+CXXFLAGS += -std=c++14 
 
 LDFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft 
 LDFLAGS += -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions
-LDFLAGS += -Wl,--start-group -lc -lm -lstdc++ -Wl,--end-group
-LDFLAGS += -specs=nosys.specs -specs=nano.specs -static
+LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
+LDFLAGS += -specs=nano.specs 
+#LDFLAGS += -specs=nosys.specs
+LDFLAGS += -static
 LDFLAGS += -T"./STM32F107XC_FLASH.ld"
 LDFLAGS += -Wl,-u,Reset_Handler -Wl,--defsym=malloc_getpagesize_P=0x1000 
 
@@ -53,15 +55,28 @@ INCLUDES=\
 APP_OBJECTS += hardware/stm32f1xx_it.o 
 APP_OBJECTS += hardware/system_stm32f1xx.o
 APP_OBJECTS += hardware/startup_stm32f107xc.o
+APP_OBJECTS += hardware/syscalls.o
+
+APP_OBJECTS += src/window.o
+APP_OBJECTS += src/rtc.o
+APP_OBJECTS += src/time_window.o
+APP_OBJECTS += src/static_time_window.o
+APP_OBJECTS += src/temp_window.o
+APP_OBJECTS += src/static_temp_window.o
+APP_OBJECTS += src/buttons.o
+
+APP_OBJECTS += src/lcd.o
+APP_OBJECTS += src/window_system.o
+APP_OBJECTS += src/clkframe.o
+APP_OBJECTS += src/mainframe.o
+APP_OBJECTS += src/intervalframe.o
+
+APP_OBJECTS += src/eeprom.o
 APP_OBJECTS += src/input.o
+APP_OBJECTS += src/main.o 
 APP_OBJECTS += src/one_wire.o
 APP_OBJECTS += src/temp_sensor.o
-APP_OBJECTS += src/main.o 
-APP_OBJECTS += src/window.o
-APP_OBJECTS += src/interval_window.o
-APP_OBJECTS += src/interval_frame.o
-APP_OBJECTS += src/window_system.o
-APP_OBJECTS += src/buttons.o
+APP_OBJECTS += src/time.o
 
 # Currenly used HAL module objects
 HAL_OBJECTS=\
@@ -71,6 +86,8 @@ $(HAL)/Src/stm32f1xx_hal_tim.o \
 $(HAL)/Src/stm32f1xx_hal_tim_ex.o \
 $(HAL)/Src/stm32f1xx_hal_rcc.o \
 $(HAL)/Src/stm32f1xx_hal_rcc_ex.o \
+$(HAL)/Src/stm32f1xx_hal_rtc.o \
+$(HAL)/Src/stm32f1xx_hal_rtc_ex.o \
 $(HAL)/Src/stm32f1xx_hal_dma.o \
 $(HAL)/Src/stm32f1xx_hal_spi.o \
 $(HAL)/Src/stm32f1xx_hal_i2c.o \
@@ -92,8 +109,6 @@ $(HAL)/Src/stm32f1xx_hal_pccard.o \
 $(HAL)/Src/stm32f1xx_hal_pcd.o \
 $(HAL)/Src/stm32f1xx_hal_pcd_ex.o \
 $(HAL)/Src/stm32f1xx_hal_pwr.o \
-$(HAL)/Src/stm32f1xx_hal_rtc.o \
-$(HAL)/Src/stm32f1xx_hal_rtc_ex.o \
 $(HAL)/Src/stm32f1xx_hal_smartcard.o \
 $(HAL)/Src/stm32f1xx_hal_sram.o \
 $(HAL)/Src/stm32f1xx_hal_adc.o \
@@ -113,11 +128,12 @@ BSP_OBJECTS = \
 $(BSP)/STM3210C_EVAL/stm3210c_eval_io.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval_lcd.o \
+$(BSP)/STM3210C_EVAL/stm3210c_eval_eeprom.o \
 $(BSP)/Components/ili9325/ili9325.o \
 $(BSP)/Components/ili9320/ili9320.o \
 $(BSP)/Components/stmpe811/stmpe811.o
 
-OBJECTS=$(APP_OBJECTS) $(HAL_OBJECTS) $(BSP_OBJECTS)
+OBJECTS = $(HAL_OBJECTS) $(BSP_OBJECTS) $(APP_OBJECTS)
 
 DEPENDENCIES=$(OBJECTS:.o=.d)
 
@@ -134,7 +150,7 @@ clean:
 # Link final elf
 $(ELF): $(OBJECTS)
 	@echo "Invoking g++ linker"
-	$(CXX) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CXX) $(LDFLAGS) $^ -o $@
 	@echo "Done linking $<"
 	@echo "\n"
 
@@ -145,7 +161,7 @@ $(ELF): $(OBJECTS)
 	@echo "Done compiling $<"
 	@echo "\n"
 
-# Compile C++ source into object
+# Compile C source into object
 %.o: %.c
 	@echo "Invoking gcc on $<"
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@

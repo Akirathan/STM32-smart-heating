@@ -8,7 +8,7 @@
 #ifndef RELAY_H_
 #define RELAY_H_
 
-#include "main.hpp"
+#include "stm32f1xx_hal.h"
 
 #define RELAY_DATA_GPIOPIN		GPIO_PIN_12
 #define RELAY_DATA_GPIOPORT 	GPIOD

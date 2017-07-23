@@ -8,7 +8,13 @@
 #ifndef INC_TIME_HPP_
 #define INC_TIME_HPP_
 
+//TODO: put in namespace
+
+#include <cstdint>
+
 struct time {
+	time();
+	time(uint32_t hours, uint32_t minutes);
 	uint32_t hours;
 	uint32_t minutes;
 };

@@ -1,19 +1,15 @@
 /*
- * one_wire.h
+ * one_wire.hpp
  *
  *  Created on: 26. 12. 2016
  *      Author: Mayfa
  */
 
-#ifndef ONE_WIRE_H_
-#define ONE_WIRE_H_
-
-#ifdef __cplusplus
-	extern "C" {
-#endif
+#ifndef ONE_WIRE_HPP_
+#define ONE_WIRE_HPP_
 
 #include "stm32f1xx_hal.h"
-#include <temp_sensor.hpp> //DEBUG
+#include "temp_sensor.hpp" //DEBUG
 
 /* Public functions */
 uint32_t one_wire_Init();
@@ -27,8 +23,4 @@ void one_wire_Reset();
 uint32_t one_wire_TimeTest(uint32_t microsecs);
 void one_wire_debug();
 
-#ifdef __cplusplus
-	}
-#endif
-
-#endif /* ONE_WIRE_H_ */
+#endif /* ONE_WIRE_HPP_ */

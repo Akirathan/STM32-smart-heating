@@ -7,17 +7,32 @@
 
 #include "buttons.hpp"
 
+button::button() :
+		button{coord{0,0}, ""}
+{ }
+
+button::button(const coord& coord, const std::string &name) :
+		control_window{coord},
+		name{name}
+{ }
+
 /**
  * Suppose font is already set.
  */
 void button::draw() const
 {
-	BSP_LCD_DisplayStringAt(this->coord_.x, this->coord_.y, (uint8_t *)this->name_.c_str(), LEFT_MODE);
+	if (this->focused) {
+		this->save_font();
+		BSP_LCD_SetTextColor(SEL_COLOR);
+	}
+
+	BSP_LCD_DisplayStringAt(this->coord_.x, this->coord_.y, (uint8_t *)this->name.c_str(), LEFT_MODE);
+
+	if (this->focused) {
+		this->load_font();
+	}
 }
 
-button::button(const Coord& coord, const std::string &name) : ControlWindow{coord}, name_{name}, pushed_{false},
-		focused_{false}
-{ }
 
 Message button::event_handler(JOYState_TypeDef joy_state)
 {
@@ -32,7 +47,8 @@ Message button::event_handler(JOYState_TypeDef joy_state)
 		this->unset_focus();
 		return Message::FOCUS_RIGHT;
 	case JOY_SEL:
-		this->pushed_ = true;
+		this->pushed = true;
+		this->unset_focus();
 		return Message::EXIT;
 	}
 
@@ -40,12 +56,12 @@ Message button::event_handler(JOYState_TypeDef joy_state)
 }
 
 /**
- * Redraws this window and loads font.
+ * Redraws this window and loads previously
+ * configured font.
  */
 void button::unset_focus()
 {
-	this->focused_ = false;
-	this->loadFont();
+	this->focused = false;
 	this->draw();
 }
 
@@ -53,17 +69,15 @@ void button::unset_focus()
  * Saves current font for further drawing and
  * immediately redraws this window.
  */
-void button::setFocus(Message msg)
+void button::set_focus(Message msg)
 {
-	this->focused_ = true;
-	this->saveFont();
-	BSP_LCD_SetTextColor(SEL_COLOR);
+	this->focused = true;
 	this->draw();
 }
 
 void button::set_pushed(bool b)
 {
-	this->pushed_ = b;
+	this->pushed = b;
 }
 
 /**
@@ -73,5 +87,5 @@ void button::set_pushed(bool b)
  */
 bool button::is_pushed() const
 {
-	return this->pushed_;
+	return this->pushed;
 }

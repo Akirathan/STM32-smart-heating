@@ -5,26 +5,45 @@
  *      Author: Mayfa
  */
 
-#include "interval_frame.hpp"
+#include <intervalframe.hpp>
 
 using namespace std;
 
+intervalframe_data::intervalframe_data() :
+	from{0},
+	to{0},
+	temp{0}
+{ }
+
+intervalframe_data::intervalframe_data(uint32_t from, uint32_t to, uint32_t temp) :
+	from{from},
+	to{to},
+	temp{temp}
+{ }
+
 /**
  * Initializes all the windows.
- * FIXME: Supposes BSP_LCD and BSP_JOY are already initialized.
+ * TODO: error handling
  */
-interval_frame::interval_frame() :
-		time_from{Coord{15, LINE(5)}},
-		time_to{Coord{time_from.getX() + (BSP_LCD_GetFont()->Width)*6, LINE(5)}},
-		temp{Coord{3*BSP_LCD_GetXSize()/4, LINE(5)}},
-		next_button{Coord{25, LINE(7)}, "NEXT"},
-		end_button{Coord{70, LINE(7)}, "END"}
-{ }
+intervalframe::intervalframe()
+{
+	BSP_JOY_Init(JOY_MODE_GPIO);
+	BSP_LCD_Init();
+	BSP_LCD_SetFont(&Font16);
+
+	time_from = time_window{coord{15, LINE(6)}};
+	time_to = time_window{coord{time_from.get_x() + (BSP_LCD_GetFont()->Width)*6, LINE(6)}};
+	temp = temp_window{coord{3*BSP_LCD_GetXSize()/4, LINE(6)}};
+
+	next_button = button{coord{25, LINE(12)}, "NEXT"};
+	end_button = button{coord{230, LINE(12)}, "END"};
+}
+
 
 /**
  * Draws all headers.
  */
-void interval_frame::draw_header()
+void intervalframe::draw_header()
 {
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 
@@ -43,7 +62,7 @@ void interval_frame::draw_header()
 	BSP_LCD_DisplayStringAt(20, LINE(4), (uint8_t *)"interval", LEFT_MODE);
 
 	sFONT *font = BSP_LCD_GetFont();
-	BSP_LCD_DisplayChar(time_from.getX() + (font->Width)*5, LINE(5), '-');
+	BSP_LCD_DisplayChar(time_from.get_x() + (font->Width)*5, LINE(6), '-');
 
 	/* Temperature header */
 	BSP_LCD_DisplayStringAt(BSP_LCD_GetXSize()/2 + 10, LINE(4), (uint8_t *)"temperature", LEFT_MODE);
@@ -52,35 +71,50 @@ void interval_frame::draw_header()
 /**
  * Processes one interval.
  */
-interval_frame_data interval_frame::process_interval()
+intervalframe_data intervalframe::process_interval()
 {
 	/* Reset windows' inner values */
-	// Deserialize last saved intervals's "to time"
-	time last_time = deserialize_time(this->data[this->data.size()-1].to);
-	this->time_from.setHours(last_time.hours);
-	this->time_from.setMinutes(last_time.minutes);
+	time last_time;
 
-	this->time_to.setHours(last_time.hours);
-	this->time_to.setMinutes(last_time.minutes);
+	if (this->data.size() >= 1) {
+		// Deserialize last saved intervals's "to time"
+		last_time = deserialize_time(this->data[this->data.size()-1].to);
+	}
+	else {
+		last_time = time{0,0};
+	}
+
+	this->time_from.set_hours(last_time.hours);
+	this->time_from.set_minutes(last_time.minutes);
+
+	this->time_to.set_hours(last_time.hours);
+	this->time_to.set_minutes(last_time.minutes);
 
 	this->next_button.set_pushed(false);
 	this->end_button.set_pushed(false);
 
-	WindowSystem system;
+	window_system system;
 
 	/* Add all windows to system */
-	// ...
+	system.add_control(&this->time_from);
+	system.add_control(&this->time_to);
+	system.add_control(&this->temp);
+	system.add_control(&this->next_button);
+	system.add_control(&this->end_button);
 
 	system.pass_control();
 
 	/* Investigate windows members */
-	// ...
+	time time_f{this->time_from.get_hours(), this->time_from.get_minutes()};
+	time time_t{this->time_to.get_hours(), this->time_to.get_minutes()};
+	uint32_t temp = this->temp.get_temp();
 
 	/* Return data */
-	// ...
+	intervalframe_data data{serialize_time(time_f), serialize_time(time_t), temp};
+	return data;
 }
 
-std::vector<interval_frame_data> & interval_frame::pass_control()
+std::vector<intervalframe_data> & intervalframe::pass_control()
 {
 	this->draw_header();
 
@@ -88,6 +122,8 @@ std::vector<interval_frame_data> & interval_frame::pass_control()
 		// Process next interval and save data from it
 		this->data.push_back(this->process_interval());
 	}
+
+	return this->data;
 }
 
 /**

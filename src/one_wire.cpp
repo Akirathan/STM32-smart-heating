@@ -5,7 +5,7 @@
  *      Author: Mayfa
  */
 
-#include <one_wire.hpp>
+#include "one_wire.hpp"
 
 #define CLK_PIN		GPIO_PIN_1
 #define CLK_PORT	GPIOE
@@ -22,26 +22,31 @@ static inline void one_wire_WriteBit(uint8_t bit);
 static inline void wait(uint32_t micros);
 static int test_data(temp_sensor_data_t* data);
 
-
 /**
  * Init the one-wire peripheral.
  */
-uint32_t one_wire_Init() {
+uint32_t one_wire_Init()
+{
 	// Init clock
 	if (TEMP_SENSOR_DATA_GPIOPORT == GPIOA) {
-		__HAL_RCC_GPIOA_CLK_ENABLE();
+		__HAL_RCC_GPIOA_CLK_ENABLE()
+		;
 	}
 	else if (TEMP_SENSOR_DATA_GPIOPORT == GPIOB) {
-		__HAL_RCC_GPIOB_CLK_ENABLE();
+		__HAL_RCC_GPIOB_CLK_ENABLE()
+		;
 	}
 	else if (TEMP_SENSOR_DATA_GPIOPORT == GPIOC) {
-		__HAL_RCC_GPIOC_CLK_ENABLE();
+		__HAL_RCC_GPIOC_CLK_ENABLE()
+		;
 	}
 	else if (TEMP_SENSOR_DATA_GPIOPORT == GPIOD) {
-		__HAL_RCC_GPIOD_CLK_ENABLE();
+		__HAL_RCC_GPIOD_CLK_ENABLE()
+		;
 	}
 	else if (TEMP_SENSOR_DATA_GPIOPORT == GPIOE) {
-		__HAL_RCC_GPIOE_CLK_ENABLE();
+		__HAL_RCC_GPIOE_CLK_ENABLE()
+		;
 	}
 
 	// Init CLK debug
@@ -60,7 +65,8 @@ uint32_t one_wire_Init() {
  * Calibrate the wait function with this
  * function.
  */
-uint32_t one_wire_TimeTest(uint32_t microsecs) {
+uint32_t one_wire_TimeTest(uint32_t microsecs)
+{
 	uint32_t beginTicks = HAL_GetTick();
 	wait(microsecs);
 	uint32_t endTicks = HAL_GetTick();
@@ -70,14 +76,16 @@ uint32_t one_wire_TimeTest(uint32_t microsecs) {
 /**
  * Implemented with DWT.
  */
-static inline void wait(__IO uint32_t micros) {
+static inline void wait(__IO uint32_t micros)
+{
 	uint32_t start = DWT->CYCCNT;
 
 	/* Go to number of cycles for system */
 	micros *= (HAL_RCC_GetHCLKFreq() / 1000000);
 
 	/* Delay till end */
-	while ((DWT->CYCCNT - start) < micros);
+	while ((DWT->CYCCNT - start) < micros)
+		;
 }
 
 /**
@@ -85,7 +93,8 @@ static inline void wait(__IO uint32_t micros) {
  * tick counter. The wait function is
  * most accurate with DWT implementation.
  */
-static uint32_t one_wire_InitDWT() {
+static uint32_t one_wire_InitDWT()
+{
 	uint32_t c;
 
 	/* Enable TRC (DWT) */
@@ -113,7 +122,8 @@ static uint32_t one_wire_InitDWT() {
 /**
  * Sets the master for transmit.
  */
-static inline void one_wire_SetTransmit() {
+static inline void one_wire_SetTransmit()
+{
 	GPIO_InitTypeDef GPIO_Init;
 
 	GPIO_Init.Mode = GPIO_MODE_OUTPUT_PP;
@@ -124,7 +134,8 @@ static inline void one_wire_SetTransmit() {
 	HAL_GPIO_Init(TEMP_SENSOR_DATA_GPIOPORT, &GPIO_Init);
 }
 
-static inline void one_wire_SetReceive() {
+static inline void one_wire_SetReceive()
+{
 	GPIO_InitTypeDef GPIO_Init;
 
 	// Set the GPIO pin as input with weak pull-up
@@ -140,14 +151,15 @@ static inline void one_wire_SetReceive() {
 /**
  * Test written data to temperature sensor.
  */
-static int test_data(temp_sensor_data_t* data) {
+static int test_data(temp_sensor_data_t* data)
+{
 	temp_sensor_data_t data2;
 
 	temp_sensor_ReadData(&data2);
 
 	if (data2.TH == data->TH && data2.TL == data->TL && data2.CFG == data->CFG
-			&& data2.TEMP_LSB == data->TEMP_LSB && data2.TEMP_MSB == data->TEMP_MSB)
-	{
+			&& data2.TEMP_LSB == data->TEMP_LSB
+			&& data2.TEMP_MSB == data->TEMP_MSB) {
 		return 1;
 	}
 	else {
@@ -155,26 +167,29 @@ static int test_data(temp_sensor_data_t* data) {
 	}
 }
 
-void one_wire_Reset() {
+void one_wire_Reset()
+{
 	one_wire_MasterPullBusLow();
 	wait(490);
 }
 
-void one_wire_debug() {
+void one_wire_debug()
+{
 	one_wire_MasterReleaseBus();
 	/*wait(300);
-	one_wire_MasterPullBusLow();
-	wait(300);
-	one_wire_MasterReleaseBus();
-	wait(300);
-	one_wire_MasterPullBusLow();*/
+	 one_wire_MasterPullBusLow();
+	 wait(300);
+	 one_wire_MasterReleaseBus();
+	 wait(300);
+	 one_wire_MasterPullBusLow();*/
 }
 
 /**
  * @return: 0 when there was no response
  * 			1 when there was response.
  */
-int one_wire_InitCommunication() {
+int one_wire_InitCommunication()
+{
 	int response = 0;
 
 	/* Master Tx reset pulse */
@@ -199,7 +214,8 @@ int one_wire_InitCommunication() {
 /**
  * Write a byte to the slave in LSB order.
  */
-void one_wire_WriteByte(uint8_t byte) {
+void one_wire_WriteByte(uint8_t byte)
+{
 	HAL_GPIO_TogglePin(CLK_PORT, CLK_PIN); //
 
 	for (int i = 0; i < 8; i++) {
@@ -212,7 +228,8 @@ void one_wire_WriteByte(uint8_t byte) {
 /**
  * Each write/read time slot is at least 60 us long.
  */
-static inline void one_wire_WriteBit(uint8_t bit) {
+static inline void one_wire_WriteBit(uint8_t bit)
+{
 	one_wire_MasterPullBusLow();
 
 	if (bit == 0) {
@@ -232,7 +249,8 @@ static inline void one_wire_WriteBit(uint8_t bit) {
 	wait(2);
 }
 
-uint8_t one_wire_ReadByte() {
+uint8_t one_wire_ReadByte()
+{
 	HAL_GPIO_TogglePin(CLK_PORT, CLK_PIN); //
 
 	uint8_t byte = 0x00;
@@ -245,7 +263,8 @@ uint8_t one_wire_ReadByte() {
 	return byte;
 }
 
-uint8_t one_wire_ReadBit() {
+uint8_t one_wire_ReadBit()
+{
 	uint8_t bit = 0x00;
 	// Master initiates read time slot by pulling
 	// the bus low for a minimum of 1 us.
@@ -271,25 +290,30 @@ uint8_t one_wire_ReadBit() {
 /**
  * Master releases the bus.
  */
-static inline void one_wire_MasterReleaseBus() {
+static inline void one_wire_MasterReleaseBus()
+{
 	one_wire_SetReceive();
 }
 
 /**
  * Master pulls the bus low.
  */
-static inline void one_wire_MasterPullBusLow() {
+static inline void one_wire_MasterPullBusLow()
+{
 	one_wire_SetTransmit();
-	HAL_GPIO_WritePin(TEMP_SENSOR_DATA_GPIOPORT, TEMP_SENSOR_DATA_GPIOPIN, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(TEMP_SENSOR_DATA_GPIOPORT, TEMP_SENSOR_DATA_GPIOPIN,
+			GPIO_PIN_RESET);
 }
 
 /**
  * Returns 1 if the bus is pulled low
  * by the slave and 0 if not.
  */
-static inline int one_wire_SlavePullBusLow() {
+static inline int one_wire_SlavePullBusLow()
+{
 	one_wire_SetReceive();
-	if (HAL_GPIO_ReadPin(TEMP_SENSOR_DATA_GPIOPORT, TEMP_SENSOR_DATA_GPIOPIN) == GPIO_PIN_RESET) {
+	if (HAL_GPIO_ReadPin(TEMP_SENSOR_DATA_GPIOPORT, TEMP_SENSOR_DATA_GPIOPIN)
+			== GPIO_PIN_RESET) {
 		return 1;
 	}
 	else {
@@ -300,11 +324,13 @@ static inline int one_wire_SlavePullBusLow() {
 /**
  * Checks if slave released the bus.
  */
-static inline int one_wire_SlaveReleaseBus() {
+static inline int one_wire_SlaveReleaseBus()
+{
 	one_wire_SetReceive();
 	// Wait a moment so the slave can pull the bus low if he intends to
 	wait(5);
-	if (HAL_GPIO_ReadPin(TEMP_SENSOR_DATA_GPIOPORT, TEMP_SENSOR_DATA_GPIOPIN) == GPIO_PIN_SET) {
+	if (HAL_GPIO_ReadPin(TEMP_SENSOR_DATA_GPIOPORT, TEMP_SENSOR_DATA_GPIOPIN)
+			== GPIO_PIN_SET) {
 		// The bus is released
 		return 1;
 	}

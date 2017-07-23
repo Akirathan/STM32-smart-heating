@@ -23,3 +23,15 @@ JOYState_TypeDef read_joy()
 		}
 	}
 }
+
+void print(char *ptr)
+{
+	// Find out size
+	char *ptr_cnt = ptr;
+	int size = 0;
+	while (*ptr_cnt++ != '\0') {
+		++size;
+	}
+
+	write(0, ptr, size);
+}

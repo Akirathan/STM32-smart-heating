@@ -134,7 +134,7 @@ SECTIONS
     __bss_start__ = _sbss;
     *(.bss)
     *(.bss*)
-    *(COMMON)
+    *(COMMON) /* Uninitialized data from all input files */
 
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */

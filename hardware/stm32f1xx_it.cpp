@@ -38,9 +38,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_hal.h"
+#include <stm32f1xx_it.hpp>
 #include "stm3210c_eval.h"
-#include "stm32f1xx_it.h"
    
 /** @addtogroup STM32F1xx_HAL_Examples
   * @{
@@ -168,13 +167,13 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief  This function handles PPP interrupt request.
-  * @param  None
-  * @retval None
+  * @brief  This function handles RTC global interrupt request.
   */
-/*void PPP_IRQHandler(void)
+void RTC_IRQHandler()
 {
-}*/
+	rtc& rtc = rtc.get_instance();
+	HAL_RTCEx_RTCIRQHandler(&rtc.get_handle());
+}
 
 
 /**

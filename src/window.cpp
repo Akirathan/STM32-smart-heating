@@ -6,12 +6,12 @@ using namespace std;
 static uint16_t text_color;
 static uint16_t back_color;
 
-Coord::Coord(uint32_t x, uint32_t y) : x(x), y(y) {
+coord::coord(uint32_t x, uint32_t y) : x(x), y(y) {
 
 }
 
 // FIXME
-bool operator<(const Coord &c1, const Coord &c2) {
+bool operator<(const coord &c1, const coord &c2) {
 	return (c1.x <= c2.x) && (c1.y <= c2.y);
 }
 
@@ -19,8 +19,8 @@ bool operator<(const Coord &c1, const Coord &c2) {
  * Return true if the pointer to window is of type
  * ControlWindow.
  */
-bool Window::is_control(Window *w) {
-	ControlWindow *ptr = dynamic_cast<ControlWindow *>(w);
+bool window::is_control(window *w) {
+	control_window *ptr = dynamic_cast<control_window *>(w);
 	if (ptr) {
 		return true;
 	}
@@ -33,8 +33,8 @@ bool Window::is_control(Window *w) {
  * Return true if the pointer to window is of type
  * StaticWindow.
  */
-bool Window::is_static(Window *w) {
-	StaticWindow *ptr = dynamic_cast<StaticWindow *>(w);
+bool window::is_static(window *w) {
+	static_window *ptr = dynamic_cast<static_window *>(w);
 	if (ptr) {
 		return true;
 	}
@@ -43,7 +43,7 @@ bool Window::is_static(Window *w) {
 	}
 }
 
-Window::Window(const Coord &coord) : coord_(coord) {
+window::window(const coord &coord) : coord_(coord) {
 
 }
 
@@ -51,7 +51,7 @@ Window::Window(const Coord &coord) : coord_(coord) {
  * Save system's font before changing
  * it.
  */
-void Window::saveFont() const
+void window::save_font() const
 {
 	text_color = BSP_LCD_GetTextColor();
 	back_color = BSP_LCD_GetBackColor();
@@ -62,32 +62,28 @@ void Window::saveFont() const
  * Load system's font after changing
  * it.
  */
-void Window::loadFont() const
+void window::load_font() const
 {
 	BSP_LCD_SetTextColor(text_color);
 	BSP_LCD_SetBackColor(back_color);
 }
 
-uint32_t Window::getX() const {
+uint32_t window::get_x() const {
 	return this->coord_.x;
 }
 
-uint32_t Window::getY() const {
+uint32_t window::get_y() const {
 	return this->coord_.y;
 }
 
-ControlWindow::ControlWindow(const Coord &coord) : Window(coord) {
+control_window::control_window(const coord &coord) : window(coord) {
 
 }
 
-StaticWindow::StaticWindow(const Coord &coord) : Window(coord) {
+static_window::static_window(const coord &coord) : window(coord) {
 
 }
 
-Windows::Windows(vector<unique_ptr<Window>> windows) : windows_(move(windows)) {
-
-}
-
-const Coord& Window::getCoord() const {
+const coord& window::getCoord() const {
 	return this->coord_;
 }

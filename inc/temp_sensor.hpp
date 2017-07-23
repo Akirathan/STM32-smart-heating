@@ -1,5 +1,5 @@
 /*
- * temp_sensor.h
+ * temp_sensor.hpp
  *
  *  Created on: 31 Jan 2017
  *      Author: Mayfa
@@ -13,12 +13,10 @@
  * function for temperature measurement.
  */
 
-#ifndef TEMP_SENSOR_H_
-#define TEMP_SENSOR_H_
+#ifndef TEMP_SENSOR_HPP_
+#define TEMP_SENSOR_HPP_
 
-#ifdef __cplusplus
-	extern "C" {
-#endif
+//TODO: put in namespace
 
 #include <math.h>
 #include <stdint.h>
@@ -80,8 +78,4 @@ void temp_sensor_WriteScratchpad(temp_sensor_config_t* config);
 
 void temp_sensor_debug();
 
-#ifdef __cplusplus
-	}
-#endif
-
-#endif // TEMP_SENSOR_H_
+#endif // TEMP_SENSOR_HPP_

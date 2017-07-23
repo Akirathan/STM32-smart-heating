@@ -2,70 +2,118 @@
 
 #define MY_DEBUG
 
-// This section is required when using older gcc.
-/*
- * The default pulls in about 12K of garbage
- */
-/*extern "C" void __cxa_pure_virtual() {
-  for(;;);
-}*/
-
-/*
- * Implement C++ new/delete operators using the heap
- */
-
-/*void *operator new(size_t size) {
-  return malloc(size);
-}
-
-void *operator new[](size_t size) {
-  return malloc(size);
-}
-
-void operator delete(void *p) {
-  free(p);
-}
-
-void operator delete[](void *p) {
-  free(p);
-}*/
-
-
 /* Private function prototypes */
 void SystemClock_Config(void);
-
-/**
- * Handler for second interrupts from
- * RTC peripheral.
- */
-void second_it() {
-
-}
 
 void error_handler() {
 	BSP_LED_Init(LED_RED);
 	BSP_LED_On(LED_RED);
+
+	while (true) ;
 }
 
-void interval_frame_test() {
-	if (BSP_LCD_Init() != IO_OK) {
-		error_handler();
-	}
-
-	if (BSP_JOY_Init(JOY_MODE_GPIO) != IO_OK) {
-		error_handler();
-	}
-
-	interval_frame intv_fr;
-	intv_fr.draw_header();
-	// Process data ...
-}
-
-void memory_try()
+void intervalframe_test()
 {
-	uint8_t *char_ptr = (uint8_t *)malloc(512);
-	for (int i = 0; i < 512; ++i) {
-		char_ptr[i] = 2;
+	intervalframe intv_fr;
+	std::vector<intervalframe_data> data_vec = intv_fr.pass_control();
+
+	// Process data
+	eeprom& eeprom = eeprom.get_instance();
+	eeprom.save(data_vec);
+
+	std::vector<intervalframe_data> data_vec_copy;
+	eeprom.load(data_vec_copy);
+}
+
+void mainframe_test()
+{
+	RTC_TimeTypeDef rtc_time = {0, 0, 0};
+
+	// Init rtc
+	rtc& rtc = rtc::get_instance();
+	rtc.set_time(&rtc_time);
+
+	mainframe mainframe;
+	mainframe.pass_control();
+}
+
+void static_time_window_test()
+{
+	/* Clock setting */
+	clk_frame clk_frame;
+	RTC_TimeTypeDef rtc_time = clk_frame.pass_control();
+	// Save time into rtc
+	rtc::get_instance().set_time(&rtc_time);
+
+	/* static_time_window initialization */
+	BSP_LCD_Clear(LCD_COLOR_BLACK);
+
+	static_time_window time_window{coord{10,BSP_LCD_GetYSize()/2}};
+	time_window.draw();
+
+	// rtc keeps calling back time_window, and time_window
+	// keeps updating seconds value.
+	while (true) ;
+}
+
+void main_test()
+{
+	/* Clock setting */
+	clk_frame clk_frame;
+	RTC_TimeTypeDef rtc_time = clk_frame.pass_control();
+	// Save time into rtc
+	rtc::get_instance().set_time(&rtc_time);
+
+	/* Interval setting */
+	std::vector<intervalframe_data> interval_vec;
+	eeprom& eeprom = eeprom.get_instance();
+
+	if (eeprom.is_empty()) {
+		intervalframe intv_fr;
+		interval_vec = intv_fr.pass_control();
+
+		eeprom.save(interval_vec);
+	}
+	else {
+		eeprom.load(interval_vec);
+	}
+
+	/* Main frame */
+
+
+}
+
+uint8_t memory_try()
+{
+	uint8_t* heap_byte = (uint8_t *)malloc(1);
+	uint8_t stack_byte = 32;
+	return stack_byte;
+}
+
+void write_try()
+{
+	print("ab\n");
+	print("cd");
+}
+
+void eeprom_try()
+{
+	uint8_t buff[8] = {2,2,2,2,2,2,2,2};
+	uint8_t rx_buff[8];
+	uint32_t read_bytes = 8;
+
+	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
+
+	if (BSP_EEPROM_Init() != EEPROM_OK) {
+		error_handler();
+	}
+
+	if (BSP_EEPROM_WriteBuffer(buff, 0, 8) != EEPROM_OK) {
+		error_handler();
+	}
+
+	if (BSP_EEPROM_ReadBuffer(rx_buff, 0, &read_bytes) != EEPROM_OK) {
+		error_handler();
 	}
 }
 
@@ -76,40 +124,30 @@ int main() {
 	SystemClock_Config();
 
 #ifndef MY_DEBUG
-	if (clk_window_Show() != APP_OK) {
+	clk_frame clk_frame;
+	RTC_TimeTypeDef rtc_time = clk_frame.pass_control();
+
+	// Enable LED for second_it
+	BSP_LED_Init(LED_BLUE);
+
+	rtc& rtc = rtc.get_instance(); // instantiation of rtc
+
+	if (rtc.set_time(&rtc_time) != APP_OK) {
 		error_handler();
 	}
 
-	RTC_TimeTypeDef rtcTime;
-	if (clk_window_ReadUserInput(&rtcTime) != APP_OK) {
-		error_handler();
-	}
-
-	if (rtc_Init() != HAL_OK) {
-		error_handler();
-	}
-
-	if (rtc_SetTime(&rtcTime) != APP_OK) {
-		error_handler();
-	}
-
-	if (interval_window_Show() != APP_OK) {
-		error_handler();
-	}
 #endif
 
-
-	//BSP_LCD_Init();
-	//BSP_LCD_Clear(LCD_COLOR_BLACK);
-
-	/*if (temp_sensor_Init() == 0) {
+	// TODO: temp_sensor to class?
+	if (temp_sensor_Init() == 0) {
 		error_handler();
 	}
-	temp_sensor_Init();
-	temp_sensor_debug();*/
+	temp_sensor_debug();
 
-	interval_frame_test();
-	//memory_try();
+	//main_test();
+	//mainframe_test();
+	//static_time_window_test();
+
 
 	volatile int a = 0;
 	while (1) {
