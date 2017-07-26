@@ -12,11 +12,9 @@ void error_handler(); // From main module
 /**
  * Constructor does not register for callbacks.
  */
-static_time_window::static_time_window(const coord& c) :
-		static_window{c},
-		hours{0},
-		minutes{0},
-		seconds{0}
+static_time_window::static_time_window(const coord& c, bool sec_precision) :
+		static_window(c),
+		sec_precision(sec_precision)
 { }
 
 
@@ -79,6 +77,10 @@ void static_time_window::min_callback_()
  */
 void static_time_window::draw() const
 {
+	if (this->hidden) {
+		return;
+	}
+
 	/* Check if lcd is initialized */
 	// This is needed because this method is called
 	// from second interrupt handler.
@@ -99,12 +101,38 @@ void static_time_window::draw() const
 	BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 3), this->coord_.y, (uint8_t *)text, LEFT_MODE);
 
 	/* Print seconds */
-#ifdef SECOND_PRECISION
-	BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 5), this->coord_.y, (uint8_t *)":", LEFT_MODE);
+	if (this->sec_precision) {
+		BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 5), this->coord_.y, (uint8_t *)":", LEFT_MODE);
 
-	sprintf(text, "%02u", this->seconds);
-	BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 6), this->coord_.y, (uint8_t *)text, LEFT_MODE);
-#endif
+		sprintf(text, "%02u", this->seconds);
+		BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 6), this->coord_.y, (uint8_t *)text, LEFT_MODE);
+	}
+}
+
+void static_time_window::set_hours(uint8_t hours)
+{
+	this->hours = hours;
+}
+
+void static_time_window::set_minutes(uint8_t minutes)
+{
+	this->minutes = minutes;
+}
+
+/**
+ * Hides this window.
+ */
+void static_time_window::hide()
+{
+	this->hidden = true;
+}
+
+/**
+ * "Unhides" this window.
+ */
+void static_time_window::show()
+{
+	this->hidden = false;
 }
 
 /**
@@ -130,25 +158,24 @@ void static_time_window::run_clock()
 	this->seconds = rtc_time.Seconds;
 
 	/* Register minute (second) callback */
-#ifdef SECOND_PRECISION
-	rtc::get_instance().register_second_callback(this);
-#else
-	rtc::get_instance().register_minute_callback(this);
-#endif
+	if (this->sec_precision) {
+		rtc::get_instance().register_second_callback(this);
+	}
+	else {
+		rtc::get_instance().register_minute_callback(this);
+	}
 }
 
 /**
  * Used as callback from rtc. Just calls member function.
  */
-#ifdef SECOND_PRECISION
 void static_time_window::sec_callback()
 {
 	this->sec_callback_();
 }
-#else
+
 void static_time_window::min_callback()
 {
 	this->min_callback_();
 }
-#endif
 

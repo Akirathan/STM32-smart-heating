@@ -16,32 +16,32 @@
 #ifndef TEMP_SENSOR_HPP_
 #define TEMP_SENSOR_HPP_
 
-//TODO: put in namespace
+//#include <cmath>
+#include "stm32f1xx_hal.h"
+#include "one_wire.hpp"
 
-#include <math.h>
-#include <stdint.h>
-#include <one_wire.hpp>
+namespace temp_sensor {
 
 // PE4
-#define TEMP_SENSOR_DATA_GPIOPIN				GPIO_PIN_4
-#define TEMP_SENSOR_DATA_GPIOPORT				GPIOE
+#define DATA_GPIOPIN				GPIO_PIN_4
+#define DATA_GPIOPORT				GPIOE
 
 /* Setting configuration register */
-#define TEMP_SENSOR_SET_RES(cfg_byte, res)		(cfg_byte &= res)
+#define SET_RES(cfg_byte, res)		(cfg_byte &= res)
 
 
 typedef enum {
-	TEMP_SENSOR_RESOLUTION_9_BIT = 0x9F,
-	TEMP_SENSOR_RESOLUTION_10_BIT = 0xBF,
-	TEMP_SENSOR_RESOLUTION_11_BIT = 0xDF,
-	TEMP_SENSOR_RESOLUTION_12_BIT = 0xFF,
-} temp_sensor_resolution_t;
+	RESOLUTION_9_BIT = 0x9F,
+	RESOLUTION_10_BIT = 0xBF,
+	RESOLUTION_11_BIT = 0xDF,
+	RESOLUTION_12_BIT = 0xFF,
+} resolution_t;
 
 typedef struct {
 	uint8_t TH; // temperature high trigger register
 	uint8_t TL; // temperature low trigger register
 	uint8_t CFG; // configuration register
-} temp_sensor_config_t;
+} config_t;
 
 /**
  * Doest not include CRC register.
@@ -52,30 +52,30 @@ typedef struct {
 	uint8_t TH;
 	uint8_t TL;
 	uint8_t CFG;
-} temp_sensor_data_t;
+} data_t;
 
 /* ROM commands */
-#define TEMP_SENSOR_CMD_SKIPROM				0xCC
+const uint8_t CMD_SKIPROM = 0xCC;
 
 /* Memory commands */
-#define TEMP_SENSOR_CMD_READSCRATCHPAD			0xBE
-#define TEMP_SENSOR_CMD_WRITESCRATCHPAD		0x4E
-#define TEMP_SENSOR_CMD_COPYSCRATCHPAD			0x48
+const uint8_t CMD_READSCRATCHPAD = 0xBE;
+const uint8_t CMD_WRITESCRATCHPAD = 0x4E;
+const uint8_t CMD_COPYSCRATCHPAD = 0x48;
 
 /* Functional commands */
-#define TEMP_SENSOR_CMD_CONVERTT				0x44
+const uint8_t CMD_CONVERTT = 0x44;
 
+uint32_t init();
+void set_alarm_high(uint8_t temp_high);
+void set_alarm_low(uint8_t temp_low);
+void set_resolution(resolution_t resolution);
+uint16_t measure_temperature();
+void read_data(data_t* data);
+void read_config(config_t* config);
+void write_scratchpad(config_t* config);
 
-/* Public functions */
-uint32_t temp_sensor_Init();
-void temp_sensor_SetAlarmHigh(uint8_t temp_high);
-void temp_sensor_SetAlarmLow(uint8_t temp_low);
-void temp_sensor_SetResolution(temp_sensor_resolution_t resolution);
-uint16_t temp_sensor_MeasureTemperature();
-void temp_sensor_ReadData(temp_sensor_data_t* data);
-void temp_sensor_ReadConfig(temp_sensor_config_t* config);
-void temp_sensor_WriteScratchpad(temp_sensor_config_t* config);
+void debug();
 
-void temp_sensor_debug();
+} // namespace temp_sensor
 
 #endif // TEMP_SENSOR_HPP_

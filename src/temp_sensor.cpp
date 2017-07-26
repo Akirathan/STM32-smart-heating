@@ -5,44 +5,45 @@
  *      Author: Mayfa
  */
 
-#include <temp_sensor.hpp>
+#include "temp_sensor.hpp"
+
+namespace temp_sensor {
 
 /* Private functions */
-static double convert_positive_temperature(uint8_t lsb, uint8_t msb,
-		temp_sensor_resolution_t resolution);
+static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution);
 
 /**
  * Initializes one-wire peripheral.
  */
-uint32_t temp_sensor_Init()
+uint32_t init()
 {
-	return one_wire_Init();
+	return one_wire::init();
 }
 
-uint16_t temp_sensor_MeasureTemperature()
+uint16_t measure_temperature()
 {
 	uint16_t temp = 0x0000; // There is no need for initializing temp
 
-	one_wire_InitCommunication();
-	one_wire_WriteByte(TEMP_SENSOR_CMD_SKIPROM);
+	one_wire::init_communication();
+	one_wire::write_byte(CMD_SKIPROM);
 
-	one_wire_WriteByte(TEMP_SENSOR_CMD_CONVERTT);
-	while (one_wire_ReadBit() == 0) {
+	one_wire::write_byte(CMD_CONVERTT);
+	while (one_wire::read_bit() == 0) {
 		// The conversion is still in progress.
 		// Wait until the conversion is done.
 	}
 
 	// The conversion is now done
-	one_wire_InitCommunication();
-	one_wire_WriteByte(TEMP_SENSOR_CMD_SKIPROM);
-	one_wire_WriteByte(TEMP_SENSOR_CMD_READSCRATCHPAD);
-	uint8_t temp_lsb = one_wire_ReadByte();
-	uint8_t temp_msb = one_wire_ReadByte();
+	one_wire::init_communication();
+	one_wire::write_byte(CMD_SKIPROM);
+	one_wire::write_byte(CMD_READSCRATCHPAD);
+	uint8_t temp_lsb = one_wire::read_byte();
+	uint8_t temp_msb = one_wire::read_byte();
 
 	// Reset the bus, because there is no
 	// need for reading other scratchpad
 	// bytes.
-	one_wire_Reset();
+	one_wire::reset();
 
 	// temp = 0x0000, temp_msb = 0x002A
 	temp |= temp_msb; // 0x002A
@@ -59,20 +60,20 @@ uint16_t temp_sensor_MeasureTemperature()
  * Read the scratchpad from the sensor and
  * fills the data structure.
  */
-void temp_sensor_ReadData(temp_sensor_data_t* data)
+void read_data(data_t* data)
 {
-	one_wire_InitCommunication();
-	one_wire_WriteByte(TEMP_SENSOR_CMD_SKIPROM);
-	one_wire_WriteByte(TEMP_SENSOR_CMD_READSCRATCHPAD);
+	one_wire::init_communication();
+	one_wire::write_byte(CMD_SKIPROM);
+	one_wire::write_byte(CMD_READSCRATCHPAD);
 
-	data->TEMP_LSB = one_wire_ReadByte();
-	data->TEMP_MSB = one_wire_ReadByte();
-	data->TH = one_wire_ReadByte();
-	data->TL = one_wire_ReadByte();
-	data->CFG = one_wire_ReadByte();
+	data->TEMP_LSB = one_wire::read_byte();
+	data->TEMP_MSB = one_wire::read_byte();
+	data->TH = one_wire::read_byte();
+	data->TL = one_wire::read_byte();
+	data->CFG = one_wire::read_byte();
 
 	// Ignore the rest
-	one_wire_Reset();
+	one_wire::reset();
 }
 
 /**
@@ -80,14 +81,14 @@ void temp_sensor_ReadData(temp_sensor_data_t* data)
  * measures temperature that is higher than
  * this value, the alarm flag is set.
  */
-void temp_sensor_SetAlarmHigh(uint8_t temp_high)
+void set_alarm_high(uint8_t temp_high)
 {
-	temp_sensor_config_t config;
+	config_t config;
 
-	temp_sensor_ReadConfig(&config);
+	read_config(&config);
 	config.TH = temp_high;
 
-	temp_sensor_WriteScratchpad(&config);
+	write_scratchpad(&config);
 }
 
 /**
@@ -95,14 +96,14 @@ void temp_sensor_SetAlarmHigh(uint8_t temp_high)
  * measures temperature that is lower than
  * this value, the alarm flag is set.
  */
-void temp_sensor_SetAlarmLow(uint8_t temp_low)
+void set_alarm_low(uint8_t temp_low)
 {
-	temp_sensor_config_t config;
+	config_t config;
 
-	temp_sensor_ReadConfig(&config);
+	read_config(&config);
 	config.TL = temp_low;
 
-	temp_sensor_WriteScratchpad(&config);
+	write_scratchpad(&config);
 }
 
 /**
@@ -113,73 +114,72 @@ void temp_sensor_SetAlarmLow(uint8_t temp_low)
  * @param resolution should be one of
  *   one_wire_resolution_t values
  */
-void temp_sensor_SetResolution(temp_sensor_resolution_t resolution)
+void set_resolution(resolution_t resolution)
 {
-	temp_sensor_config_t config;
+	config_t config;
 
-	temp_sensor_ReadConfig(&config);
-	TEMP_SENSOR_SET_RES(config.CFG, resolution);
+	read_config(&config);
+	SET_RES(config.CFG, resolution);
 
-	temp_sensor_WriteScratchpad(&config);
+	write_scratchpad(&config);
 
 	// Copy the configuration values to EEPROM
-	one_wire_InitCommunication();
-	one_wire_WriteByte(TEMP_SENSOR_CMD_SKIPROM);
-	one_wire_WriteByte(TEMP_SENSOR_CMD_COPYSCRATCHPAD);
+	one_wire::init_communication();
+	one_wire::write_byte(CMD_SKIPROM);
+	one_wire::write_byte(CMD_COPYSCRATCHPAD);
 }
 
 /**
  * Write the config data structure to the
  * temperature sensor.
  */
-void temp_sensor_WriteScratchpad(temp_sensor_config_t* config)
+void write_scratchpad(config_t* config)
 {
-	one_wire_InitCommunication();
-	one_wire_WriteByte(TEMP_SENSOR_CMD_SKIPROM);
-	one_wire_WriteByte(TEMP_SENSOR_CMD_WRITESCRATCHPAD);
+	one_wire::init_communication();
+	one_wire::write_byte(CMD_SKIPROM);
+	one_wire::write_byte(CMD_WRITESCRATCHPAD);
 
-	one_wire_WriteByte(config->TH);
-	one_wire_WriteByte(config->TL);
-	//one_wire_WriteByte(config->CFG);
-	one_wire_WriteByte(0x9F);
+	one_wire::write_byte(config->TH);
+	one_wire::write_byte(config->TL);
+	one_wire::write_byte(config->CFG);
 }
 
-void temp_sensor_debug()
+void debug()
 {
-	temp_sensor_config_t conf;
+	config_t conf;
 	conf.TH = 10;
 	conf.TL = 20;
 	conf.CFG = 0x9F;
-	temp_sensor_WriteScratchpad(&conf);
-	temp_sensor_ReadConfig(&conf);
-	one_wire_Reset();
+	write_scratchpad(&conf);
+	read_config(&conf);
+	one_wire::reset();
 
 	HAL_Delay(2000);
 
-	temp_sensor_ReadConfig(&conf);
+	read_config(&conf);
 }
 
 /**
  * Read the scratchpad from the sensor and
  * sills the config structure.
  */
-void temp_sensor_ReadConfig(temp_sensor_config_t* config)
+void read_config(config_t* config)
 {
-	one_wire_InitCommunication();
-	one_wire_WriteByte(TEMP_SENSOR_CMD_SKIPROM);
-	one_wire_WriteByte(TEMP_SENSOR_CMD_READSCRATCHPAD);
+	one_wire::init_communication();
+	one_wire::write_byte(CMD_SKIPROM);
+	one_wire::write_byte(CMD_READSCRATCHPAD);
 
-	one_wire_ReadByte(); // temp_LSB
-	one_wire_ReadByte(); // temp_MSB
-	config->TH = one_wire_ReadByte();
-	config->TL = one_wire_ReadByte();
-	config->CFG = one_wire_ReadByte();
+	one_wire::read_byte(); // temp_LSB
+	one_wire::read_byte(); // temp_MSB
+	config->TH = one_wire::read_byte();
+	config->TL = one_wire::read_byte();
+	config->CFG = one_wire::read_byte();
 
 	// Ignore the rest
-	//one_wire_Reset();
+	//one_wire::reset();
 
 	for (int i = 0; i < 4; i++) {
-		one_wire_ReadByte();
+		one_wire::read_byte();
 	}
 }
 
@@ -187,8 +187,7 @@ void temp_sensor_ReadConfig(temp_sensor_config_t* config)
  * Get the temperature registers from the sensor and convert
  * them into double format. See doc for more info.
  */
-double temp_sensor_ConvertTemperature(uint8_t lsb, uint8_t msb,
-		temp_sensor_resolution_t resolution)
+double convert_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
 {
 	// Check if sign bit(s) is set
 	if (msb >> 3) {
@@ -206,24 +205,23 @@ double temp_sensor_ConvertTemperature(uint8_t lsb, uint8_t msb,
 	}
 }
 
-static double convert_positive_temperature(uint8_t lsb, uint8_t msb,
-		temp_sensor_resolution_t resolution)
+static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
 {
 	/* LSB */
 	int lower_bound = -4;
 	int upper_bound = 3;
 
 	switch (resolution) {
-	case TEMP_SENSOR_RESOLUTION_12_BIT:
+	case RESOLUTION_12_BIT:
 		lower_bound = -4;
 		break;
-	case TEMP_SENSOR_RESOLUTION_11_BIT:
+	case RESOLUTION_11_BIT:
 		lower_bound = -3;
 		break;
-	case TEMP_SENSOR_RESOLUTION_10_BIT:
+	case RESOLUTION_10_BIT:
 		lower_bound = -2;
 		break;
-	case TEMP_SENSOR_RESOLUTION_9_BIT:
+	case RESOLUTION_9_BIT:
 		lower_bound = -1;
 		break;
 	}
@@ -232,7 +230,7 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb,
 	for (int i = lower_bound; i <= upper_bound; i++) {
 		uint8_t last_bit = lsb & 0x01;
 		if (last_bit)
-			sum += pow(2, i);
+			//sum += pow(2, i);
 		lsb >>= 1;
 	}
 
@@ -240,9 +238,11 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb,
 	for (int i = 4; i <= 6; i++) {
 		uint8_t last_bit = msb & 0x01;
 		if (last_bit)
-			sum += pow(2, i);
+			//sum += pow(2, i);
 		msb >>= 1;
 	}
 
 	return sum;
 }
+
+} // namespace temp_sensor

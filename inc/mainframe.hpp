@@ -10,6 +10,8 @@
 
 #include "stm3210c_eval_lcd.h"
 #include "buttons.hpp"
+#include "intervalframe.hpp"
+#include "eeprom.hpp"
 #include "static_time_window.hpp"
 #include "static_temp_window.hpp"
 #include "window_system.hpp"

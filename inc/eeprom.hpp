@@ -8,8 +8,9 @@
 #ifndef INC_EEPROM_HPP_
 #define INC_EEPROM_HPP_
 
+#include <vector>
 #include "stm3210c_eval_eeprom.h"
-#include "intervalframe.hpp"
+#include "intervalframe_data.hpp"
 
 /**
  * Singleton class.

@@ -11,16 +11,19 @@
 #include "stm32f1xx_hal.h"
 #include "temp_sensor.hpp" //DEBUG
 
-/* Public functions */
-uint32_t one_wire_Init();
-int one_wire_InitCommunication();
-void one_wire_WriteByte(uint8_t byte);
-uint8_t one_wire_ReadByte();
-uint8_t one_wire_ReadBit();
-void one_wire_Reset();
+namespace one_wire {
+
+uint32_t init();
+int init_communication();
+void write_byte(uint8_t byte);
+uint8_t read_byte();
+uint8_t read_bit();
+void reset();
 
 /* Testing functions */
-uint32_t one_wire_TimeTest(uint32_t microsecs);
-void one_wire_debug();
+uint32_t time_test(uint32_t microsecs);
+void debug();
+
+} // namespace one_wire
 
 #endif /* ONE_WIRE_HPP_ */

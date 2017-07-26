@@ -28,30 +28,71 @@ mainframe::mainframe()
 	lcd::init();
 	BSP_LCD_SetFont(&Font16);
 
-	time = static_time_window{coord{BSP_LCD_GetXSize()/2 - 30, LINE(1)}};
+	time = static_time_window{coord{BSP_LCD_GetXSize()/2 - 30, LINE(1)}, true};
 	act_temp = static_temp_window{coord{70, LINE(4)}};
 	set_temp = static_temp_window{coord{220, LINE(4)}};
 	overview_button = button{coord{BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 40}, "overview"};
 	reset_button = button{coord{BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 20}, "reset"};
 }
 
+/**
+ * Control should remain in this method.
+ */
 void mainframe::pass_control()
 {
-	this->draw_header();
-
-	// Register these window for minute or second callbacks.
+	// Register time and temperature windows for
+	// minute or second callbacks.
 	this->time.run_clock();
 	this->act_temp.measure();
 
-	window_system system;
-	system.add_static(&this->time);
-	system.add_static(&this->act_temp);
-	system.add_static(&this->set_temp);
-	system.add_control(&this->overview_button);
-	system.add_control(&this->reset_button);
+	while (true) {
+		this->draw_header();
 
-	system.pass_control();
+		// Show time and actual temp window if they were
+		// hidden from last frame.
+		this->time.show();
+		this->act_temp.show();
 
-	/* Find out which button was pressed */
-	// ...
+		// Reset button state
+		this->overview_button.set_pushed(false);
+		this->reset_button.set_pushed(false);
+
+		window_system system;
+		// Add window into window_system and draw them
+		// immediately.
+		system.add_static(&this->time);
+		system.add_static(&this->act_temp);
+		system.add_static(&this->set_temp);
+		system.add_control(&this->overview_button);
+		system.add_control(&this->reset_button);
+
+		system.pass_control();
+
+		std::vector<intervalframe_data> data_vec;
+
+		// Hide windows registered for callbacks.
+		this->time.hide();
+		this->act_temp.hide();
+
+		// Find out which button was pressed.
+		if (this->overview_button.is_pushed()) {
+			// Load interval data from EEPROM.
+			// Suppose eeprom is not empty.
+			eeprom::get_instance().load(data_vec);
+
+			overview_intervalframe frame{data_vec};
+
+			frame.pass_control();
+		}
+		else if (this->reset_button.is_pushed()) {
+			set_intervalframe frame;
+
+			// Set intervals.
+			frame.pass_control();
+			data_vec = frame.get_data();
+
+			// Save intervals into EEPROM.
+			eeprom::get_instance().save(data_vec);
+		}
+	}
 }

@@ -11,9 +11,7 @@
  *
  */
 static_temp_window::static_temp_window(const coord& c)  :
-		static_window{c},
-		temp{0},
-		registered_callback{false}
+		static_window{c}
 { }
 
 /**
@@ -36,6 +34,21 @@ void static_temp_window::min_callback()
 	this->draw();
 }
 
+void static_temp_window::set_temp(uint32_t temp)
+{
+	this->temp = temp;
+}
+
+void static_temp_window::hide()
+{
+	this->hidden = true;
+}
+
+void static_temp_window::show()
+{
+	this->hidden = false;
+}
+
 /**
  * Registers for minute callback.
  */
@@ -53,6 +66,10 @@ void static_temp_window::measure()
 
 void static_temp_window::draw() const
 {
+	if (this->hidden) {
+		return;
+	}
+
 	// This is needed because this method is called
 	// from second interrupt handler.
 	if (!lcd::is_initialized()) {

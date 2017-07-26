@@ -14,8 +14,10 @@ void error_handler() {
 
 void intervalframe_test()
 {
-	intervalframe intv_fr;
-	std::vector<intervalframe_data> data_vec = intv_fr.pass_control();
+	set_intervalframe intv_fr;
+
+	intv_fr.pass_control();
+	std::vector<intervalframe_data> data_vec = intv_fr.get_data();
 
 	// Process data
 	eeprom& eeprom = eeprom.get_instance();
@@ -69,8 +71,9 @@ void main_test()
 	eeprom& eeprom = eeprom.get_instance();
 
 	if (eeprom.is_empty()) {
-		intervalframe intv_fr;
-		interval_vec = intv_fr.pass_control();
+		set_intervalframe intv_fr;
+		intv_fr.pass_control();
+		interval_vec = intv_fr.get_data();
 
 		eeprom.save(interval_vec);
 	}
@@ -117,7 +120,27 @@ void eeprom_try()
 	}
 }
 
-int main() {
+/**
+ * Pin set as input pullup is read as set.
+ */
+void gpio_test()
+{
+	// Enable clock
+	__HAL_RCC_GPIOE_CLK_ENABLE();
+
+	// Set PE3 as input pullup
+	GPIO_InitTypeDef gpio;
+	gpio.Pin = GPIO_PIN_3;
+	gpio.Mode = GPIO_MODE_INPUT;
+	gpio.Speed = GPIO_SPEED_FREQ_MEDIUM;
+	gpio.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOE, &gpio);
+
+	GPIO_PinState pin_state = HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3); // set expected
+}
+
+int main()
+{
 
 	HAL_Init();
 	/* Initialize system and peripheral clocks */
@@ -138,16 +161,15 @@ int main() {
 
 #endif
 
-	// TODO: temp_sensor to class?
-	if (temp_sensor_Init() == 0) {
+	if (temp_sensor::init() == 0) {
 		error_handler();
 	}
-	temp_sensor_debug();
+	temp_sensor::debug();
 
 	//main_test();
 	//mainframe_test();
 	//static_time_window_test();
-
+	//intervalframe_test();
 
 	volatile int a = 0;
 	while (1) {

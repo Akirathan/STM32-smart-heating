@@ -6,7 +6,7 @@ using namespace std;
 static uint16_t text_color;
 static uint16_t back_color;
 
-coord::coord(uint32_t x, uint32_t y) : x(x), y(y) {
+coord::coord(uint16_t x, uint16_t y) : x(x), y(y) {
 
 }
 

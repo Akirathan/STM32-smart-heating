@@ -9,8 +9,8 @@ BSP = $(STM32F1CUBE)/Drivers/BSP
 HAL = $(STM32F1CUBE)/Drivers/STM32F1xx_HAL_Driver
 UTILITIES = $(STM32F1CUBE)/Utilities
 
-TOOLCHAIN_PREFIX:=arm-none-eabi-
 # Toolchain paths (adjust to match your needs)
+TOOLCHAIN_PREFIX:=arm-none-eabi-
 CC = $(TOOLCHAIN_PREFIX)gcc
 CXX = $(TOOLCHAIN_PREFIX)g++
 LD = $(TOOLCHAIN_PREFIX)ld
@@ -25,7 +25,7 @@ CFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
 CFLAGS += -specs=nano.specs
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -DSTM32F107VCTx -DUSE_HAL_DRIVER -DUSE_STM3210C_EVAL -DSTM3210C_EVAL
-CFLAGS += -g -Wall
+CFLAGS += -g -Wall 
 
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics
 CXXFLAGS += -std=c++14 
@@ -69,13 +69,14 @@ APP_OBJECTS += src/lcd.o
 APP_OBJECTS += src/window_system.o
 APP_OBJECTS += src/clkframe.o
 APP_OBJECTS += src/mainframe.o
+APP_OBJECTS += src/intervalframe_data.o
 APP_OBJECTS += src/intervalframe.o
 
 APP_OBJECTS += src/eeprom.o
 APP_OBJECTS += src/input.o
+APP_OBJECTS += src/temp_sensor.o
 APP_OBJECTS += src/main.o 
 APP_OBJECTS += src/one_wire.o
-APP_OBJECTS += src/temp_sensor.o
 APP_OBJECTS += src/time.o
 
 # Currenly used HAL module objects

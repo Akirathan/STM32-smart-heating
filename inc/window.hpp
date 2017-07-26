@@ -25,9 +25,9 @@ enum class Message {
 };
 
 struct coord {
-	uint32_t x;
-	uint32_t y;
-	coord(uint32_t x, uint32_t y);
+	uint16_t x;
+	uint16_t y;
+	coord(uint16_t x, uint16_t y);
 };
 
 bool operator<(const coord &c1, const coord &c2);
