@@ -23,15 +23,15 @@
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1284408098" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.1594383129" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1908870963" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/STM32F1xx_HAL_Driver/Inc"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/STM3210C_EVAL"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/CMSIS/Include/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Utilities/Fonts/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9325/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320/"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/STM32F1xx_HAL_Driver/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/STM3210C_EVAL&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/CMSIS/Device/ST/STM32F1xx/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/CMSIS/Include/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Utilities/Fonts/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9325/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9320/&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1807332257" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -47,15 +47,15 @@
 								<option id="gnu.cpp.compiler.option.optimization.level.1201955387" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.415900459" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1291882924" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/STM32F1xx_HAL_Driver/Inc"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/STM3210C_EVAL"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/CMSIS/Include/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Utilities/Fonts/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9325/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320/"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/STM32F1xx_HAL_Driver/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/STM3210C_EVAL&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/CMSIS/Device/ST/STM32F1xx/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/CMSIS/Include/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Utilities/Fonts/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9325/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9320/&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1612094670" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1704184938" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="-std=c++14" valueType="string"/>
@@ -79,26 +79,24 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.1503917112" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
 							<tool command="arm-none-eabi-as" id="cdt.managedbuild.tool.gnu.cross.assembler.266917996" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<option id="gnu.both.asm.option.include.paths.1943198361" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/STM32F1xx_HAL_Driver/Inc"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/STM3210C_EVAL"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/CMSIS/Include/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Utilities/Fonts/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9325/"/>
-									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320/"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/STM32F1xx_HAL_Driver/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/STM3210C_EVAL&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/CMSIS/Device/ST/STM32F1xx/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/CMSIS/Include/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Utilities/Fonts/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9325/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9320/&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.73959962" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="ili9325|ili9320|STM3210C_EVAL|STM32F1xx_HAL_Driver Src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="STM3210C_EVAL"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="STM32F1xx_HAL_Driver Src"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="ili9320"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="ili9325"/>
+						<entry excluding="BSP-STM3210C_EVAL|HAL_Driver-Src|ili9325|ili9320|STM3210C_EVAL|STM32F1xx_HAL_Driver Src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="BSP-STM3210C_EVAL"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="HAL_Driver-Src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

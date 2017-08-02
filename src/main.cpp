@@ -164,6 +164,9 @@ int main()
 	if (TempSensor::init() == 0) {
 		error_handler();
 	}
+	if (OneWire::init_communication() == 0) {
+		error_handler();
+	}
 	TempSensor::debug();
 
 	//main_test();

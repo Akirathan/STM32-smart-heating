@@ -26,24 +26,20 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>STM3210C_EVAL</name>
+			<name>BSP-STM3210C_EVAL</name>
 			<type>2</type>
-			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/STM3210C_EVAL</location>
+			<locationURI>STM32Cube/Drivers/BSP/STM3210C_EVAL</locationURI>
 		</link>
 		<link>
-			<name>STM32F1xx_HAL_Driver Src</name>
+			<name>HAL_Driver-Src</name>
 			<type>2</type>
-			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/STM32F1xx_HAL_Driver/Src</location>
-		</link>
-		<link>
-			<name>ili9320</name>
-			<type>2</type>
-			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320</location>
-		</link>
-		<link>
-			<name>ili9325</name>
-			<type>2</type>
-			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9325</location>
+			<locationURI>STM32Cube/Drivers/STM32F1xx_HAL_Driver/Src</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>STM32Cube</name>
+			<value>file:/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0</value>
+		</variable>
+	</variableList>
 </projectDescription>
