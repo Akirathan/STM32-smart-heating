@@ -1,0 +1,5 @@
+*.o
+*.map
+*.log
+*.elf
+/.settings
