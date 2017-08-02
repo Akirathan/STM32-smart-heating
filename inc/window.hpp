@@ -38,26 +38,26 @@ public:
 	virtual ~Window() = default;
 	virtual void draw() const = 0;
 	const Coord& getCoord() const;
-	uint32_t get_x() const;
-	uint32_t get_y() const;
+	uint32_t getX() const;
+	uint32_t getY() const;
 protected:
-	Coord coord_;
-	void save_font() const;
-	void load_font() const;
+	Coord coord;
+	void saveFont() const;
+	void loadFont() const;
 };
 
-class control_window: public Window {
+class ControlWindow: public Window {
 public:
-	control_window(const Coord &coord);
-	virtual ~control_window() = default;
-	virtual Message event_handler(JOYState_TypeDef joy_state) = 0;
-	virtual void set_focus(Message msg) = 0;
+	ControlWindow(const Coord& coord);
+	virtual ~ControlWindow() = default;
+	virtual Message eventHandler(JOYState_TypeDef joy_state) = 0;
+	virtual void setFocus(Message msg) = 0;
 };
 
-class static_window: public Window {
+class StaticWindow: public Window {
 public:
-	static_window(const Coord &coord);
-	virtual ~static_window() = default;
+	StaticWindow(const Coord &coord);
+	virtual ~StaticWindow() = default;
 };
 
 #endif

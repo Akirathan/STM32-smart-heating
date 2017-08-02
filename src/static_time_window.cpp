@@ -12,127 +12,124 @@ void error_handler(); // From main module
 /**
  * Constructor does not register for callbacks.
  */
-static_time_window::static_time_window(const Coord& c, bool sec_precision) :
-		static_window(c),
-		sec_precision(sec_precision)
+StaticTimeWindow::StaticTimeWindow(const Coord& c, bool sec_precision)
+	: StaticWindow(c), secPrecision(sec_precision)
 { }
 
 
 /**
  * Unregister from callback.
  */
-static_time_window::~static_time_window()
+StaticTimeWindow::~StaticTimeWindow()
 {
-	rtc::get_instance().unregister_second_callback(this);
+	RTCController::getInstance().unregisterSecondCallback(this);
 }
 
 
-void static_time_window::inc_min()
+void StaticTimeWindow::incMin()
 {
-	if (this->minutes == 59) {
-		this->minutes = 0;
+	if (minutes == 59) {
+		minutes = 0;
 		/* Increase hours */
-		if (this->hours == 23) {
-			this->hours = 0;
+		if (hours == 23) {
+			hours = 0;
 		}
 		else {
-			this->hours++;
+			hours++;
 		}
 	}
 	else {
-		this->minutes++;
+		minutes++;
 	}
 }
 
-void static_time_window::inc_sec()
+void StaticTimeWindow::incSec()
 {
-	if (this->seconds == 59) {
-		this->seconds = 0;
-		this->inc_min();
+	if (seconds == 59) {
+		seconds = 0;
+		incMin();
 	}
 	else {
-		this->seconds++;
+		seconds++;
 	}
 }
 
 /**
  * Used as callback function.
  */
-void static_time_window::sec_callback_()
+void StaticTimeWindow::secCallback_()
 {
 	// Increase seconds and redraw window
-	this->inc_sec();
-	this->draw();
+	incSec();
+	draw();
 }
 
-void static_time_window::min_callback_()
+void StaticTimeWindow::minCallback_()
 {
-	this->inc_min();
-	this->draw();
+	incMin();
+	draw();
 }
 
 /**
  * Prints hours and minutes. Prints also seconds if SECOND_PRECISION
  * is defined.
  */
-void static_time_window::draw() const
+void StaticTimeWindow::draw() const
 {
-	if (this->hidden) {
+	if (hidden) {
 		return;
 	}
 
 	/* Check if lcd is initialized */
 	// This is needed because this method is called
 	// from second interrupt handler.
-	if (!lcd::is_initialized()) {
+	if (!LCD::is_initialized()) {
 		return;
 	}
 
-	/* Print hours */
+	// Print hours.
 	char text[2];
-	sprintf(text, "%02u", this->hours);
-
+	sprintf(text, "%02u", hours);
 	sFONT *font = BSP_LCD_GetFont();
-	BSP_LCD_DisplayStringAt(this->coord_.x, this->coord_.y, (uint8_t *)text, LEFT_MODE);
-	BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 2), this->coord_.y, (uint8_t *)":", LEFT_MODE);
+	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
+	BSP_LCD_DisplayStringAt(coord.x + (font->Width * 2), coord.y, (uint8_t *)":", LEFT_MODE);
 
-	/* Print minutes */
-	sprintf(text, "%02u", this->minutes);
-	BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 3), this->coord_.y, (uint8_t *)text, LEFT_MODE);
+	// Print minutes.
+	sprintf(text, "%02u", minutes);
+	BSP_LCD_DisplayStringAt(coord.x + (font->Width * 3), coord.y, (uint8_t *)text, LEFT_MODE);
 
-	/* Print seconds */
-	if (this->sec_precision) {
-		BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 5), this->coord_.y, (uint8_t *)":", LEFT_MODE);
-
-		sprintf(text, "%02u", this->seconds);
-		BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width * 6), this->coord_.y, (uint8_t *)text, LEFT_MODE);
+	// Print seconds.
+	if (secPrecision) {
+		BSP_LCD_DisplayStringAt(coord.x + (font->Width * 5), coord.y, (uint8_t *)":", LEFT_MODE);
+		sprintf(text, "%02u", seconds);
+		BSP_LCD_DisplayStringAt(coord.x + (font->Width * 6), coord.y, (uint8_t *)text, LEFT_MODE);
 	}
 }
 
-void static_time_window::set_hours(uint8_t hours)
+void StaticTimeWindow::setHours(uint8_t hrs)
 {
-	this->hours = hours;
+	hours = hrs;
 }
 
-void static_time_window::set_minutes(uint8_t minutes)
+void StaticTimeWindow::setMinutes(uint8_t mins)
 {
-	this->minutes = minutes;
+	minutes = mins;
 }
 
 /**
  * Hides this window.
  */
-void static_time_window::hide()
+void StaticTimeWindow::hide()
 {
-	this->hidden = true;
+	hidden = true;
 }
 
 /**
  * "Unhides" this window.
  */
-void static_time_window::show()
+void StaticTimeWindow::show()
 {
-	this->hidden = false;
+	hidden = false;
 }
 
 /**
@@ -143,39 +140,38 @@ void static_time_window::show()
  * Note: supposes that rtc is already initialized and the
  * time is set.
  */
-void static_time_window::run_clock()
+void StaticTimeWindow::runClock()
 {
-	if (!rtc::get_instance().is_time_set()) {
+	if (!RTCController::getInstance().isTimeSet()) {
 		error_handler();
 	}
 
-	/* Set time */
+	// Set time.
 	RTC_TimeTypeDef rtc_time;
-	rtc::get_instance().get_time(&rtc_time);
+	RTCController::getInstance().getTime(&rtc_time);
+	hours = rtc_time.Hours;
+	minutes = rtc_time.Minutes;
+	seconds = rtc_time.Seconds;
 
-	this->hours = rtc_time.Hours;
-	this->minutes = rtc_time.Minutes;
-	this->seconds = rtc_time.Seconds;
-
-	/* Register minute (second) callback */
-	if (this->sec_precision) {
-		rtc::get_instance().register_second_callback(this);
+	// Register minute (second) callback.
+	if (secPrecision) {
+		RTCController::getInstance().registerSecondCallback(this);
 	}
 	else {
-		rtc::get_instance().register_minute_callback(this);
+		RTCController::getInstance().registerMinuteCallback(this);
 	}
 }
 
 /**
  * Used as callback from rtc. Just calls member function.
  */
-void static_time_window::sec_callback()
+void StaticTimeWindow::secCallback()
 {
-	this->sec_callback_();
+	secCallback_();
 }
 
-void static_time_window::min_callback()
+void StaticTimeWindow::minCallback()
 {
-	this->min_callback_();
+	minCallback_();
 }
 

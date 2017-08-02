@@ -14,16 +14,16 @@ void error_handler() {
 
 void intervalframe_test()
 {
-	set_intervalframe intv_fr;
+	SetIntervalFrame intv_fr;
 
-	intv_fr.pass_control();
-	std::vector<intervalframe_data> data_vec = intv_fr.get_data();
+	intv_fr.passControl();
+	std::vector<IntervalFrameData> data_vec = intv_fr.getData();
 
 	// Process data
-	eeprom& eeprom = eeprom.get_instance();
+	EEPROM& eeprom = eeprom.getInstance();
 	eeprom.save(data_vec);
 
-	std::vector<intervalframe_data> data_vec_copy;
+	std::vector<IntervalFrameData> data_vec_copy;
 	eeprom.load(data_vec_copy);
 }
 
@@ -32,25 +32,25 @@ void mainframe_test()
 	RTC_TimeTypeDef rtc_time = {0, 0, 0};
 
 	// Init rtc
-	rtc& rtc = rtc::get_instance();
-	rtc.set_time(&rtc_time);
+	RTCController& rtc = RTCController::getInstance();
+	rtc.setTime(&rtc_time);
 
-	mainframe mainframe;
-	mainframe.pass_control();
+	MainFrame mainframe;
+	mainframe.passControl();
 }
 
 void static_time_window_test()
 {
 	/* Clock setting */
-	clk_frame clk_frame;
-	RTC_TimeTypeDef rtc_time = clk_frame.pass_control();
+	ClkFrame clk_frame;
+	RTC_TimeTypeDef rtc_time = clk_frame.passControl();
 	// Save time into rtc
-	rtc::get_instance().set_time(&rtc_time);
+	RTCController::getInstance().setTime(&rtc_time);
 
 	/* static_time_window initialization */
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 
-	static_time_window time_window{Coord{10,BSP_LCD_GetYSize()/2}};
+	StaticTimeWindow time_window{Coord{10,BSP_LCD_GetYSize()/2}};
 	time_window.draw();
 
 	// rtc keeps calling back time_window, and time_window
@@ -61,19 +61,19 @@ void static_time_window_test()
 void main_test()
 {
 	/* Clock setting */
-	clk_frame clk_frame;
-	RTC_TimeTypeDef rtc_time = clk_frame.pass_control();
+	ClkFrame clk_frame;
+	RTC_TimeTypeDef rtc_time = clk_frame.passControl();
 	// Save time into rtc
-	rtc::get_instance().set_time(&rtc_time);
+	RTCController::getInstance().setTime(&rtc_time);
 
 	/* Interval setting */
-	std::vector<intervalframe_data> interval_vec;
-	eeprom& eeprom = eeprom.get_instance();
+	std::vector<IntervalFrameData> interval_vec;
+	EEPROM& eeprom = eeprom.getInstance();
 
-	if (eeprom.is_empty()) {
-		set_intervalframe intv_fr;
-		intv_fr.pass_control();
-		interval_vec = intv_fr.get_data();
+	if (eeprom.isEmpty()) {
+		SetIntervalFrame intv_fr;
+		intv_fr.passControl();
+		interval_vec = intv_fr.getData();
 
 		eeprom.save(interval_vec);
 	}
@@ -147,24 +147,24 @@ int main()
 	SystemClock_Config();
 
 #ifndef MY_DEBUG
-	clk_frame clk_frame;
-	RTC_TimeTypeDef rtc_time = clk_frame.pass_control();
+	ClkFrame ClkFrame;
+	RTC_TimeTypeDef rtc_time = ClkFrame.passControl();
 
 	// Enable LED for second_it
 	BSP_LED_Init(LED_BLUE);
 
-	rtc& rtc = rtc.get_instance(); // instantiation of rtc
+	RTCController& RTCController = RTCController.getInstance(); // instantiation of rtc
 
-	if (rtc.set_time(&rtc_time) != APP_OK) {
+	if (RTCController.setTime(&rtc_time) != APP_OK) {
 		error_handler();
 	}
 
 #endif
 
-	if (temp_sensor::init() == 0) {
+	if (TempSensor::init() == 0) {
 		error_handler();
 	}
-	temp_sensor::debug();
+	TempSensor::debug();
 
 	//main_test();
 	//mainframe_test();

@@ -12,41 +12,39 @@ using namespace std;
 /**
  * Needed by intervalframe ctor.
  */
-temp_window::temp_window() :
-		temp_window{Coord{0,0}}
+TempWindow::TempWindow()
+	: TempWindow(Coord(0,0))
 { }
 
-temp_window::temp_window(const Coord &coord) :
-		control_window{coord}, temp{this->low_bond}, focused{false}
-{
+TempWindow::TempWindow(const Coord &coord)
+	: ControlWindow(coord), temp(lowBond)
+{ }
 
-}
-
-Message temp_window::event_handler(JOYState_TypeDef joy_state) {
+Message TempWindow::eventHandler(JOYState_TypeDef joy_state) {
 	switch (joy_state) {
 	case JOY_DOWN:
-		if (this->temp == this->low_bond) {
-			this->temp = this->high_bond;
+		if (temp == lowBond) {
+			temp = highBond;
 		}
 		else {
-			this->temp--;
+			temp--;
 		}
-		this->draw(); // Redraw
+		draw(); // Redraw
 		break;
 	case JOY_UP:
-		if (this->temp == this->high_bond) {
-			this->temp = this->low_bond;
+		if (temp == highBond) {
+			temp = lowBond;
 		}
 		else {
-			this->temp++;
+			temp++;
 		}
-		this->draw(); // Redraw
+		draw(); // Redraw
 		break;
 	case JOY_LEFT:
-		this->unset_focus();
+		unsetFocus();
 		return Message::FOCUS_LEFT;
 	case JOY_RIGHT:
-		this->unset_focus();
+		unsetFocus();
 		return Message::FOCUS_RIGHT;
 	default:
 		return Message::NONE;
@@ -57,44 +55,46 @@ Message temp_window::event_handler(JOYState_TypeDef joy_state) {
 /**
  * Suppose font is already set.
  */
-void temp_window::draw()const
+void TempWindow::draw()const
 {
-	BSP_LCD_DisplayStringAt(this->coord_.x, this->coord_.y, (uint8_t *)this->get_tempstring().c_str(), LEFT_MODE);
+	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)getTempstring().c_str(), LEFT_MODE);
 }
 
 /**
  * Redraws this window and loads font.
  */
-void temp_window::unset_focus()
+void TempWindow::unsetFocus()
 {
-	this->focused = false;
-	this->load_font();
-	this->draw();
+	focused = false;
+	loadFont();
+	draw();
 }
 
 /**
  * Saves current font for further drawing and
  * immediately redraws this window.
  */
-void temp_window::set_focus(Message msg) {
-	this->focused = true;
-	this->save_font();
+void TempWindow::setFocus(Message msg)
+{
+	focused = true;
+	saveFont();
 	BSP_LCD_SetTextColor(SEL_COLOR);
-	this->draw();
+	draw();
 }
 
 /**
  * Convert temperature member temp_ to string.
  */
-string temp_window::get_tempstring() const {
+string TempWindow::getTempstring() const
+{
 	char buff[2];
-	sprintf(buff, "%02lu", this->temp);
+	sprintf(buff, "%02lu", temp);
 
-	string s{buff};
+	string s(buff);
 	return s;
 }
 
-uint32_t temp_window::get_temp() const
+uint32_t TempWindow::getTemp() const
 {
-	return this->temp;
+	return temp;
 }

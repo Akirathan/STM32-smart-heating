@@ -10,74 +10,74 @@
 /**
  *
  */
-static_temp_window::static_temp_window(const Coord& c)  :
-		static_window{c}
+StaticTempWindow::StaticTempWindow(const Coord& c)
+	: StaticWindow(c)
 { }
 
 /**
  * Unregisters minute callback from rtc.
  */
-static_temp_window::~static_temp_window()
+StaticTempWindow::~StaticTempWindow()
 {
-	if (this->registered_callback) {
-		rtc::get_instance().unregister_minute_callback(this);
+	if (registeredCallback) {
+		RTCController::getInstance().unregisterMinuteCallback(this);
 	}
 }
 
 /**
  * Measures temperature and redraws window.
  */
-void static_temp_window::min_callback()
+void StaticTempWindow::minCallback()
 {
 	// TODO: measure temperature
 
-	this->draw();
+	draw();
 }
 
-void static_temp_window::set_temp(uint32_t temp)
+void StaticTempWindow::setTemp(uint32_t temp)
 {
 	this->temp = temp;
 }
 
-void static_temp_window::hide()
+void StaticTempWindow::hide()
 {
-	this->hidden = true;
+	hidden = true;
 }
 
-void static_temp_window::show()
+void StaticTempWindow::show()
 {
-	this->hidden = false;
+	hidden = false;
 }
 
 /**
  * Registers for minute callback.
  */
-void static_temp_window::measure()
+void StaticTempWindow::measure()
 {
-	rtc &rtc = rtc::get_instance();
+	RTCController &rtc = RTCController::getInstance();
 
-	if (!rtc.is_time_set()) {
+	if (!rtc.isTimeSet()) {
 		//TODO: error handling
 	}
 
-	rtc.register_minute_callback(this);
-	this->registered_callback = true;
+	rtc.registerMinuteCallback(this);
+	registeredCallback = true;
 }
 
-void static_temp_window::draw() const
+void StaticTempWindow::draw() const
 {
-	if (this->hidden) {
+	if (hidden) {
 		return;
 	}
 
 	// This is needed because this method is called
 	// from second interrupt handler.
-	if (!lcd::is_initialized()) {
+	if (!LCD::is_initialized()) {
 		return;
 	}
 
 	char text[2];
-	sprintf(text, "%02lu", this->temp);
-	BSP_LCD_DisplayStringAt(this->coord_.x, this->coord_.y, (uint8_t *)text, LEFT_MODE);
+	sprintf(text, "%02lu", temp);
+	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
 }
 

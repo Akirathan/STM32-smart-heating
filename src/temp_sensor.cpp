@@ -7,9 +7,9 @@
 
 #include "temp_sensor.hpp"
 
-namespace temp_sensor {
+namespace TempSensor {
 
-/* Private functions */
+// Private functions
 static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution);
 
 /**
@@ -17,33 +17,33 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_
  */
 uint32_t init()
 {
-	return one_wire::init();
+	return OneWire::init();
 }
 
 uint16_t measure_temperature()
 {
 	uint16_t temp = 0x0000; // There is no need for initializing temp
 
-	one_wire::init_communication();
-	one_wire::write_byte(CMD_SKIPROM);
+	OneWire::init_communication();
+	OneWire::write_byte(CMD_SKIPROM);
 
-	one_wire::write_byte(CMD_CONVERTT);
-	while (one_wire::read_bit() == 0) {
+	OneWire::write_byte(CMD_CONVERTT);
+	while (OneWire::read_bit() == 0) {
 		// The conversion is still in progress.
 		// Wait until the conversion is done.
 	}
 
 	// The conversion is now done
-	one_wire::init_communication();
-	one_wire::write_byte(CMD_SKIPROM);
-	one_wire::write_byte(CMD_READSCRATCHPAD);
-	uint8_t temp_lsb = one_wire::read_byte();
-	uint8_t temp_msb = one_wire::read_byte();
+	OneWire::init_communication();
+	OneWire::write_byte(CMD_SKIPROM);
+	OneWire::write_byte(CMD_READSCRATCHPAD);
+	uint8_t temp_lsb = OneWire::read_byte();
+	uint8_t temp_msb = OneWire::read_byte();
 
 	// Reset the bus, because there is no
 	// need for reading other scratchpad
 	// bytes.
-	one_wire::reset();
+	OneWire::reset();
 
 	// temp = 0x0000, temp_msb = 0x002A
 	temp |= temp_msb; // 0x002A
@@ -62,18 +62,18 @@ uint16_t measure_temperature()
  */
 void read_data(data_t* data)
 {
-	one_wire::init_communication();
-	one_wire::write_byte(CMD_SKIPROM);
-	one_wire::write_byte(CMD_READSCRATCHPAD);
+	OneWire::init_communication();
+	OneWire::write_byte(CMD_SKIPROM);
+	OneWire::write_byte(CMD_READSCRATCHPAD);
 
-	data->TEMP_LSB = one_wire::read_byte();
-	data->TEMP_MSB = one_wire::read_byte();
-	data->TH = one_wire::read_byte();
-	data->TL = one_wire::read_byte();
-	data->CFG = one_wire::read_byte();
+	data->TEMP_LSB = OneWire::read_byte();
+	data->TEMP_MSB = OneWire::read_byte();
+	data->TH = OneWire::read_byte();
+	data->TL = OneWire::read_byte();
+	data->CFG = OneWire::read_byte();
 
 	// Ignore the rest
-	one_wire::reset();
+	OneWire::reset();
 }
 
 /**
@@ -124,9 +124,9 @@ void set_resolution(resolution_t resolution)
 	write_scratchpad(&config);
 
 	// Copy the configuration values to EEPROM
-	one_wire::init_communication();
-	one_wire::write_byte(CMD_SKIPROM);
-	one_wire::write_byte(CMD_COPYSCRATCHPAD);
+	OneWire::init_communication();
+	OneWire::write_byte(CMD_SKIPROM);
+	OneWire::write_byte(CMD_COPYSCRATCHPAD);
 }
 
 /**
@@ -135,13 +135,13 @@ void set_resolution(resolution_t resolution)
  */
 void write_scratchpad(config_t* config)
 {
-	one_wire::init_communication();
-	one_wire::write_byte(CMD_SKIPROM);
-	one_wire::write_byte(CMD_WRITESCRATCHPAD);
+	OneWire::init_communication();
+	OneWire::write_byte(CMD_SKIPROM);
+	OneWire::write_byte(CMD_WRITESCRATCHPAD);
 
-	one_wire::write_byte(config->TH);
-	one_wire::write_byte(config->TL);
-	one_wire::write_byte(config->CFG);
+	OneWire::write_byte(config->TH);
+	OneWire::write_byte(config->TL);
+	OneWire::write_byte(config->CFG);
 }
 
 void debug()
@@ -152,7 +152,7 @@ void debug()
 	conf.CFG = 0x9F;
 	write_scratchpad(&conf);
 	read_config(&conf);
-	one_wire::reset();
+	OneWire::reset();
 
 	HAL_Delay(2000);
 
@@ -165,21 +165,21 @@ void debug()
  */
 void read_config(config_t* config)
 {
-	one_wire::init_communication();
-	one_wire::write_byte(CMD_SKIPROM);
-	one_wire::write_byte(CMD_READSCRATCHPAD);
+	OneWire::init_communication();
+	OneWire::write_byte(CMD_SKIPROM);
+	OneWire::write_byte(CMD_READSCRATCHPAD);
 
-	one_wire::read_byte(); // temp_LSB
-	one_wire::read_byte(); // temp_MSB
-	config->TH = one_wire::read_byte();
-	config->TL = one_wire::read_byte();
-	config->CFG = one_wire::read_byte();
+	OneWire::read_byte(); // temp_LSB
+	OneWire::read_byte(); // temp_MSB
+	config->TH = OneWire::read_byte();
+	config->TL = OneWire::read_byte();
+	config->CFG = OneWire::read_byte();
 
 	// Ignore the rest
 	//one_wire::reset();
 
 	for (int i = 0; i < 4; i++) {
-		one_wire::read_byte();
+		OneWire::read_byte();
 	}
 }
 
@@ -205,6 +205,7 @@ double convert_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
 	}
 }
 
+// FIXME
 static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
 {
 	/* LSB */
@@ -234,7 +235,7 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_
 		lsb >>= 1;
 	}
 
-	/* MSB */
+	// MSB
 	for (int i = 4; i <= 6; i++) {
 		uint8_t last_bit = msb & 0x01;
 		if (last_bit)

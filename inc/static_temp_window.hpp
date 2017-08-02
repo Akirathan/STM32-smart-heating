@@ -9,33 +9,31 @@
 #define INC_STATIC_TEMP_WINDOW_HPP_
 
 #include <cstdio>
+#include "hideable_window.hpp"
+#include "rtc_controller.hpp"
 #include "stm3210c_eval_lcd.h"
 #include "window.hpp"
-#include "rtc.hpp"
 #include "lcd.hpp"
 #include "callbacks.hpp"
-#include "interface_hideable_window.hpp"
 
 /**
  * Can run on background. Use hide method to force not-drawing of this window.
  */
-class static_temp_window : public static_window,
-							public interface_min_callback,
-							public interface_hideable_window
+class StaticTempWindow : public StaticWindow, public IMinCallback, public IHideableWindow
 {
-	uint32_t temp = 0;
-	bool registered_callback = false;
 public:
-	static_temp_window(const Coord &c = Coord{0,0});
-	~static_temp_window();
+	StaticTempWindow(const Coord& c = Coord(0,0));
+	~StaticTempWindow();
 	virtual void draw() const override;
-	virtual void min_callback() override;
-	void set_temp(uint32_t temp);
+	virtual void minCallback() override;
 	void hide() override;
 	void show() override;
+	void setTemp(uint32_t temp);
 	void measure();
+private:
+	uint32_t temp = 0;
+	bool registeredCallback = false;
 };
-
 
 
 #endif /* INC_STATIC_TEMP_WINDOW_HPP_ */

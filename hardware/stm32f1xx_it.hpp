@@ -39,7 +39,7 @@
 #ifndef __STM32F1xx_IT_H
 #define __STM32F1xx_IT_H
 
-#include "rtc.hpp"
+#include <rtc_controller.hpp>
 
 #ifdef __cplusplus
  extern "C" {

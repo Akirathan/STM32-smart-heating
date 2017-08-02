@@ -7,21 +7,20 @@
 
 #include "time.hpp"
 
-namespace time {
+namespace Time {
 
-time::time(uint32_t hours, uint32_t minutes) :
-		hours{hours},
-		minutes{minutes}
+Time::Time(uint32_t hours, uint32_t minutes)
+	: hours(hours), minutes(minutes)
 { }
 
-uint32_t serialize(time t)
+uint32_t serialize(Time t)
 {
 	return t.hours*60 + t.minutes;
 }
 
-time deserialize(uint32_t t)
+Time deserialize(uint32_t t)
 {
-	return time{t/60, t%60};
+	return Time{t/60, t%60};
 }
 
-} // namespace time
+} // namespace Time

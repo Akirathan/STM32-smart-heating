@@ -7,7 +7,7 @@
 
 #include "lcd.hpp"
 
-namespace lcd {
+namespace LCD {
 
 static bool init_ = false;
 
@@ -23,5 +23,4 @@ bool is_initialized()
 	return init_;
 }
 
-} // namespace lcd
-
+} // namespace LCD

@@ -5,22 +5,22 @@
  *      Author: Mayfa
  */
 
-#include "rtc.hpp"
+#include <rtc_controller.hpp>
 
 #define ENABLE_SEC_INTERRUPT
 
 /**
  * Second interrupt handler.
  */
-void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
+void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef* hrtc)
 {
-	rtc& rtc = rtc::get_instance();
+	RTCController& rtc = RTCController::getInstance();
 	rtc.update();
 }
 
-rtc& rtc::get_instance()
+RTCController& RTCController::getInstance()
 {
-	static rtc instance;
+	static RTCController instance;
 	return instance;
 }
 
@@ -30,11 +30,11 @@ rtc& rtc::get_instance()
  * does not care about previous RTC initializations, and overwrites
  * this configuration into backup domain.
  */
-rtc::rtc()
+RTCController::RTCController()
 {
 	RCC_OscInitTypeDef oscilator;
 
-	/* Enable the LSE oscilator */
+	// Enable the LSE oscilator.
 	HAL_RCC_GetOscConfig(&oscilator); // Get current state of oscillators
 	oscilator.OscillatorType = RCC_OSCILLATORTYPE_LSE;
 	// The PLLs will not be really disabled,
@@ -49,7 +49,7 @@ rtc::rtc()
 		//TODO: return HAL_ERROR;
 	}
 
-	/* Configure the clock source for RTC */
+	// Configure the clock source for RTC.
 	RCC_PeriphCLKInitTypeDef periphClock;
 	periphClock.PeriphClockSelection = RCC_PERIPHCLK_RTC;
 	periphClock.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
@@ -59,10 +59,10 @@ rtc::rtc()
 
 	__HAL_RCC_RTC_ENABLE(); // Enable RTC clock
 
-	/* Initialize RTC, configure prescaler, etc. */
-	this->handle.Instance = RTC;
-	this->handle.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
-	HAL_RTC_Init(&this->handle);
+	// Initialize RTC, configure prescaler, etc.
+	handle.Instance = RTC;
+	handle.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
+	HAL_RTC_Init(&handle);
 
 #ifdef ENABLE_SEC_INTERRUPT
 	// Configure the NVIC for RTC global interrupt
@@ -72,27 +72,27 @@ rtc::rtc()
 	HAL_NVIC_EnableIRQ(RTC_IRQn);
 
 	// Enable second interrupt
-	HAL_RTCEx_SetSecond_IT(&this->handle);
+	HAL_RTCEx_SetSecond_IT(&handle);
 #else
-	HAL_RTCEx_DeactivateSecond(&this->handle);
+	HAL_RTCEx_DeactivateSecond(&handle);
 #endif
 }
 
-AppStatus_TypeDef rtc::set_time(RTC_TimeTypeDef* time)
+AppStatus_TypeDef RTCController::setTime(RTC_TimeTypeDef* time)
 {
-	if (HAL_RTC_SetTime(&this->handle, time, RTC_FORMAT_BIN) != HAL_OK) {
+	if (HAL_RTC_SetTime(&handle, time, RTC_FORMAT_BIN) != HAL_OK) {
 		return APP_ERROR;
 	}
 	else {
-		this->time_set = true;
+		timeSet = true;
 		return APP_OK;
 	}
 }
 
 
-AppStatus_TypeDef rtc::get_time(RTC_TimeTypeDef* time)
+AppStatus_TypeDef RTCController::getTime(RTC_TimeTypeDef* time)
 {
-	if (HAL_RTC_GetTime(&this->handle, time, RTC_FORMAT_BIN) != HAL_OK) {
+	if (HAL_RTC_GetTime(&handle, time, RTC_FORMAT_BIN) != HAL_OK) {
 		return APP_ERROR;
 	}
 	else {
@@ -100,67 +100,66 @@ AppStatus_TypeDef rtc::get_time(RTC_TimeTypeDef* time)
 	}
 }
 
-bool rtc::is_time_set() const
+bool RTCController::isTimeSet() const
 {
-	return this->time_set;
+	return timeSet;
 }
 
-RTC_HandleTypeDef& rtc::get_handle()
+RTC_HandleTypeDef& RTCController::getHandle()
 {
-	return this->handle;
+	return handle;
 }
 
 
 /**
  * Called by second interrupt handler.
  */
-void rtc::update()
+void RTCController::update()
 {
-	if (this->time_set == false) {
+	if (timeSet == false) {
 		return ;
 	}
 
 	RTC_TimeTypeDef rtc_time;
-	this->get_time(&rtc_time);
+	getTime(&rtc_time);
 
-	/* Second overflow */
-	// Call all registered "functions"
-	for (interface_sec_callback *sec_callback: this->second_callback_vec) {
-		sec_callback->sec_callback();
+	// Second overflow. Call all registered "functions".
+	for (ISecCallback* sec_callback: secondCallbackVec) {
+		sec_callback->secCallback();
 	}
 
-	/* Minute overflow */
+	// Minute overflow.
 	if (rtc_time.Seconds == 0) {
 		// Call all registered "functions"
-		for (interface_min_callback *min_callback : this->minute_callback_vec) {
-			min_callback->min_callback();
+		for (IMinCallback* min_callback : minuteCallbackVec) {
+			min_callback->minCallback();
 		}
 	}
 
-	/* Hour overflow */
+	// Hour overflow
 	if (rtc_time.Minutes == 0) {
 		// ...
 	}
 }
 
-void rtc::register_minute_callback(interface_min_callback *min_callback)
+void RTCController::registerMinuteCallback(IMinCallback* min_callback)
 {
-	this->minute_callback_vec.push_back(min_callback);
+	minuteCallbackVec.push_back(min_callback);
 }
 
-void rtc::register_second_callback(interface_sec_callback *sec_callback)
+void RTCController::registerSecondCallback(ISecCallback* sec_callback)
 {
-	this->second_callback_vec.push_back(sec_callback);
+	secondCallbackVec.push_back(sec_callback);
 }
 
 /**
  * Find pointer inside vector and deletes it.
  */
-void rtc::unregister_second_callback(interface_sec_callback *sec_callback)
+void RTCController::unregisterSecondCallback(ISecCallback* sec_callback)
 {
-	for (auto it = this->second_callback_vec.begin(); it != this->second_callback_vec.end(); ++it) {
+	for (auto it = secondCallbackVec.begin(); it != secondCallbackVec.end(); ++it) {
 		if (*it == sec_callback) {
-			this->second_callback_vec.erase(it);
+			secondCallbackVec.erase(it);
 			break;
 		}
 	}
@@ -169,11 +168,11 @@ void rtc::unregister_second_callback(interface_sec_callback *sec_callback)
 /**
  * Find pointer inside vector and deletes it.
  */
-void rtc::unregister_minute_callback(interface_min_callback *min_callback)
+void RTCController::unregisterMinuteCallback(IMinCallback *min_callback)
 {
-	for (auto it = this->minute_callback_vec.begin(); it != this->minute_callback_vec.end(); ++it) {
+	for (auto it = minuteCallbackVec.begin(); it != minuteCallbackVec.end(); ++it) {
 		if (*it == min_callback) {
-			this->minute_callback_vec.erase(it);
+			minuteCallbackVec.erase(it);
 			break;
 		}
 	}

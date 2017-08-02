@@ -10,11 +10,11 @@
 
 #include "stm3210c_eval_lcd.h"
 
-namespace lcd {
+namespace LCD {
 
 void init();
 bool is_initialized();
 
-} // namespace lcd
+} // namespace LCD
 
 #endif /* INC_LCD_HPP_ */

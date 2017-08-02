@@ -7,13 +7,13 @@
 
 #include "eeprom.hpp"
 
-eeprom & eeprom::get_instance()
+EEPROM& EEPROM::getInstance()
 {
-	static eeprom instance;
+	static EEPROM instance;
 	return instance;
 }
 
-eeprom::eeprom()
+EEPROM::EEPROM()
 {
 	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
 
@@ -22,25 +22,25 @@ eeprom::eeprom()
 	}
 }
 
-void eeprom::save(const intervalframe_data &data, uint16_t addr)
+void EEPROM::save(const IntervalFrameData& data, uint16_t addr)
 {
-	this->write_page(data.from, addr);
+	writePage(data.from, addr);
 	addr += 4;
-	this->write_page(data.to, addr);
+	writePage(data.to, addr);
 	addr += 4;
-	this->write_page(data.temp, addr);
+	writePage(data.temp, addr);
 }
 
-void eeprom::load(intervalframe_data &data, uint16_t addr)
+void EEPROM::load(IntervalFrameData& data, uint16_t addr)
 {
-	data.from = this->read_page(addr);
+	data.from = readPage(addr);
 	addr += 4;
-	data.to = this->read_page(addr);
+	data.to = readPage(addr);
 	addr += 4;
-	data.temp = this->read_page(addr);
+	data.temp = readPage(addr);
 }
 
-void eeprom::write_page(uint32_t page, uint16_t addr)
+void EEPROM::writePage(uint32_t page, uint16_t addr)
 {
 	uint8_t buff[4] = {0};
 
@@ -53,7 +53,7 @@ void eeprom::write_page(uint32_t page, uint16_t addr)
 }
 
 // TODO: error handling
-uint32_t eeprom::read_page(uint16_t addr)
+uint32_t EEPROM::readPage(uint16_t addr)
 {
 	uint8_t buff[4];
 	uint32_t num_bytes = 4;
@@ -70,26 +70,26 @@ uint32_t eeprom::read_page(uint16_t addr)
 	return word;
 }
 
-void eeprom::save(const std::vector<intervalframe_data>& data_vec)
+void EEPROM::save(const std::vector<IntervalFrameData>& data_vec)
 {
 	uint16_t addr = 0;
 
-	/* Write starting delimiter */
-	this->write_page(this->FRAME_DELIM, addr);
+	// Write starting delimiter.
+	writePage(FRAME_DELIM, addr);
 	addr += 4;
 
-	for (const intervalframe_data &data : data_vec) {
-		this->save(data, addr);
+	for (const IntervalFrameData& data : data_vec) {
+		save(data, addr);
 		addr += sizeof(data);
 	}
 
 	// Write ending delimiter
-	this->write_page(this->FRAME_DELIM, addr);
+	writePage(FRAME_DELIM, addr);
 }
 
-bool eeprom::is_empty()
+bool EEPROM::isEmpty()
 {
-	if (this->read_page(0) != this->FRAME_DELIM) {
+	if (readPage(0) != FRAME_DELIM) {
 		return true;
 	}
 	else {
@@ -98,23 +98,21 @@ bool eeprom::is_empty()
 }
 
 // TODO: error handling
-void eeprom::load(std::vector<intervalframe_data>& data_vec)
+void EEPROM::load(std::vector<IntervalFrameData>& data_vec)
 {
 	uint16_t addr = 0;
 
-	if (this->read_page(addr) != this->FRAME_DELIM) {
+	if (readPage(addr) != FRAME_DELIM) {
 		// Error: expected start of frame
 		return;
 	}
 
 	addr += 4;
-	while (this->read_page(addr) != this->FRAME_DELIM) {
-		intervalframe_data data;
+	while (readPage(addr) != FRAME_DELIM) {
+		IntervalFrameData data;
 
-		this->load(data, addr);
+		load(data, addr);
 		data_vec.push_back(data);
 		addr += sizeof(data);
 	}
 }
-
-

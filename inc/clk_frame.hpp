@@ -12,8 +12,8 @@
  * the values inside those windows.
  */
 
-#ifndef CLKFRAME_HPP_
-#define CLKFRAME_HPP_
+#ifndef CLK_FRAME_HPP_
+#define CLK_FRAME_HPP_
 
 #include "stm3210c_eval.h"
 #include "stm3210c_eval_lcd.h"
@@ -21,13 +21,14 @@
 #include "time_window.hpp"
 #include "window_system.hpp"
 
-class clk_frame {
-	void draw_header() const;
-	time_window time;
-	Button ok_button;
+class ClkFrame {
 public:
-	clk_frame();
-	RTC_TimeTypeDef pass_control();
+	ClkFrame();
+	RTC_TimeTypeDef passControl();
+private:
+	void drawHeader() const;
+	TimeWindow time;
+	Button ok_button;
 };
 
-#endif /* CLKFRAME_HPP_ */
+#endif /* CLK_FRAME_HPP_ */

@@ -8,27 +8,28 @@
 #ifndef INC_EEPROM_HPP_
 #define INC_EEPROM_HPP_
 
+#include <interval_frame_data.hpp>
 #include <vector>
 #include "stm3210c_eval_eeprom.h"
-#include "intervalframe_data.hpp"
 
 /**
  * Singleton class.
  */
-class eeprom {
-	eeprom();
-	const uint32_t FRAME_DELIM = 0x1234;
-	void save(const intervalframe_data &data, uint16_t addr);
-	void load(intervalframe_data &data, uint16_t addr);
-	uint32_t read_page(uint16_t addr);
-	void write_page(uint32_t page, uint16_t addr);
+class EEPROM {
 public:
-	static eeprom & get_instance();
-	void operator=(const eeprom &) = delete;
-	eeprom(const eeprom &) = delete;
-	bool is_empty();
-	void save(const std::vector<intervalframe_data> &data_vec);
-	void load(std::vector<intervalframe_data> &data_vec);
+	static EEPROM& getInstance();
+	void operator=(const EEPROM&) = delete;
+	EEPROM(const EEPROM&) = delete;
+	bool isEmpty();
+	void save(const std::vector<IntervalFrameData>& data_vec);
+	void load(std::vector<IntervalFrameData>& data_vec);
+private:
+	EEPROM();
+	const uint32_t FRAME_DELIM = 0x1234;
+	void save(const IntervalFrameData &data, uint16_t addr);
+	void load(IntervalFrameData &data, uint16_t addr);
+	uint32_t readPage(uint16_t addr);
+	void writePage(uint32_t page, uint16_t addr);
 };
 
 #endif /* INC_EEPROM_HPP_ */

@@ -11,7 +11,7 @@
 #include "stm32f1xx_hal.h"
 #include "temp_sensor.hpp" //DEBUG
 
-namespace one_wire {
+namespace OneWire {
 
 uint32_t init();
 int init_communication();
@@ -20,10 +20,10 @@ uint8_t read_byte();
 uint8_t read_bit();
 void reset();
 
-/* Testing functions */
+// Testing functions.
 uint32_t time_test(uint32_t microsecs);
 void debug();
 
-} // namespace one_wire
+} // namespace OneWire
 
 #endif /* ONE_WIRE_HPP_ */

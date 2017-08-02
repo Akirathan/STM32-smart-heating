@@ -12,70 +12,71 @@ using namespace std;
 /**
  * Needed by intervalframe ctor
  */
-time_window::time_window() :
-		time_window{Coord{0, 0}}
+TimeWindow::TimeWindow()
+	: TimeWindow(Coord(0, 0))
 { }
 
 /**
- * Initializes TimeWindow with 5 minute_jump.
+ * Initializes TimeWindow with 5 minuteJump.
  */
-time_window::time_window(const Coord &coord) :
-		control_window{coord}, selected_{NONE}, hours{0}, minutes{0}
-{
-
-}
+TimeWindow::TimeWindow(const Coord& coord)
+	: ControlWindow(coord)
+{ }
 
 /**
 * Draw this window without any formatting ie. without any selected
 * item.
 */
-void time_window::nofont_draw() const {
+void TimeWindow::noFontDraw() const
+{
 	char text[5];
-	sprintf(text, "%02lu:%02lu", this->hours, this->minutes);
+	sprintf(text, "%02lu:%02lu", hours, minutes);
 
 	// Print the string
-	BSP_LCD_DisplayStringAt(this->coord_.x, this->coord_.y, (uint8_t *) text, LEFT_MODE);
+	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *) text, LEFT_MODE);
 }
 
 /**
  * Draw the time window and the selected item inside it.
  * TODO draw error symbol
  */
-void time_window::draw() const
+void TimeWindow::draw() const
 {
-	this->nofont_draw();
+	noFontDraw();
 
 	char text[2];
 	sFONT *font = BSP_LCD_GetFont();
 
-	switch (this->selected_) {
+	switch (selected) {
+	// Do nothing. Everything was done in noFontDraw.
 	case NONE:
-		/* Do nothing. Everything was done in noFontDraw */
 		break;
-	case MINUTES:
-		/* Redraw just minutes */
-		sprintf(text, "%02lu", this->minutes);
 
-		this->save_font();
+	// Redraw just minutes.
+	case MINUTES:
+		sprintf(text, "%02lu", minutes);
+
+		saveFont();
 
 		// Print just minutes.
 		BSP_LCD_SetTextColor(SEL_COLOR);
-		BSP_LCD_DisplayStringAt(this->coord_.x + (font->Width) * 3, this->coord_.y, (uint8_t *)text, LEFT_MODE);
+		BSP_LCD_DisplayStringAt(coord.x + (font->Width) * 3, coord.y, (uint8_t *)text, LEFT_MODE);
 
-		this->load_font();
+		loadFont();
 		break;
+
+	// Redraw just hours.
 	case HOURS:
-		/* Redraw just hours */
-		// Convert hours to string
-		sprintf(text, "%02lu", this->hours);
+		// Convert hours to string.
+		sprintf(text, "%02lu", hours);
 
-		this->save_font();
+		saveFont();
 
-		// Print just hours
+		// Print just hours.
 		BSP_LCD_SetTextColor(SEL_COLOR);
-		BSP_LCD_DisplayStringAt(this->coord_.x, this->coord_.y, (uint8_t *)text, LEFT_MODE);
+		BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
 
-		this->load_font();
+		loadFont();
 		break;
 	default:
 		break;
@@ -85,71 +86,73 @@ void time_window::draw() const
 /**
  * Msg should be FOCUS_LEFT or FOCUS_RIGHT.
  */
-void time_window::set_focus(Message msg) {
+void TimeWindow::setFocus(Message msg)
+{
 	switch (msg) {
 	case Message::FOCUS_LEFT:
-		this->set_selected(HOURS);
+		setSelected(HOURS);
 		break;
 	case Message::FOCUS_RIGHT:
-		this->set_selected(MINUTES);
+		setSelected(MINUTES);
 		break;
 	default:
 		// Should not happen
 		break;
 	}
 
-	this->draw(); // Redraw
+	draw(); // Redraw
 }
 
-Message time_window::event_handler(JOYState_TypeDef joy_state) {
+Message TimeWindow::eventHandler(JOYState_TypeDef joy_state)
+{
 	Message msg = Message::NONE;
 
 	switch (joy_state) {
 	case JOY_DOWN:
-		if (this->selected_ == HOURS) {
-			if (this->hours == 0) {
-				this->hours = 23;
+		if (selected == HOURS) {
+			if (hours == 0) {
+				hours = 23;
 			}
 			else {
-				this->hours--;
+				hours--;
 			}
 		}
-		else if (this->selected_ == MINUTES) {
-			if (this->minutes == 0) {
-				this->minutes = 60 - this->minute_jump;
+		else if (selected == MINUTES) {
+			if (minutes == 0) {
+				minutes = 60 - minuteJump;
 			}
 			else {
-				this->minutes -= this->minute_jump;
+				minutes -= minuteJump;
 			}
 		}
 		msg = Message::NONE;
 		break;
 	case JOY_UP:
-		if (this->selected_ == HOURS) {
-			if (this->hours == 24) {
-				this->hours = 0;
+		if (selected == HOURS) {
+			if (hours == 24) {
+				hours = 0;
 			}
 			else {
-				this->hours++;
+				hours++;
 			}
 		}
-		else if (this->selected_ == MINUTES) {
-			if (this->minutes == 60 - this->minute_jump) {
-				this->minutes = 0;
+		else if (selected == MINUTES) {
+			if (minutes == 60 - minuteJump) {
+				minutes = 0;
 			}
 			else {
-				this->minutes += this->minute_jump;
+				minutes += minuteJump;
 			}
 		}
 		msg = Message::NONE;
 		break;
 	case JOY_RIGHT:
-		if (this->selected_ == HOURS) {
-			this->set_selected(MINUTES);
+		if (selected == HOURS) {
+			setSelected(MINUTES);
 			msg = Message::NONE;
 		}
-		else if (this->selected_ == MINUTES) {
-			this->set_selected(NONE);
+		else if (selected == MINUTES) {
+			setSelected(NONE);
 			msg = Message::FOCUS_RIGHT;
 		}
 		else {
@@ -159,12 +162,12 @@ Message time_window::event_handler(JOYState_TypeDef joy_state) {
 		}
 		break;
 	case JOY_LEFT:
-		if (this->selected_ == HOURS) {
-			this->set_selected(NONE);
+		if (selected == HOURS) {
+			setSelected(NONE);
 			msg = Message::FOCUS_LEFT;
 		}
-		else if (this->selected_ == MINUTES) {
-			this->set_selected(HOURS);
+		else if (selected == MINUTES) {
+			setSelected(HOURS);
 			msg = Message::NONE;
 		}
 		else {
@@ -179,7 +182,7 @@ Message time_window::event_handler(JOYState_TypeDef joy_state) {
 		return Message::NONE;
 	}
 
-	this->draw(); // Redraw this window
+	draw(); // Redraw this window
 	return msg;
 }
 
@@ -187,27 +190,28 @@ Message time_window::event_handler(JOYState_TypeDef joy_state) {
  * TODO: This method is no longer necessary.
  * @param sel should be NONE, HOURS or MINUTES.
  */
-void time_window::set_selected(selected_t sel) {
-	this->selected_ = sel;
+void TimeWindow::setSelected(selected_t sel)
+{
+	selected = sel;
 }
 
-void time_window::set_hours(uint32_t hrs)
+void TimeWindow::setHours(uint32_t hrs)
 {
-	this->hours = hrs;
+	hours = hrs;
 }
 
-void time_window::set_minutes(uint32_t mins)
+void TimeWindow::setMinutes(uint32_t mins)
 {
-	this->minutes = mins;
+	minutes = mins;
 }
 
-uint32_t time_window::get_hours() const
+uint32_t TimeWindow::getHours() const
 {
-	return this->hours;
+	return hours;
 }
 
-uint32_t time_window::get_minutes() const
+uint32_t TimeWindow::getMinutes() const
 {
-	return this->minutes;
+	return minutes;
 }
 

@@ -20,13 +20,13 @@
 #include "stm32f1xx_hal.h"
 #include "one_wire.hpp"
 
-namespace temp_sensor {
+namespace TempSensor {
 
 // PE4
 #define DATA_GPIOPIN				GPIO_PIN_4
 #define DATA_GPIOPORT				GPIOE
 
-/* Setting configuration register */
+// Setting configuration register
 #define SET_RES(cfg_byte, res)		(cfg_byte &= res)
 
 
@@ -54,15 +54,15 @@ typedef struct {
 	uint8_t CFG;
 } data_t;
 
-/* ROM commands */
+// ROM commands
 const uint8_t CMD_SKIPROM = 0xCC;
 
-/* Memory commands */
+// Memory commands
 const uint8_t CMD_READSCRATCHPAD = 0xBE;
 const uint8_t CMD_WRITESCRATCHPAD = 0x4E;
 const uint8_t CMD_COPYSCRATCHPAD = 0x48;
 
-/* Functional commands */
+// Functional commands
 const uint8_t CMD_CONVERTT = 0x44;
 
 uint32_t init();
@@ -76,6 +76,6 @@ void write_scratchpad(config_t* config);
 
 void debug();
 
-} // namespace temp_sensor
+} // namespace TempSensor
 
 #endif // TEMP_SENSOR_HPP_

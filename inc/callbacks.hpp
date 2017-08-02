@@ -11,18 +11,17 @@
 #ifndef INC_CALLBACKS_HPP_
 #define INC_CALLBACKS_HPP_
 
-class interface_sec_callback {
+class ISecCallback {
 public:
-	virtual ~interface_sec_callback() = default;
-	virtual void sec_callback() = 0;
+	virtual ~ISecCallback() = default;
+	virtual void secCallback() = 0;
 };
 
-class interface_min_callback {
+class IMinCallback {
 public:
-	virtual ~interface_min_callback() = default;
-	virtual void min_callback() = 0;
+	virtual ~IMinCallback() = default;
+	virtual void minCallback() = 0;
 };
-
 
 
 #endif /* INC_CALLBACKS_HPP_ */

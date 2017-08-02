@@ -58,7 +58,7 @@ APP_OBJECTS += hardware/startup_stm32f107xc.o
 APP_OBJECTS += hardware/syscalls.o
 
 APP_OBJECTS += src/window.o
-APP_OBJECTS += src/rtc.o
+APP_OBJECTS += src/rtc_controller.o
 APP_OBJECTS += src/time_window.o
 APP_OBJECTS += src/static_time_window.o
 APP_OBJECTS += src/temp_window.o
@@ -67,10 +67,10 @@ APP_OBJECTS += src/buttons.o
 
 APP_OBJECTS += src/lcd.o
 APP_OBJECTS += src/window_system.o
-APP_OBJECTS += src/clkframe.o
-APP_OBJECTS += src/mainframe.o
-APP_OBJECTS += src/intervalframe_data.o
-APP_OBJECTS += src/intervalframe.o
+APP_OBJECTS += src/clk_frame.o
+APP_OBJECTS += src/main_frame.o
+APP_OBJECTS += src/interval_frame_data.o
+APP_OBJECTS += src/interval_frame.o
 
 APP_OBJECTS += src/eeprom.o
 APP_OBJECTS += src/input.o

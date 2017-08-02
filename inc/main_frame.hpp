@@ -8,25 +8,26 @@
 #ifndef INC_MAINFRAME_HPP_
 #define INC_MAINFRAME_HPP_
 
+#include "interval_frame.hpp"
 #include "stm3210c_eval_lcd.h"
 #include "buttons.hpp"
-#include "intervalframe.hpp"
 #include "eeprom.hpp"
 #include "static_time_window.hpp"
 #include "static_temp_window.hpp"
 #include "window_system.hpp"
 #include "lcd.hpp"
 
-class mainframe {
-	static_time_window time;
-	static_temp_window act_temp;
-	static_temp_window set_temp;
-	Button overview_button;
-	Button reset_button;
-	void draw_header();
+class MainFrame {
 public:
-	mainframe();
-	void pass_control();
+	MainFrame();
+	void passControl();
+private:
+	StaticTimeWindow timeWindow;
+	StaticTempWindow actualTempWindow;
+	StaticTempWindow presetTempWindow;
+	Button overviewButton;
+	Button resetButton;
+	void drawHeader();
 };
 
 

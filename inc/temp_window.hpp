@@ -15,22 +15,23 @@
 #include <vector>
 #include "window.hpp"
 
-class temp_window : public control_window {
+class TempWindow : public ControlWindow {
+public:
+	TempWindow();
+	TempWindow(const Coord& coord);
+	Message eventHandler(JOYState_TypeDef joy_state) override;
+	void draw()const override;
+	void setFocus(Message msg) override;
+	uint32_t getTemp() const;
+private:
 	uint32_t temp;
 	// Temperature higher boundary
-	static const uint32_t high_bond = 30;
+	static const uint32_t highBond = 30;
 	// Temperature lower boundary
-	static const uint32_t low_bond = 8;
-	bool focused;
-	std::string get_tempstring() const;
-	void unset_focus();
-public:
-	temp_window();
-	temp_window(const Coord &coord);
-	Message event_handler(JOYState_TypeDef joy_state) override;
-	void draw()const override;
-	void set_focus(Message msg) override;
-	uint32_t get_temp() const;
+	static const uint32_t lowBond = 8;
+	bool focused = false;
+	std::string getTempstring() const;
+	void unsetFocus();
 };
 
 

@@ -5,9 +5,9 @@
  *      Author: Mayfa
  */
 
-#include "clkframe.hpp"
+#include <clk_frame.hpp>
 
-clk_frame::clk_frame()
+ClkFrame::ClkFrame()
 {
 	/* Initialize joystick peripheral */
 	if (BSP_JOY_Init(JOY_MODE_GPIO) != IO_OK) {
@@ -20,11 +20,11 @@ clk_frame::clk_frame()
 	}
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 
-	time = time_window{Coord{BSP_LCD_GetXSize()/2 - 35, BSP_LCD_GetYSize()/2 + 10}};
-	ok_button = Button{Coord{BSP_LCD_GetXSize()/2 - 15, LINE(8)}, "OK"};
+	time = TimeWindow(Coord(BSP_LCD_GetXSize()/2 - 35, BSP_LCD_GetYSize()/2 + 10));
+	ok_button = Button(Coord(BSP_LCD_GetXSize()/2 - 15, LINE(8)), "OK");
 }
 
-void clk_frame::draw_header() const
+void ClkFrame::drawHeader() const
 {
 	BSP_LCD_SetFont(&Font24);
 	BSP_LCD_SetTextColor(LCD_COLOR_LIGHTBLUE);
@@ -38,21 +38,19 @@ void clk_frame::draw_header() const
 	BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
 }
 
-RTC_TimeTypeDef clk_frame::pass_control()
+RTC_TimeTypeDef ClkFrame::passControl()
 {
-	this->draw_header();
+	drawHeader();
 
-	window_system system;
-	system.add_control(&this->time);
-	system.add_control(&this->ok_button);
+	WindowSystem system;
+	system.addControl(&time);
+	system.addControl(&ok_button);
+	system.passControl();
 
-	system.pass_control();
-
-	/* Investigate window members */
+	// Investigate window members
 	RTC_TimeTypeDef rtc_time;
-
-	rtc_time.Hours = this->time.get_hours();
-	rtc_time.Minutes = this->time.get_minutes();
+	rtc_time.Hours = time.getHours();
+	rtc_time.Minutes = time.getMinutes();
 
 	return rtc_time;
 }

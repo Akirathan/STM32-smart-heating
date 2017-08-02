@@ -15,28 +15,29 @@
 #include <vector>
 #include "window.hpp"
 
-class time_window : public control_window {
+class TimeWindow : public ControlWindow {
+private:
 	enum selected_t {
 		MINUTES,
 		HOURS,
 		NONE
-	} selected_;
-
-	uint32_t hours;
-	uint32_t minutes;
-	static const uint32_t minute_jump = 5;
-	void set_selected(selected_t sel);
-	void nofont_draw() const;
+	} selected = NONE;
 public:
-	time_window();
-	time_window(const Coord &coord);
-	Message event_handler(JOYState_TypeDef joy_state) override;
+	TimeWindow();
+	TimeWindow(const Coord& coord);
+	Message eventHandler(JOYState_TypeDef joy_state) override;
 	void draw()const override;
-	void set_focus(Message msg) override;
-	void set_hours(uint32_t hrs); //
-	void set_minutes(uint32_t mins); //
-	uint32_t get_hours() const; //
-	uint32_t get_minutes() const; //
+	void setFocus(Message msg) override;
+	void setHours(uint32_t hrs); //
+	void setMinutes(uint32_t mins); //
+	uint32_t getHours() const; //
+	uint32_t getMinutes() const; //
+private:
+	uint32_t hours = 0;
+	uint32_t minutes = 0;
+	static const uint32_t minuteJump = 5;
+	void setSelected(selected_t sel);
+	void noFontDraw() const;
 };
 
 

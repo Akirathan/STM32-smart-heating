@@ -7,13 +7,13 @@
 
 #include "one_wire.hpp"
 
-namespace one_wire {
+namespace OneWire {
 
 // PE1
 #define CLK_PIN		GPIO_PIN_1
 #define CLK_PORT	GPIOE
 
-/* Private functions */
+// Private functions
 static uint32_t init_DWT();
 static inline void set_transmit();
 static inline void set_receive();
@@ -23,7 +23,7 @@ static int slave_pull_bus_low();
 static int slave_release_bus();
 static inline void write_bit(uint8_t bit);
 static inline void wait(uint32_t micros);
-static int test_data(temp_sensor::data_t* data);
+static int test_data(TempSensor::data_t* data);
 
 /**
  * Init the one-wire peripheral.
@@ -154,11 +154,11 @@ static inline void set_receive()
 /**
  * Test written data to temperature sensor.
  */
-static int test_data(temp_sensor::data_t* data)
+static int test_data(TempSensor::data_t* data)
 {
-	temp_sensor::data_t data2;
+	TempSensor::data_t data2;
 
-	temp_sensor::read_data(&data2);
+	TempSensor::read_data(&data2);
 
 	if (data2.TH == data->TH && data2.TL == data->TL && data2.CFG == data->CFG
 			&& data2.TEMP_LSB == data->TEMP_LSB

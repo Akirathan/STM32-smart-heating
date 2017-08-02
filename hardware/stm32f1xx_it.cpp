@@ -171,8 +171,8 @@ void SysTick_Handler(void)
   */
 void RTC_IRQHandler()
 {
-	rtc& rtc = rtc.get_instance();
-	HAL_RTCEx_RTCIRQHandler(&rtc.get_handle());
+	RTCController& rtc = rtc.getInstance();
+	HAL_RTCEx_RTCIRQHandler(&rtc.getHandle());
 }
 
 

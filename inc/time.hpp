@@ -10,18 +10,18 @@
 
 #include <cstdint>
 
-namespace time {
+namespace Time {
 
-struct time {
-	time() = default;
-	time(uint32_t hours, uint32_t minutes);
+struct Time {
+	Time() = default;
+	Time(uint32_t hours, uint32_t minutes);
 	uint32_t hours = 0;
 	uint32_t minutes = 0;
 };
 
-uint32_t serialize(time t);
-time deserialize(uint32_t t);
+uint32_t serialize(Time t);
+Time deserialize(uint32_t t);
 
-} // namespace time
+} // namespace Time
 
 #endif /* INC_TIME_HPP_ */
