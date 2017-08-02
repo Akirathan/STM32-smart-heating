@@ -178,7 +178,7 @@ $(ELF): $(OBJECTS)
 
 # Flash final elf into device
 flash: $(ELF)
-	${OPENOCD} -f board/stm3210c_eval.cfg -c "program $< verify reset exit"
+	${OPENOCD} -f ./stm3210c_eval.cfg -c "program $< verify reset exit"
 
 # Debug
 debug: $(ELF)
