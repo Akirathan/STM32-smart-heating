@@ -40,8 +40,8 @@ intervalframe::intervalframe()
 	BSP_LCD_Init();
 	BSP_LCD_SetFont(&Font16);
 
-	this->next_button = button{coord{25, LINE(12)}, "NEXT"};
-	this->end_button = button{coord{230, LINE(12)}, "END"};
+	this->next_button = Button{Coord{25, LINE(12)}, "NEXT"};
+	this->end_button = Button{Coord{230, LINE(12)}, "END"};
 }
 
 /**
@@ -104,9 +104,9 @@ void set_intervalframe::draw_header()
  */
 set_intervalframe::set_intervalframe()
 {
-	time_from = time_window{coord{15, LINE(6)}};
-	time_to = time_window{coord{time_from.get_x() + (BSP_LCD_GetFont()->Width)*6, LINE(6)}};
-	temp = temp_window{coord{3*BSP_LCD_GetXSize()/4, LINE(6)}};
+	time_from = time_window{Coord{15, LINE(6)}};
+	time_to = time_window{Coord{time_from.get_x() + (BSP_LCD_GetFont()->Width)*6, LINE(6)}};
+	temp = temp_window{Coord{3*BSP_LCD_GetXSize()/4, LINE(6)}};
 }
 
 std::vector<intervalframe_data>& set_intervalframe::get_data()
@@ -163,9 +163,9 @@ void overview_intervalframe::draw_header()
 overview_intervalframe::overview_intervalframe(const std::vector<intervalframe_data>& data) :
 		data{data}
 {
-	time_from = static_time_window{coord{15, LINE(6)}, false};
-	time_to = static_time_window{coord{time_from.get_x() + (BSP_LCD_GetFont()->Width)*6, LINE(6)}, false};
-	temp = static_temp_window{coord{3*BSP_LCD_GetXSize()/4, LINE(6)}};
+	time_from = static_time_window{Coord{15, LINE(6)}, false};
+	time_to = static_time_window{Coord{time_from.get_x() + (BSP_LCD_GetFont()->Width)*6, LINE(6)}, false};
+	temp = static_temp_window{Coord{3*BSP_LCD_GetXSize()/4, LINE(6)}};
 }
 
 /**

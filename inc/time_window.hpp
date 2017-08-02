@@ -29,7 +29,7 @@ class time_window : public control_window {
 	void nofont_draw() const;
 public:
 	time_window();
-	time_window(const coord &coord);
+	time_window(const Coord &coord);
 	Message event_handler(JOYState_TypeDef joy_state) override;
 	void draw()const override;
 	void set_focus(Message msg) override;

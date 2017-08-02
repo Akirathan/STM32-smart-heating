@@ -26,7 +26,7 @@ class static_temp_window : public static_window,
 	uint32_t temp = 0;
 	bool registered_callback = false;
 public:
-	static_temp_window(const coord &c = coord{0,0});
+	static_temp_window(const Coord &c = Coord{0,0});
 	~static_temp_window();
 	virtual void draw() const override;
 	virtual void min_callback() override;

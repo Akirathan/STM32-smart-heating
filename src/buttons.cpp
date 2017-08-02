@@ -7,11 +7,11 @@
 
 #include "buttons.hpp"
 
-button::button() :
-		button{coord{0,0}, ""}
+Button::Button() :
+		Button{Coord{0,0}, ""}
 { }
 
-button::button(const coord& coord, const std::string &name) :
+Button::Button(const Coord& coord, const std::string &name) :
 		control_window{coord},
 		name{name}
 { }
@@ -19,7 +19,7 @@ button::button(const coord& coord, const std::string &name) :
 /**
  * Suppose font is already set.
  */
-void button::draw() const
+void Button::draw() const
 {
 	if (this->focused) {
 		this->save_font();
@@ -34,7 +34,7 @@ void button::draw() const
 }
 
 
-Message button::event_handler(JOYState_TypeDef joy_state)
+Message Button::event_handler(JOYState_TypeDef joy_state)
 {
 	switch (joy_state) {
 	case JOY_UP:
@@ -59,7 +59,7 @@ Message button::event_handler(JOYState_TypeDef joy_state)
  * Redraws this window and loads previously
  * configured font.
  */
-void button::unset_focus()
+void Button::unset_focus()
 {
 	this->focused = false;
 	this->draw();
@@ -69,13 +69,13 @@ void button::unset_focus()
  * Saves current font for further drawing and
  * immediately redraws this window.
  */
-void button::set_focus(Message msg)
+void Button::set_focus(Message msg)
 {
 	this->focused = true;
 	this->draw();
 }
 
-void button::set_pushed(bool b)
+void Button::set_pushed(bool b)
 {
 	this->pushed = b;
 }
@@ -85,7 +85,7 @@ void button::set_pushed(bool b)
  * is gathering data it needs to know whether NEXT
  * or END button was pressed.
  */
-bool button::is_pushed() const
+bool Button::is_pushed() const
 {
 	return this->pushed;
 }

@@ -10,7 +10,7 @@
 /**
  *
  */
-static_temp_window::static_temp_window(const coord& c)  :
+static_temp_window::static_temp_window(const Coord& c)  :
 		static_window{c}
 { }
 

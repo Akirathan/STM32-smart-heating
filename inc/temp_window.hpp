@@ -26,7 +26,7 @@ class temp_window : public control_window {
 	void unset_focus();
 public:
 	temp_window();
-	temp_window(const coord &coord);
+	temp_window(const Coord &coord);
 	Message event_handler(JOYState_TypeDef joy_state) override;
 	void draw()const override;
 	void set_focus(Message msg) override;

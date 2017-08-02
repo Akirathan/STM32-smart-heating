@@ -28,11 +28,11 @@ mainframe::mainframe()
 	lcd::init();
 	BSP_LCD_SetFont(&Font16);
 
-	time = static_time_window{coord{BSP_LCD_GetXSize()/2 - 30, LINE(1)}, true};
-	act_temp = static_temp_window{coord{70, LINE(4)}};
-	set_temp = static_temp_window{coord{220, LINE(4)}};
-	overview_button = button{coord{BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 40}, "overview"};
-	reset_button = button{coord{BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 20}, "reset"};
+	time = static_time_window{Coord{BSP_LCD_GetXSize()/2 - 30, LINE(1)}, true};
+	act_temp = static_temp_window{Coord{70, LINE(4)}};
+	set_temp = static_temp_window{Coord{220, LINE(4)}};
+	overview_button = Button{Coord{BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 40}, "overview"};
+	reset_button = Button{Coord{BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 20}, "reset"};
 }
 
 /**

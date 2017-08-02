@@ -50,7 +50,7 @@ void static_time_window_test()
 	/* static_time_window initialization */
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 
-	static_time_window time_window{coord{10,BSP_LCD_GetYSize()/2}};
+	static_time_window time_window{Coord{10,BSP_LCD_GetYSize()/2}};
 	time_window.draw();
 
 	// rtc keeps calling back time_window, and time_window

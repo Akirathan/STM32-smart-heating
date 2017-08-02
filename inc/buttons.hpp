@@ -14,14 +14,14 @@
 #include "stm3210c_eval_lcd.h"
 #include "window.hpp"
 
-class button : public control_window {
+class Button : public control_window {
 	std::string name;
 	bool pushed = false;
 	bool focused = false;
 	void unset_focus();
 public:
-	button(const coord &coord, const std::string &name);
-	button();
+	Button(const Coord &coord, const std::string &name);
+	Button();
 	virtual void draw() const override;
 	virtual Message event_handler(JOYState_TypeDef joy_state) override;
 	virtual void set_focus(Message msg) override;

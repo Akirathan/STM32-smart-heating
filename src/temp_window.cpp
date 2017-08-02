@@ -13,10 +13,10 @@ using namespace std;
  * Needed by intervalframe ctor.
  */
 temp_window::temp_window() :
-		temp_window{coord{0,0}}
+		temp_window{Coord{0,0}}
 { }
 
-temp_window::temp_window(const coord &coord) :
+temp_window::temp_window(const Coord &coord) :
 		control_window{coord}, temp{this->low_bond}, focused{false}
 {
 

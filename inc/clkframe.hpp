@@ -24,7 +24,7 @@
 class clk_frame {
 	void draw_header() const;
 	time_window time;
-	button ok_button;
+	Button ok_button;
 public:
 	clk_frame();
 	RTC_TimeTypeDef pass_control();

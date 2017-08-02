@@ -24,8 +24,8 @@
 
 class intervalframe {
 protected:
-	button next_button;
-	button end_button;
+	Button next_button;
+	Button end_button;
 	void draw_header();
 public:
 	intervalframe();

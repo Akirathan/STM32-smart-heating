@@ -13,13 +13,13 @@ using namespace std;
  * Needed by intervalframe ctor
  */
 time_window::time_window() :
-		time_window{coord{0, 0}}
+		time_window{Coord{0, 0}}
 { }
 
 /**
  * Initializes TimeWindow with 5 minute_jump.
  */
-time_window::time_window(const coord &coord) :
+time_window::time_window(const Coord &coord) :
 		control_window{coord}, selected_{NONE}, hours{0}, minutes{0}
 {
 

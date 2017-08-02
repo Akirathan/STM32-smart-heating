@@ -20,8 +20,8 @@ clk_frame::clk_frame()
 	}
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 
-	time = time_window{coord{BSP_LCD_GetXSize()/2 - 35, BSP_LCD_GetYSize()/2 + 10}};
-	ok_button = button{coord{BSP_LCD_GetXSize()/2 - 15, LINE(8)}, "OK"};
+	time = time_window{Coord{BSP_LCD_GetXSize()/2 - 35, BSP_LCD_GetYSize()/2 + 10}};
+	ok_button = Button{Coord{BSP_LCD_GetXSize()/2 - 15, LINE(8)}, "OK"};
 }
 
 void clk_frame::draw_header() const

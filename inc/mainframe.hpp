@@ -21,8 +21,8 @@ class mainframe {
 	static_time_window time;
 	static_temp_window act_temp;
 	static_temp_window set_temp;
-	button overview_button;
-	button reset_button;
+	Button overview_button;
+	Button reset_button;
 	void draw_header();
 public:
 	mainframe();

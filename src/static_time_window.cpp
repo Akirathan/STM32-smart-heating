@@ -12,7 +12,7 @@ void error_handler(); // From main module
 /**
  * Constructor does not register for callbacks.
  */
-static_time_window::static_time_window(const coord& c, bool sec_precision) :
+static_time_window::static_time_window(const Coord& c, bool sec_precision) :
 		static_window(c),
 		sec_precision(sec_precision)
 { }

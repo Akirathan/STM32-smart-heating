@@ -32,7 +32,7 @@ class static_time_window : public static_window,
 	void inc_min();
 	void inc_sec();
 public:
-	static_time_window(const coord& c = coord{0,0}, bool sec_precision = true);
+	static_time_window(const Coord& c = Coord{0,0}, bool sec_precision = true);
 	~static_time_window();
 	void draw() const override;
 	void set_hours(uint8_t hours);
