@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>generic_eval</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>STM3210C_EVAL</name>
+			<type>2</type>
+			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/STM3210C_EVAL</location>
+		</link>
+		<link>
+			<name>STM32F1xx_HAL_Driver Src</name>
+			<type>2</type>
+			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/STM32F1xx_HAL_Driver/Src</location>
+		</link>
+		<link>
+			<name>ili9320</name>
+			<type>2</type>
+			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320</location>
+		</link>
+		<link>
+			<name>ili9325</name>
+			<type>2</type>
+			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9325</location>
+		</link>
+	</linkedResources>
+</projectDescription>

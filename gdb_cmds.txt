@@ -1,0 +1,3 @@
+target remote | openocd -f board/stm3210c_eval.cfg --pipe
+load
+
