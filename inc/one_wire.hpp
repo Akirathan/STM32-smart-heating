@@ -21,6 +21,7 @@ int init_communication();
 void write_byte(uint8_t byte);
 uint8_t read_byte();
 void reset();
+uint8_t read_bit();
 
 // Testing functions.
 uint32_t time_test(uint32_t microsecs);

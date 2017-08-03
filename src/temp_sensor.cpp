@@ -28,7 +28,7 @@ uint16_t measure_temperature()
 	OneWire::write_byte(CMD_SKIPROM);
 
 	OneWire::write_byte(CMD_CONVERTT);
-	while (OneWire::read_byte() == 0) {
+	while (OneWire::read_bit() == 0) {
 		// The conversion is still in progress.
 		// Wait until the conversion is done.
 	}
@@ -36,7 +36,7 @@ uint16_t measure_temperature()
 	// The conversion is now done
 	OneWire::init_communication();
 	OneWire::write_byte(CMD_SKIPROM);
-	OneWire::write_byte(CMD_READSCRATCHPAD);
+	OneWire::write_byte(TEMP_SENSOR_CMD_READSCRATCHPAD);
 	uint8_t temp_lsb = OneWire::read_byte();
 	uint8_t temp_msb = OneWire::read_byte();
 
@@ -64,7 +64,7 @@ void read_data(data_t* data)
 {
 	OneWire::init_communication();
 	OneWire::write_byte(CMD_SKIPROM);
-	OneWire::write_byte(CMD_READSCRATCHPAD);
+	OneWire::write_byte(TEMP_SENSOR_CMD_READSCRATCHPAD);
 
 	data->TEMP_LSB = OneWire::read_byte();
 	data->TEMP_MSB = OneWire::read_byte();
@@ -144,7 +144,7 @@ void copy_scratchpad()
 {
 	OneWire::init_communication();
 	OneWire::write_byte(CMD_SKIPROM);
-	OneWire::write_byte(CMD_COPYSCRATCHPAD);
+	OneWire::write_byte(TEMP_SENSOR_CMD_COPYSCRATCHPAD);
 }
 
 /**
@@ -155,7 +155,7 @@ void write_scratchpad(config_t* config)
 {
 	OneWire::init_communication();
 	OneWire::write_byte(CMD_SKIPROM);
-	OneWire::write_byte(CMD_WRITESCRATCHPAD);
+	OneWire::write_byte(TEMP_SENSOR_CMD_WRITESCRATCHPAD);
 
 	OneWire::write_byte(config->TH);
 	OneWire::write_byte(config->TL);
@@ -172,7 +172,7 @@ void debug()
 	// Read scratchpad.
 	OneWire::init_communication();
 	OneWire::write_byte(CMD_SKIPROM);
-	OneWire::write_byte(CMD_READSCRATCHPAD);
+	OneWire::write_byte(TEMP_SENSOR_CMD_READSCRATCHPAD);
 	volatile uint8_t lsb = OneWire::read_byte();
 	volatile uint8_t msb = OneWire::read_byte();
 	volatile uint8_t th = OneWire::read_byte();
@@ -192,7 +192,7 @@ void read_config(config_t* config)
 {
 	OneWire::init_communication();
 	OneWire::write_byte(CMD_SKIPROM);
-	OneWire::write_byte(CMD_READSCRATCHPAD);
+	OneWire::write_byte(TEMP_SENSOR_CMD_READSCRATCHPAD);
 
 	OneWire::read_byte(); // temp_LSB
 	OneWire::read_byte(); // temp_MSB

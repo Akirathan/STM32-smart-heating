@@ -251,7 +251,7 @@ uint8_t read_byte()
 	return byte;
 }
 
-static inline uint8_t read_bit()
+uint8_t read_bit()
 {
 	uint8_t bit = 0x00;
 	// Master initiates read time slot by pulling

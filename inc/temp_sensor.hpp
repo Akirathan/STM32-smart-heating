@@ -58,9 +58,9 @@ typedef struct {
 const uint8_t CMD_SKIPROM = 0xCC;
 
 // Memory commands
-const uint8_t CMD_READSCRATCHPAD = 0xBE;
-const uint8_t CMD_WRITESCRATCHPAD = 0x4E;
-const uint8_t CMD_COPYSCRATCHPAD = 0x48;
+#define TEMP_SENSOR_CMD_READSCRATCHPAD			0xBE
+#define TEMP_SENSOR_CMD_WRITESCRATCHPAD			0x4E
+#define TEMP_SENSOR_CMD_COPYSCRATCHPAD			0x48
 
 // Functional commands
 const uint8_t CMD_CONVERTT = 0x44;
