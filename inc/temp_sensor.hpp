@@ -54,16 +54,12 @@ typedef struct {
 	uint8_t CFG;
 } data_t;
 
-// ROM commands
-const uint8_t CMD_SKIPROM = 0xCC;
-
-// Memory commands
+// Command defines.
+#define TEMP_SENSOR_CMD_SKIPROM					0xCC
 #define TEMP_SENSOR_CMD_READSCRATCHPAD			0xBE
 #define TEMP_SENSOR_CMD_WRITESCRATCHPAD			0x4E
 #define TEMP_SENSOR_CMD_COPYSCRATCHPAD			0x48
-
-// Functional commands
-const uint8_t CMD_CONVERTT = 0x44;
+#define TEMP_SENSOR_CMD_CONVERTT				0x44
 
 uint32_t init();
 void set_alarm_high(uint8_t temp_high);
