@@ -23,8 +23,8 @@
 namespace TempSensor {
 
 // PE4
-#define DATA_GPIOPIN				GPIO_PIN_4
-#define DATA_GPIOPORT				GPIOE
+#define TEMP_DATA_GPIOPIN				GPIO_PIN_4
+#define TEMP_DATA_GPIOPORT				GPIOE
 
 // Setting configuration register
 #define SET_RES(cfg_byte, res)		(cfg_byte &= res)

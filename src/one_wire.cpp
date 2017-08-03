@@ -32,23 +32,23 @@ static int test_data(TempSensor::data_t* data);
 uint32_t init()
 {
 	// Init clock
-	if (DATA_GPIOPORT == GPIOA) {
+	if (TEMP_DATA_GPIOPORT == GPIOA) {
 		__HAL_RCC_GPIOA_CLK_ENABLE()
 		;
 	}
-	else if (DATA_GPIOPORT == GPIOB) {
+	else if (TEMP_DATA_GPIOPORT == GPIOB) {
 		__HAL_RCC_GPIOB_CLK_ENABLE()
 		;
 	}
-	else if (DATA_GPIOPORT == GPIOC) {
+	else if (TEMP_DATA_GPIOPORT == GPIOC) {
 		__HAL_RCC_GPIOC_CLK_ENABLE()
 		;
 	}
-	else if (DATA_GPIOPORT == GPIOD) {
+	else if (TEMP_DATA_GPIOPORT == GPIOD) {
 		__HAL_RCC_GPIOD_CLK_ENABLE()
 		;
 	}
-	else if (DATA_GPIOPORT == GPIOE) {
+	else if (TEMP_DATA_GPIOPORT == GPIOE) {
 		__HAL_RCC_GPIOE_CLK_ENABLE()
 		;
 	}
@@ -138,7 +138,9 @@ static uint32_t init_DWT()
 static inline void set_transmit()
 {
 	// PE4 <- output, medium speed, nopull
-	MODIFY_REG(GPIOE->CRL, GPIO_CRL_CNF4|GPIO_CRL_MODE4_1, GPIO_CRL_MODE4_0);
+	MODIFY_REG(TEMP_DATA_GPIOPORT->CRL,
+			(GPIO_CRL_CNF0 << TEMP_DATA_GPIOPIN) | (GPIO_CRL_MODE0_1 << TEMP_DATA_GPIOPIN),
+			(GPIO_CRL_MODE0_0 << TEMP_DATA_GPIOPIN));
 }
 
 /**
@@ -150,8 +152,11 @@ static inline void set_transmit()
 static inline void set_receive()
 {
 	// PE4 <- input, medium speed, pullup
-	MODIFY_REG(GPIOE->CRL, GPIO_CRL_CNF4_0|GPIO_CRL_MODE4, GPIO_CRL_CNF4_1);
-	SET_BIT(GPIOE->ODR, GPIO_ODR_ODR4);
+	MODIFY_REG(TEMP_DATA_GPIOPORT->CRL,
+			(GPIO_CRL_CNF0_0 << TEMP_DATA_GPIOPIN) | (GPIO_CRL_MODE0 << TEMP_DATA_GPIOPIN),
+			(GPIO_CRL_CNF0_1 << TEMP_DATA_GPIOPIN));
+
+	SET_BIT(TEMP_DATA_GPIOPORT->ODR, TEMP_DATA_GPIOPIN);
 }
 
 /**
@@ -276,9 +281,6 @@ static inline uint8_t read_bit()
 
 	master_release_bus();
 	// Master has to sample the bus state within 15 us.
-	// IMPORTANT: without any optimization, leave next line commented,
-	// otherwise sampling will not be on time.
-	// With optimization for size (-Os) waiting for max 10 us is permitted.
 	wait(9);
 	if (slave_pull_bus_low()) {
 		bit = 0x00;
@@ -288,7 +290,7 @@ static inline uint8_t read_bit()
 	}
 
 	// Wait to complete 60us period
-	wait(50);
+	wait(60);
 	return bit;
 }
 
@@ -306,7 +308,7 @@ static inline void master_release_bus()
 static inline void master_pull_bus_low()
 {
 	set_transmit();
-	HAL_GPIO_WritePin(DATA_GPIOPORT, DATA_GPIOPIN, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(TEMP_DATA_GPIOPORT, TEMP_DATA_GPIOPIN, GPIO_PIN_RESET);
 }
 
 /**
@@ -316,7 +318,7 @@ static inline void master_pull_bus_low()
 static inline int slave_pull_bus_low()
 {
 	set_receive();
-	if (HAL_GPIO_ReadPin(DATA_GPIOPORT, DATA_GPIOPIN) == GPIO_PIN_RESET) {
+	if (HAL_GPIO_ReadPin(TEMP_DATA_GPIOPORT, TEMP_DATA_GPIOPIN) == GPIO_PIN_RESET) {
 		return 1;
 	}
 	else {
@@ -332,7 +334,7 @@ static inline int slave_release_bus()
 	set_receive();
 	// Wait a moment so the slave can pull the bus low if he intends to
 	wait(5);
-	if (HAL_GPIO_ReadPin(DATA_GPIOPORT, DATA_GPIOPIN) == GPIO_PIN_SET) {
+	if (HAL_GPIO_ReadPin(TEMP_DATA_GPIOPORT, TEMP_DATA_GPIOPIN) == GPIO_PIN_SET) {
 		// The bus is released
 		return 1;
 	}
