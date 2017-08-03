@@ -9,9 +9,12 @@
 #define ONE_WIRE_HPP_
 
 #include "stm32f1xx.h"
-#include "temp_sensor.hpp" //DEBUG
 
 namespace OneWire {
+
+// PE4
+#define TEMP_DATA_GPIOPIN		GPIO_PIN_4
+#define TEMP_DATA_GPIOPORT		GPIOE
 
 uint32_t init();
 int init_communication();

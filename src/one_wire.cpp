@@ -24,7 +24,6 @@ static int slave_release_bus();
 static inline void write_bit(uint8_t bit);
 static inline uint8_t read_bit();
 static inline void wait(uint32_t micros);
-static int test_data(TempSensor::data_t* data);
 
 /**
  * Init the one-wire peripheral.
@@ -157,25 +156,6 @@ static inline void set_receive()
 			(GPIO_CRL_CNF0_1 << TEMP_DATA_GPIOPIN));
 
 	SET_BIT(TEMP_DATA_GPIOPORT->ODR, TEMP_DATA_GPIOPIN);
-}
-
-/**
- * Test written data to temperature sensor.
- */
-static int test_data(TempSensor::data_t* data)
-{
-	TempSensor::data_t data2;
-
-	TempSensor::read_data(&data2);
-
-	if (data2.TH == data->TH && data2.TL == data->TL && data2.CFG == data->CFG
-			&& data2.TEMP_LSB == data->TEMP_LSB
-			&& data2.TEMP_MSB == data->TEMP_MSB) {
-		return 1;
-	}
-	else {
-		return 0;
-	}
 }
 
 void reset()
