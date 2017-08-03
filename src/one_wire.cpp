@@ -22,6 +22,7 @@ static void master_pull_bus_low();
 static int slave_pull_bus_low();
 static int slave_release_bus();
 static inline void write_bit(uint8_t bit);
+static inline uint8_t read_bit();
 static inline void wait(uint32_t micros);
 static int test_data(TempSensor::data_t* data);
 
@@ -95,6 +96,10 @@ static inline void wait(__IO uint32_t micros)
  * DWT peripheral is necessary for CPU
  * tick counter. The wait function is
  * most accurate with DWT implementation.
+ *
+ * TODO: use macros from stm32f107xc.h instead
+ * 	of pure bits, ie. make this function more
+ * 	readable.
  */
 static uint32_t init_DWT()
 {
@@ -117,38 +122,36 @@ static uint32_t init_DWT()
 	/* 2 dummys */
 	__ASM volatile ("NOP");
 	__ASM volatile ("NOP");
+	//__NOP();
+	//__NOP();
 
 	/* Return difference, if result is zero, DWT has not started */
 	return (DWT->CYCCNT - c);
 }
 
 /**
- * Sets the master for transmit.
+ * Sets the master for transmit, ie. set PE4 as output push-pull
+ * with medium speed (10 MHz), without resistors.
+ * Note that because of efficiency this function directly modifies
+ * registers.
  */
 static inline void set_transmit()
 {
-	GPIO_InitTypeDef GPIO_Init;
-
-	GPIO_Init.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_Init.Pull = GPIO_NOPULL;
-	GPIO_Init.Pin = DATA_GPIOPIN;
-	GPIO_Init.Speed = GPIO_SPEED_FREQ_MEDIUM;
-
-	HAL_GPIO_Init(DATA_GPIOPORT, &GPIO_Init);
+	// PE4 <- output, medium speed, nopull
+	MODIFY_REG(GPIOE->CRL, GPIO_CRL_CNF4|GPIO_CRL_MODE4_1, GPIO_CRL_MODE4_0);
 }
 
+/**
+ * Sets the master for receive, ie. sets PE4 as input with
+ * weak pull-up resistor.
+ * Note that because of efficiency this function directly modifies
+ * registers.
+ */
 static inline void set_receive()
 {
-	GPIO_InitTypeDef GPIO_Init;
-
-	// Set the GPIO pin as input with weak pull-up
-	// resistor enabled.
-	GPIO_Init.Mode = GPIO_MODE_INPUT;
-	GPIO_Init.Pull = GPIO_PULLUP;
-	GPIO_Init.Pin = DATA_GPIOPIN;
-	GPIO_Init.Speed = GPIO_SPEED_FREQ_MEDIUM;
-
-	HAL_GPIO_Init(DATA_GPIOPORT, &GPIO_Init);
+	// PE4 <- input, medium speed, pullup
+	MODIFY_REG(GPIOE->CRL, GPIO_CRL_CNF4_0|GPIO_CRL_MODE4, GPIO_CRL_CNF4_1);
+	SET_BIT(GPIOE->ODR, GPIO_ODR_ODR4);
 }
 
 /**
@@ -178,13 +181,12 @@ void reset()
 
 void debug()
 {
-	master_release_bus();
-	/*wait(300);
-	 one_wire_MasterPullBusLow();
-	 wait(300);
-	 one_wire_MasterReleaseBus();
-	 wait(300);
-	 one_wire_MasterPullBusLow();*/
+	for (int i=0; i<10; ++i) {
+		master_release_bus();
+		wait(100);
+		master_pull_bus_low();
+		wait(100);
+	}
 }
 
 /**
@@ -235,7 +237,7 @@ static inline void write_bit(uint8_t bit)
 
 	if (bit == 0) {
 		/* Keep the bus low for entire write time slot */
-		wait(60);
+		wait(70);
 		master_release_bus();
 	}
 	else if (bit == 1) {
@@ -264,7 +266,7 @@ uint8_t read_byte()
 	return byte;
 }
 
-uint8_t read_bit()
+static inline uint8_t read_bit()
 {
 	uint8_t bit = 0x00;
 	// Master initiates read time slot by pulling
@@ -273,9 +275,11 @@ uint8_t read_bit()
 	wait(3);
 
 	master_release_bus();
-	// Master has to sample the bus state
-	// within 15 us.
-	wait(11);
+	// Master has to sample the bus state within 15 us.
+	// IMPORTANT: without any optimization, leave next line commented,
+	// otherwise sampling will not be on time.
+	// With optimization for size (-Os) waiting for max 10 us is permitted.
+	wait(9);
 	if (slave_pull_bus_low()) {
 		bit = 0x00;
 	}
@@ -302,8 +306,7 @@ static inline void master_release_bus()
 static inline void master_pull_bus_low()
 {
 	set_transmit();
-	HAL_GPIO_WritePin(DATA_GPIOPORT, DATA_GPIOPIN,
-			GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(DATA_GPIOPORT, DATA_GPIOPIN, GPIO_PIN_RESET);
 }
 
 /**

@@ -28,7 +28,7 @@ uint16_t measure_temperature()
 	OneWire::write_byte(CMD_SKIPROM);
 
 	OneWire::write_byte(CMD_CONVERTT);
-	while (OneWire::read_bit() == 0) {
+	while (OneWire::read_byte() == 0) {
 		// The conversion is still in progress.
 		// Wait until the conversion is done.
 	}
@@ -146,17 +146,24 @@ void write_scratchpad(config_t* config)
 
 void debug()
 {
-	config_t conf;
-	conf.TH = 10;
-	conf.TL = 20;
-	conf.CFG = 0x9F;
-	write_scratchpad(&conf);
-	read_config(&conf);
-	OneWire::reset();
+	// Write scratchpad.
+	config_t config{10,20,255};
+	SET_RES(config.CFG, RESOLUTION_9_BIT);
+	//write_scratchpad(&config);
 
-	HAL_Delay(2000);
-
-	read_config(&conf);
+	// Read scratchpad.
+	OneWire::init_communication();
+	OneWire::write_byte(CMD_SKIPROM);
+	OneWire::write_byte(CMD_READSCRATCHPAD);
+	volatile uint8_t lsb = OneWire::read_byte();
+	volatile uint8_t msb = OneWire::read_byte();
+	volatile uint8_t th = OneWire::read_byte();
+	volatile uint8_t tl = OneWire::read_byte();
+	volatile uint8_t cfg = OneWire::read_byte();
+	for (int i=0; i<3; ++i) {
+		OneWire::read_byte();
+	}
+	volatile uint8_t crc = OneWire::read_byte();
 }
 
 /**
@@ -178,6 +185,7 @@ void read_config(config_t* config)
 	// Ignore the rest
 	//one_wire::reset();
 
+	// Read rest.
 	for (int i = 0; i < 4; i++) {
 		OneWire::read_byte();
 	}

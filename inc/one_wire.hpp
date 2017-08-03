@@ -8,7 +8,7 @@
 #ifndef ONE_WIRE_HPP_
 #define ONE_WIRE_HPP_
 
-#include "stm32f1xx_hal.h"
+#include "stm32f1xx.h"
 #include "temp_sensor.hpp" //DEBUG
 
 namespace OneWire {
@@ -17,7 +17,6 @@ uint32_t init();
 int init_communication();
 void write_byte(uint8_t byte);
 uint8_t read_byte();
-uint8_t read_bit();
 void reset();
 
 // Testing functions.
