@@ -117,13 +117,31 @@ void set_alarm_low(uint8_t temp_low)
 void set_resolution(resolution_t resolution)
 {
 	config_t config;
-
 	read_config(&config);
-	SET_RES(config.CFG, resolution);
+
+	switch (resolution) {
+	case RESOLUTION_9_BIT:
+		CLEAR_BIT(config.CFG, TEMP_SENSOR_CFG_R0 | TEMP_SENSOR_CFG_R1);
+		break;
+	case RESOLUTION_10_BIT:
+		MODIFY_REG(config.CFG, TEMP_SENSOR_CFG_R1, TEMP_SENSOR_CFG_R0);
+		break;
+	case RESOLUTION_11_BIT:
+		MODIFY_REG(config.CFG, TEMP_SENSOR_CFG_R0, TEMP_SENSOR_CFG_R1);
+		break;
+	case RESOLUTION_12_BIT:
+		SET_BIT(config.CFG, TEMP_SENSOR_CFG_R0 | TEMP_SENSOR_CFG_R1);
+		break;
+	}
 
 	write_scratchpad(&config);
+}
 
-	// Copy the configuration values to EEPROM
+/**
+ * Copies the configuration values to EEPROM.
+ */
+void copy_scratchpad()
+{
 	OneWire::init_communication();
 	OneWire::write_byte(CMD_SKIPROM);
 	OneWire::write_byte(CMD_COPYSCRATCHPAD);

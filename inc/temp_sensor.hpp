@@ -26,6 +26,9 @@ namespace TempSensor {
 // Setting configuration register
 #define SET_RES(cfg_byte, res)		(cfg_byte &= res)
 
+// CFG register defines.
+#define TEMP_SENSOR_CFG_R0		0x20
+#define TEMP_SENSOR_CFG_R1		0x40
 
 typedef enum {
 	RESOLUTION_9_BIT = 0x9F,
@@ -70,6 +73,7 @@ uint16_t measure_temperature();
 void read_data(data_t* data);
 void read_config(config_t* config);
 void write_scratchpad(config_t* config);
+void copy_scratchpad();
 
 void debug();
 
