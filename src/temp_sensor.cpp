@@ -40,6 +40,10 @@ double measure_temperature()
 	return convert_temperature(data.TEMP_LSB, data.TEMP_MSB, get_resolution(data.CFG));
 }
 
+/**
+ * This function should be called after temperature measurement, otherwise
+ * bad result could be returned.
+ */
 bool is_alarm_set()
 {
 	OneWire::init_communication();
@@ -174,11 +178,6 @@ static void write_scratchpad(config_t* config)
 	OneWire::write_byte(config->TH);
 	OneWire::write_byte(config->TL);
 	OneWire::write_byte(config->CFG);
-}
-
-void debug()
-{
-
 }
 
 /**

@@ -67,8 +67,6 @@ void read_data(data_t* data);
 void read_config(config_t* config);
 void copy_scratchpad();
 
-void debug();
-
 } // namespace TempSensor
 
 #endif // TEMP_SENSOR_HPP_

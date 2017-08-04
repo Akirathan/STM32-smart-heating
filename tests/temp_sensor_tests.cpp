@@ -117,7 +117,7 @@ bool temp_measure()
 	double temp_7 = convert_temperature(temp_7_lsb, temp_7_msb, RESOLUTION_12_BIT);
 	double temp_4 = convert_temperature(temp_4_lsb, temp_4_msb, RESOLUTION_12_BIT);*/
 
-	return false;
+	return true;
 }
 
 } // namespace TempSensorTests

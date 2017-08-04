@@ -27,6 +27,7 @@ CFLAGS += -specs=nano.specs
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -DSTM32F107VCTx -DUSE_HAL_DRIVER -DUSE_STM3210C_EVAL -DSTM3210C_EVAL
 CFLAGS += -g -Wall 
+#CFLAGS += -Os
 
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics -fno-rtti
 CXXFLAGS += -std=c++14 

@@ -165,7 +165,9 @@ int main()
 		error_handler();
 	}
 
-	bool tests_res = TempSensorTests::run_all_tests();
+	if (!TempSensorTests::run_all_tests()) {
+		error_handler();
+	}
 
 	//main_test();
 	//mainframe_test();
