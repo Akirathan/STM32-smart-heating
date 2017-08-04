@@ -58,8 +58,7 @@ typedef struct {
 #define TEMP_SENSOR_CMD_CONVERTT				0x44
 
 uint32_t init();
-void set_alarm_high(int8_t temp_high);
-void set_alarm_low(int8_t temp_low);
+void set_alarm(int8_t low, int8_t high);
 void set_resolution(resolution_t resolution);
 double measure_temperature();
 void read_data(data_t* data);

@@ -60,31 +60,16 @@ void read_data(data_t* data)
 }
 
 /**
- * Set the TH register, so when the sensor
- * measures temperature that is higher than
- * this value, the alarm flag is set.
+ * Sets the TH and TL registers. When the sensor measures temperature that is
+ * outside given bounds, the alarm flag is set.
  */
-void set_alarm_high(int8_t temp_high)
+void set_alarm(int8_t low, int8_t high)
 {
 	config_t config;
 
 	read_config(&config);
-	config.TH = temp_high;
-
-	write_scratchpad(&config);
-}
-
-/**
- * Set the TL register, so when the sensor
- * measures temperature that is lower than
- * this value, the alarm flag is set.
- */
-void set_alarm_low(int8_t temp_low)
-{
-	config_t config;
-
-	read_config(&config);
-	config.TL = temp_low;
+	config.TL = low;
+	config.TH = high;
 
 	write_scratchpad(&config);
 }
