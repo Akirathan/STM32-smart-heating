@@ -56,11 +56,13 @@ typedef struct {
 #define TEMP_SENSOR_CMD_WRITESCRATCHPAD			0x4E
 #define TEMP_SENSOR_CMD_COPYSCRATCHPAD			0x48
 #define TEMP_SENSOR_CMD_CONVERTT				0x44
+#define TEMP_SENSOR_CMD_ALARMSEARCH				0xEC
 
 uint32_t init();
 void set_alarm(int8_t low, int8_t high);
 void set_resolution(resolution_t resolution);
 double measure_temperature();
+bool is_alarm_set();
 void read_data(data_t* data);
 void read_config(config_t* config);
 void write_scratchpad(config_t* config);

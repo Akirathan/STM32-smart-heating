@@ -10,12 +10,16 @@
 
 #include "temp_sensor.hpp"
 
-namespace Tests {
-namespace TempSensor {
+namespace TempSensorTests {
 
+bool run_all_tests();
+bool alarm_test_negative();
+bool alarm_test_positive();
+void read_config();
+bool set_alarm();
+bool set_resolution();
+bool temp_measure();
 
-
-} // namespace TempSensor
-} // namespace Tests
+} // namespace TempSensorTests
 
 #endif /* TESTS_TEMP_SENSOR_TESTS_HPP_ */

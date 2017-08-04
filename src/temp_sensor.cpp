@@ -39,6 +39,26 @@ double measure_temperature()
 	return convert_temperature(data.TEMP_LSB, data.TEMP_MSB, get_resolution(data.CFG));
 }
 
+bool is_alarm_set()
+{
+	OneWire::init_communication();
+	OneWire::write_byte(TEMP_SENSOR_CMD_ALARMSEARCH);
+
+	// Search ROM algorithm implemented for just one device on the bus.
+	for (int i = 0; i < 64; ++i) {
+		// Slave should write bit of it's ROM and then complement bit.
+		uint8_t byte = OneWire::read_bit();
+		uint8_t byte_compl = OneWire::read_bit();
+		if (!((byte == 1 && byte_compl == 0) || (byte == 0 && byte_compl == 1))) {
+			return false;
+		}
+		// Master responds by sending the bit that slave has sent.
+		OneWire::write_bit(byte);
+	}
+
+	return true;
+}
+
 /**
  * Read the scratchpad from the sensor and
  * fills the data structure.

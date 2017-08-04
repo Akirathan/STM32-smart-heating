@@ -7,38 +7,98 @@
 
 #include "temp_sensor_tests.hpp"
 
-namespace Tests {
-namespace TempSensor {
+namespace TempSensorTests {
 
-void alarm_test()
+/**
+ * Run all tests from this test namespace.
+ */
+bool run_all_tests()
 {
-	OneWire::init_communication();
-	OneWire::write_byte(TEMP_SENSOR_CMD_ALARMSEARCH);
+	if (!alarm_test_negative()) {
+		return false;
+	}
 
-	uint8_t rom[8];
-	for (int i=0; i<8; ++i) {
-		rom[i] = OneWire::read_byte();
+	if (!alarm_test_positive()) {
+		return false;
+	}
+
+	if (!set_alarm()) {
+		return false;
+	}
+
+	if (!set_resolution()) {
+		return false;
+	}
+
+	// All tests passed.
+	return true;
+}
+
+/**
+ * Alarm should not be triggered.
+ */
+bool alarm_test_negative()
+{
+	TempSensor::set_alarm(-5, 40);
+	TempSensor::measure_temperature();
+	if (TempSensor::is_alarm_set()) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+/**
+ * Alarm should be triggered.
+ */
+bool alarm_test_positive()
+{
+	TempSensor::set_alarm(-90, -5);
+	TempSensor::measure_temperature();
+	if (TempSensor::is_alarm_set()) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
 void read_config()
 {
-
+	TempSensor::config_t conf;
+	TempSensor::read_config(&conf);
 }
 
 bool set_alarm()
 {
-	TempSensor::set_alarm(10,20);
-	TempSensor::set_resolution(TempSensor::RESOLUTION_10_BIT);
+	int8_t low = 10;
+	int8_t high = 12;
+	TempSensor::set_alarm(low, high);
 
+	TempSensor::config_t conf;
+	TempSensor::read_config(&conf);
+
+	if (conf.TL != low || conf.TH != high) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 bool set_resolution()
 {
+	TempSensor::set_resolution(TempSensor::RESOLUTION_11_BIT);
 
+	TempSensor::config_t conf;
+	TempSensor::read_config(&conf);
+
+	// TODO ...
+	return true;
 }
 
-bool temp_measure_test()
+bool temp_measure()
 {
 	/*uint8_t temp_1_msb = 0x07; // 125
 	uint8_t temp_1_lsb = 0xd0;
@@ -60,6 +120,5 @@ bool temp_measure_test()
 	return false;
 }
 
-} // namespace TempSensor
-} // namespace Tests
+} // namespace TempSensorTests
 

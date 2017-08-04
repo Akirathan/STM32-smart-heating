@@ -21,7 +21,6 @@ static void master_release_bus();
 static void master_pull_bus_low();
 static int slave_pull_bus_low();
 static int slave_release_bus();
-static inline void write_bit(uint8_t bit);
 static inline void wait(uint32_t micros);
 
 /**
@@ -215,7 +214,7 @@ void write_byte(uint8_t byte)
 /**
  * Each write/read time slot is at least 60 us long.
  */
-static inline void write_bit(uint8_t bit)
+void write_bit(uint8_t bit)
 {
 	master_pull_bus_low();
 
