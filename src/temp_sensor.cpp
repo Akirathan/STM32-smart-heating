@@ -13,6 +13,7 @@ namespace TempSensor {
 static double convert_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution);
 static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution);
 static resolution_t get_resolution(uint8_t cfg_byte);
+static void write_scratchpad(config_t* config);
 
 /**
  * Initializes one-wire peripheral.
@@ -164,7 +165,7 @@ void copy_scratchpad()
  * Write the config data structure to the
  * temperature sensor.
  */
-void write_scratchpad(config_t* config)
+static void write_scratchpad(config_t* config)
 {
 	OneWire::init_communication();
 	OneWire::write_byte(TEMP_SENSOR_CMD_SKIPROM);
