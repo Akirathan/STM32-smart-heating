@@ -3,7 +3,7 @@ PROJECT = generic_eval
 ELF = $(PROJECT).elf
 
 # Library paths (adjust to match your needs)
-STM32F1CUBE = /home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0
+STM32F1CUBE = c:/Users/lenovo/STM/STM32Cube_FW_F1_V1.3.0
 CMSIS = $(STM32F1CUBE)/Drivers/CMSIS
 BSP = $(STM32F1CUBE)/Drivers/BSP
 HAL = $(STM32F1CUBE)/Drivers/STM32F1xx_HAL_Driver
@@ -18,7 +18,8 @@ OBJCOPY = $(TOOLCHAIN_PREFIX)objcopy
 SIZE = $(TOOLCHAIN_PREFIX)size
 GDB = $(TOOLCHAIN_PREFIX)gdb-py
 AS = $(TOOLCHAIN_PREFIX)as
-OPENOCD = openocd
+OPENOCD = c:/Users/lenovo/openocd/bin/openocd.exe
+OPENOCD_SCRIPTS = c:/Users/lenovo/openocd/share/openocd/scripts
 
 # Compiler and linker options
 CFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
@@ -79,6 +80,9 @@ APP_OBJECTS += src/main.o
 APP_OBJECTS += src/one_wire.o
 APP_OBJECTS += src/time.o
 
+# Test objects
+TESTS_OBJECTS += tests/temp_sensor_tests.o
+
 # Currenly used HAL module objects
 HAL_OBJECTS=\
 $(HAL)/Src/stm32f1xx_hal.o \
@@ -134,7 +138,7 @@ $(BSP)/Components/ili9325/ili9325.o \
 $(BSP)/Components/ili9320/ili9320.o \
 $(BSP)/Components/stmpe811/stmpe811.o
 
-OBJECTS = $(HAL_OBJECTS) $(BSP_OBJECTS) $(APP_OBJECTS)
+OBJECTS = $(HAL_OBJECTS) $(BSP_OBJECTS) $(APP_OBJECTS) $(TESTS_OBJECTS)
 
 DEPENDENCIES=$(OBJECTS:.o=.d)
 
@@ -178,11 +182,11 @@ $(ELF): $(OBJECTS)
 
 # Flash final elf into device
 flash: $(ELF)
-	${OPENOCD} -f ./stm3210c_eval.cfg -c "program $< verify reset exit"
+	${OPENOCD} -s ${OPENOCD_SCRIPTS} -f ./stm3210c_eval.cfg -c "program $< verify reset exit"
 
 # Debug
 debug: $(ELF)
-	$(GDB) $(ELF) -x gdb_cmds.txt
+	$(GDB) -ex "target remote | openocd -s ${OPENOCD_SCRIPTS} -f ./stm3210c_eval.cfg --pipe" -ex "load"
 
 -include $(DEPENDENCIES)
 
