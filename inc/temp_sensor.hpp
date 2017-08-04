@@ -16,15 +16,11 @@
 #ifndef TEMP_SENSOR_HPP_
 #define TEMP_SENSOR_HPP_
 
-//#include <cmath>
+#include <cmath>
 #include "stm32f1xx_hal.h"
 #include "one_wire.hpp"
 
 namespace TempSensor {
-
-
-// Setting configuration register
-#define SET_RES(cfg_byte, res)		(cfg_byte &= res)
 
 // CFG register defines.
 #define TEMP_SENSOR_CFG_R0		0x20
@@ -38,8 +34,8 @@ typedef enum {
 } resolution_t;
 
 typedef struct {
-	uint8_t TH; // temperature high trigger register
-	uint8_t TL; // temperature low trigger register
+	int8_t TH; // temperature high trigger register
+	int8_t TL; // temperature low trigger register
 	uint8_t CFG; // configuration register
 } config_t;
 
@@ -62,10 +58,10 @@ typedef struct {
 #define TEMP_SENSOR_CMD_CONVERTT				0x44
 
 uint32_t init();
-void set_alarm_high(uint8_t temp_high);
-void set_alarm_low(uint8_t temp_low);
+void set_alarm_high(int8_t temp_high);
+void set_alarm_low(int8_t temp_low);
 void set_resolution(resolution_t resolution);
-uint16_t measure_temperature();
+double measure_temperature();
 void read_data(data_t* data);
 void read_config(config_t* config);
 void write_scratchpad(config_t* config);

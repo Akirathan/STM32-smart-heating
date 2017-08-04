@@ -10,7 +10,9 @@
 namespace TempSensor {
 
 // Private functions
+static double convert_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution);
 static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution);
+static resolution_t get_resolution(uint8_t cfg_byte);
 
 /**
  * Initializes one-wire peripheral.
@@ -20,40 +22,21 @@ uint32_t init()
 	return OneWire::init();
 }
 
-uint16_t measure_temperature()
+double measure_temperature()
 {
-	uint16_t temp = 0x0000; // There is no need for initializing temp
-
 	OneWire::init_communication();
 	OneWire::write_byte(TEMP_SENSOR_CMD_SKIPROM);
-
 	OneWire::write_byte(TEMP_SENSOR_CMD_CONVERTT);
 	while (OneWire::read_bit() == 0) {
 		// The conversion is still in progress.
 		// Wait until the conversion is done.
 	}
 
-	// The conversion is now done
-	OneWire::init_communication();
-	OneWire::write_byte(TEMP_SENSOR_CMD_SKIPROM);
-	OneWire::write_byte(TEMP_SENSOR_CMD_READSCRATCHPAD);
-	uint8_t temp_lsb = OneWire::read_byte();
-	uint8_t temp_msb = OneWire::read_byte();
+	// The conversion is now done.
+	data_t data;
+	read_data(&data);
 
-	// Reset the bus, because there is no
-	// need for reading other scratchpad
-	// bytes.
-	OneWire::reset();
-
-	// temp = 0x0000, temp_msb = 0x002A
-	temp |= temp_msb; // 0x002A
-	// Shift the MS byte
-	temp <<= 8; //0x002A --> 0x2A00
-	temp |= temp_lsb;
-
-	// TODO convert temperature
-
-	return temp;
+	return convert_temperature(data.TEMP_LSB, data.TEMP_MSB, get_resolution(data.CFG));
 }
 
 /**
@@ -81,7 +64,7 @@ void read_data(data_t* data)
  * measures temperature that is higher than
  * this value, the alarm flag is set.
  */
-void set_alarm_high(uint8_t temp_high)
+void set_alarm_high(int8_t temp_high)
 {
 	config_t config;
 
@@ -96,7 +79,7 @@ void set_alarm_high(uint8_t temp_high)
  * measures temperature that is lower than
  * this value, the alarm flag is set.
  */
-void set_alarm_low(uint8_t temp_low)
+void set_alarm_low(int8_t temp_low)
 {
 	config_t config;
 
@@ -104,6 +87,31 @@ void set_alarm_low(uint8_t temp_low)
 	config.TL = temp_low;
 
 	write_scratchpad(&config);
+}
+
+/**
+ * Gets resolution from CFG byte.
+ */
+static resolution_t get_resolution(uint8_t cfg_byte)
+{
+	if (READ_BIT(cfg_byte, TEMP_SENSOR_CFG_R0 | TEMP_SENSOR_CFG_R1) == 0) {
+		return RESOLUTION_9_BIT;
+	}
+	else if (READ_BIT(cfg_byte, TEMP_SENSOR_CFG_R0 | TEMP_SENSOR_CFG_R1) ==
+			(TEMP_SENSOR_CFG_R0 | TEMP_SENSOR_CFG_R1))
+	{
+		return RESOLUTION_12_BIT;
+	}
+	else if (READ_BIT(cfg_byte, TEMP_SENSOR_CFG_R0) == TEMP_SENSOR_CFG_R0) {
+		return RESOLUTION_10_BIT;
+	}
+	else if (READ_BIT(cfg_byte, TEMP_SENSOR_CFG_R1) == TEMP_SENSOR_CFG_R1) {
+		return RESOLUTION_11_BIT;
+	}
+
+	else {
+		return RESOLUTION_9_BIT;
+	}
 }
 
 /**
@@ -164,24 +172,7 @@ void write_scratchpad(config_t* config)
 
 void debug()
 {
-	// Write scratchpad.
-	config_t config{10,20,255};
-	SET_RES(config.CFG, RESOLUTION_9_BIT);
-	//write_scratchpad(&config);
 
-	// Read scratchpad.
-	OneWire::init_communication();
-	OneWire::write_byte(TEMP_SENSOR_CMD_SKIPROM);
-	OneWire::write_byte(TEMP_SENSOR_CMD_READSCRATCHPAD);
-	volatile uint8_t lsb = OneWire::read_byte();
-	volatile uint8_t msb = OneWire::read_byte();
-	volatile uint8_t th = OneWire::read_byte();
-	volatile uint8_t tl = OneWire::read_byte();
-	volatile uint8_t cfg = OneWire::read_byte();
-	for (int i=0; i<3; ++i) {
-		OneWire::read_byte();
-	}
-	volatile uint8_t crc = OneWire::read_byte();
 }
 
 /**
@@ -213,10 +204,10 @@ void read_config(config_t* config)
  * Get the temperature registers from the sensor and convert
  * them into double format. See doc for more info.
  */
-double convert_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
+static double convert_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
 {
 	// Check if sign bit(s) is set
-	if (msb >> 3) {
+	if (msb >> 3) { // Sign bit is set
 		uint16_t temp = msb;
 		temp <<= 8;
 		temp += lsb;
@@ -231,10 +222,9 @@ double convert_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
 	}
 }
 
-// FIXME
 static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_t resolution)
 {
-	/* LSB */
+	// LSB
 	int lower_bound = -4;
 	int upper_bound = 3;
 
@@ -244,12 +234,15 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_
 		break;
 	case RESOLUTION_11_BIT:
 		lower_bound = -3;
+		lsb >>= 1;
 		break;
 	case RESOLUTION_10_BIT:
 		lower_bound = -2;
+		lsb >>= 2;
 		break;
 	case RESOLUTION_9_BIT:
 		lower_bound = -1;
+		lsb >>= 3;
 		break;
 	}
 
@@ -257,7 +250,7 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_
 	for (int i = lower_bound; i <= upper_bound; i++) {
 		uint8_t last_bit = lsb & 0x01;
 		if (last_bit)
-			//sum += pow(2, i);
+			sum += pow(2, i);
 		lsb >>= 1;
 	}
 
@@ -265,7 +258,7 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_
 	for (int i = 4; i <= 6; i++) {
 		uint8_t last_bit = msb & 0x01;
 		if (last_bit)
-			//sum += pow(2, i);
+			sum += pow(2, i);
 		msb >>= 1;
 	}
 

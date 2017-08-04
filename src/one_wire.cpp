@@ -22,7 +22,6 @@ static void master_pull_bus_low();
 static int slave_pull_bus_low();
 static int slave_release_bus();
 static inline void write_bit(uint8_t bit);
-static inline uint8_t read_bit();
 static inline void wait(uint32_t micros);
 
 /**
