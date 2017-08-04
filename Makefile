@@ -44,6 +44,7 @@ LDFLAGS += -Wl,-u,Reset_Handler -Wl,--defsym=malloc_getpagesize_P=0x1000
 INCLUDES=\
 -I./inc \
 -I./hardware \
+-I./tests \
 -I$(HAL)/Inc \
 -I$(BSP)/STM3210C_EVAL \
 -I$(BSP)/Components/ili9325 \
@@ -186,7 +187,7 @@ flash: $(ELF)
 
 # Debug
 debug: $(ELF)
-	$(GDB) -ex "target remote | openocd -s ${OPENOCD_SCRIPTS} -f ./stm3210c_eval.cfg --pipe" -ex "load"
+	$(GDB) $(ELF) -x gdb_cmds.txt
 
 -include $(DEPENDENCIES)
 
