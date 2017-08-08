@@ -20,7 +20,7 @@ void intervalframe_test()
 	std::vector<IntervalFrameData> data_vec = intv_fr.getData();
 
 	// Process data
-	EEPROM& eeprom = eeprom.getInstance();
+	EEPROM& eeprom = EEPROM::getInstance();
 	eeprom.save(data_vec);
 
 	std::vector<IntervalFrameData> data_vec_copy;
@@ -161,16 +161,9 @@ int main()
 
 #endif
 
-	if (TempSensor::init() == 0) {
-		error_handler();
-	}
-
-	if (!TempSensorTests::run_all_tests()) {
-		error_handler();
-	}
 
 	//main_test();
-	//mainframe_test();
+	mainframe_test();
 	//static_time_window_test();
 	//intervalframe_test();
 

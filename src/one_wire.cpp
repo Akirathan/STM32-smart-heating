@@ -23,11 +23,18 @@ static int slave_pull_bus_low();
 static int slave_release_bus();
 static inline void wait(uint32_t micros);
 
+// Private variables
+static bool initialized = false;
+
 /**
  * Init the one-wire peripheral.
  */
 uint32_t init()
 {
+	if (initialized) {
+		return 0;
+	}
+
 	// Init clock
 	if (TEMP_DATA_GPIOPORT == GPIOA) {
 		__HAL_RCC_GPIOA_CLK_ENABLE()
@@ -58,6 +65,7 @@ uint32_t init()
 	init.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(CLK_PORT, &init);
 
+	initialized = true;
 	// Init DWT
 	return init_DWT();
 }

@@ -8,10 +8,10 @@
 #ifndef INC_STATIC_TEMP_WINDOW_HPP_
 #define INC_STATIC_TEMP_WINDOW_HPP_
 
-#include <cstdio>
+#include "stm3210c_eval_lcd.h"
 #include "hideable_window.hpp"
 #include "rtc_controller.hpp"
-#include "stm3210c_eval_lcd.h"
+#include "temp_sensor.hpp"
 #include "window.hpp"
 #include "lcd.hpp"
 #include "callbacks.hpp"
