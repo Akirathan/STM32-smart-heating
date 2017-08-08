@@ -28,7 +28,7 @@ void TempController::minCallback()
 	if (temp - tempBoundary <= expected_temp && expected_temp <= temp + tempBoundary) {
 		// Temperature inside bounds - do nothing.
 	}
-	else {
+	else if (temp < expected_temp){
 		// Turn heating on.
 		relay.switchOn();
 	}
