@@ -3,7 +3,7 @@ PROJECT = generic_eval
 ELF = $(PROJECT).elf
 
 # Library paths (adjust to match your needs)
-STM32F1CUBE = c:/Users/lenovo/STM/STM32Cube_FW_F1_V1.3.0
+STM32F1CUBE = /home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0
 CMSIS = $(STM32F1CUBE)/Drivers/CMSIS
 BSP = $(STM32F1CUBE)/Drivers/BSP
 HAL = $(STM32F1CUBE)/Drivers/STM32F1xx_HAL_Driver
@@ -18,8 +18,8 @@ OBJCOPY = $(TOOLCHAIN_PREFIX)objcopy
 SIZE = $(TOOLCHAIN_PREFIX)size
 GDB = $(TOOLCHAIN_PREFIX)gdb-py
 AS = $(TOOLCHAIN_PREFIX)as
-OPENOCD = c:/Users/lenovo/openocd/bin/openocd.exe
-OPENOCD_SCRIPTS = c:/Users/lenovo/openocd/share/openocd/scripts
+OPENOCD = openocd
+OPENOCD_SCRIPTS = /usr/share/openocd/scripts
 
 # Compiler and linker options
 CFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
@@ -81,6 +81,7 @@ APP_OBJECTS += src/temp_sensor.o
 APP_OBJECTS += src/main.o 
 APP_OBJECTS += src/one_wire.o
 APP_OBJECTS += src/time.o
+APP_OBJECTS += src/callbacks.o
 
 # Test objects
 TESTS_OBJECTS += tests/temp_sensor_tests.o
