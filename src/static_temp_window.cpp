@@ -61,7 +61,7 @@ void StaticTempWindow::measure()
 		//TODO: error handling
 	}
 
-	rtc.registerMinuteCallback(this);
+	registerMinCallback();
 	registeredCallback = true;
 }
 

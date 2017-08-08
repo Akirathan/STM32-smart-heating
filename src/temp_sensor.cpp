@@ -20,6 +20,7 @@ static bool initialized = false;
 
 /**
  * Initializes one-wire peripheral which can be initialized just once.
+ * Also sets resolution to 10-bit.
  */
 uint32_t init()
 {

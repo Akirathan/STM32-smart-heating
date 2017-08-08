@@ -11,16 +11,20 @@
 #ifndef INC_CALLBACKS_HPP_
 #define INC_CALLBACKS_HPP_
 
+#include "rtc_controller.hpp"
+
 class ISecCallback {
 public:
 	virtual ~ISecCallback() = default;
 	virtual void secCallback() = 0;
+	void registerSecCallback();
 };
 
 class IMinCallback {
 public:
 	virtual ~IMinCallback() = default;
 	virtual void minCallback() = 0;
+	void registerMinCallback();
 };
 
 

@@ -155,10 +155,10 @@ void StaticTimeWindow::runClock()
 
 	// Register minute (second) callback.
 	if (secPrecision) {
-		RTCController::getInstance().registerSecondCallback(this);
+		registerSecCallback();
 	}
 	else {
-		RTCController::getInstance().registerMinuteCallback(this);
+		registerMinCallback();
 	}
 }
 
