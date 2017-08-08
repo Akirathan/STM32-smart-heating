@@ -46,6 +46,9 @@ void MainFrame::passControl()
 	timeWindow.runClock();
 	actualTempWindow.measure();
 
+	// Initialize temperature controlling.
+	TempController::getInstance().controlTemperature();
+
 	while (true) {
 		drawHeader();
 
@@ -93,6 +96,9 @@ void MainFrame::passControl()
 			// Set intervals.
 			frame.passControl();
 			data_vec = frame.getData();
+
+			// Reload data into TempController
+			TempController::getInstance().reloadIntervalData(data_vec);
 
 			// Save intervals into EEPROM.
 			EEPROM::getInstance().save(data_vec);

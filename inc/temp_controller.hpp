@@ -27,6 +27,7 @@ public:
 	virtual void minCallback() override;
 	virtual void registerMinCallback() override;
 	void controlTemperature();
+	void reloadIntervalData(std::vector<IntervalFrameData>& data_vec);
 private:
 	const double tempBoundary = 0.5;
 	std::vector<IntervalFrameData> dataVec;

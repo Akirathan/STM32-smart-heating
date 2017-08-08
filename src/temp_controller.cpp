@@ -50,9 +50,6 @@ TempController::TempController()
 		// TODO Error: EEPROM supposed to contain data.
 	}
 	eeprom.load(dataVec);
-
-
-
 }
 
 void TempController::controlTemperature()
@@ -87,4 +84,9 @@ uint32_t TempController::currentIntervalTemperature()
 
 	// Unreachable code.
 	return 0;
+}
+
+void TempController::reloadIntervalData(std::vector<IntervalFrameData>& data_vec)
+{
+	dataVec = data_vec;
 }

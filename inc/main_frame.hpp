@@ -16,6 +16,7 @@
 #include "static_temp_window.hpp"
 #include "window_system.hpp"
 #include "lcd.hpp"
+#include "temp_controller.hpp"
 
 class MainFrame {
 public:
