@@ -15,12 +15,25 @@ static double convert_positive_temperature(uint8_t lsb, uint8_t msb, resolution_
 static resolution_t get_resolution(uint8_t cfg_byte);
 static void write_scratchpad(config_t* config);
 
+// Private variables
+static bool initialized = false;
+
 /**
- * Initializes one-wire peripheral.
+ * Initializes one-wire peripheral which can be initialized just once.
  */
 uint32_t init()
 {
-	return OneWire::init();
+	if (initialized) {
+		return 0;
+	}
+
+	uint32_t ret = OneWire::init();
+
+	// TODO error handling
+
+	set_resolution(RESOLUTION_10_BIT);
+	initialized = true;
+	return ret;
 }
 
 double measure_temperature()
@@ -129,8 +142,10 @@ static resolution_t get_resolution(uint8_t cfg_byte)
  * higher the resolution is, more time for
  * the measurement is needed.
  *
+ * Note that this function should not be called from client code.
+ *
  * @param resolution should be one of
- *   one_wire_resolution_t values
+ *   resolution_t values
  */
 void set_resolution(resolution_t resolution)
 {
