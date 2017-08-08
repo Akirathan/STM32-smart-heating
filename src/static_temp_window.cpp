@@ -29,12 +29,13 @@ StaticTempWindow::~StaticTempWindow()
  */
 void StaticTempWindow::minCallback()
 {
-	// TODO: measure temperature
-
+	// TempSensor is initialized just once.
+	TempSensor::init();
+	temp = TempSensor::measure_temperature();
 	draw();
 }
 
-void StaticTempWindow::setTemp(uint32_t temp)
+void StaticTempWindow::setTemp(double temp)
 {
 	this->temp = temp;
 }
@@ -54,7 +55,7 @@ void StaticTempWindow::show()
  */
 void StaticTempWindow::measure()
 {
-	RTCController &rtc = RTCController::getInstance();
+	RTCController& rtc = RTCController::getInstance();
 
 	if (!rtc.isTimeSet()) {
 		//TODO: error handling
@@ -77,7 +78,8 @@ void StaticTempWindow::draw() const
 	}
 
 	char text[2];
-	sprintf(text, "%02lu", temp);
+	sprintf(text, "%2.1f", temp);
 	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
 }
+
 

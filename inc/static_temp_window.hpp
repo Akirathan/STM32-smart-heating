@@ -28,10 +28,10 @@ public:
 	virtual void minCallback() override;
 	void hide() override;
 	void show() override;
-	void setTemp(uint32_t temp);
+	void setTemp(double temp);
 	void measure();
 private:
-	uint32_t temp = 0;
+	double temp = 0;
 	bool registeredCallback = false;
 };
 
