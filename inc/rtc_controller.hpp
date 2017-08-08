@@ -12,10 +12,7 @@
 #include "stm32f1xx_hal.h"
 #include "stm3210c_eval.h"
 #include "stats.hpp"
-//#include "callbacks.hpp"
-
-class IMinCallback;
-class ISecCallback;
+#include "callbacks.hpp"
 
 /**
  * Singleton class.

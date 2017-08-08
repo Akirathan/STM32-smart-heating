@@ -26,6 +26,7 @@ public:
 	~StaticTempWindow();
 	virtual void draw() const override;
 	virtual void minCallback() override;
+	virtual void registerMinCallback() override;
 	void hide() override;
 	void show() override;
 	void setTemp(double temp);

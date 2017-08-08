@@ -31,7 +31,9 @@ public:
 	void show() override;
 	void runClock();
 	virtual void secCallback() override;
+	virtual void registerSecCallback() override;
 	virtual void minCallback() override;
+	virtual void registerMinCallback() override;
 private:
 	uint8_t hours = 0;
 	uint8_t minutes = 0;

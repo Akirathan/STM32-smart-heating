@@ -35,6 +35,11 @@ void StaticTempWindow::minCallback()
 	draw();
 }
 
+void StaticTempWindow::registerMinCallback()
+{
+	RTCController::getInstance().registerMinuteCallback(this);
+}
+
 void StaticTempWindow::setTemp(double temp)
 {
 	this->temp = temp;

@@ -170,8 +170,17 @@ void StaticTimeWindow::secCallback()
 	secCallback_();
 }
 
+void StaticTimeWindow::registerSecCallback()
+{
+	RTCController::getInstance().registerSecondCallback(this);
+}
+
 void StaticTimeWindow::minCallback()
 {
 	minCallback_();
 }
 
+void StaticTimeWindow::registerMinCallback()
+{
+	RTCController::getInstance().registerMinuteCallback(this);
+}
