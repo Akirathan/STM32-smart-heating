@@ -67,6 +67,8 @@ void MainFrame::passControl()
 		system.addControl(&overviewButton);
 		system.addControl(&resetButton);
 
+		// Control from this function is returned when overview or reset button
+		// are pressed.
 		system.passControl();
 
 		std::vector<IntervalFrameData> data_vec;

@@ -71,14 +71,16 @@ void StaticTempWindow::draw() const
 		return;
 	}
 
-	// This is needed because this method is called
+	// This is needed because the draw function is called
 	// from second interrupt handler.
 	if (!LCD::is_initialized()) {
 		return;
 	}
 
-	char text[2];
-	sprintf(text, "%2.1f", temp);
+	// FIXME: printing format %2.1f does not work
+	uint32_t u_temp = (uint32_t)temp;
+	char text[3];
+	sprintf(text, "%lu", u_temp);
 	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
 }
 
