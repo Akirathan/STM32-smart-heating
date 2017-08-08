@@ -81,6 +81,7 @@ APP_OBJECTS += src/temp_sensor.o
 APP_OBJECTS += src/main.o 
 APP_OBJECTS += src/one_wire.o
 APP_OBJECTS += src/time.o
+APP_OBJECTS += src/temp_controller.o
 
 # Test objects
 TESTS_OBJECTS += tests/temp_sensor_tests.o
