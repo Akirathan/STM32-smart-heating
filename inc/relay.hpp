@@ -16,9 +16,15 @@
 #define RELAY_POWER_GPIOPIN		GPIO_PIN_15
 #define RELAY_POWER_GPIOPORT	GPIOD
 
-
-void relay_Init();
-void relay_SwitchOn();
-void relay_SwitchOff();
+class Relay {
+public:
+	static Relay& getInstance();
+	Relay(const Relay&) = delete;
+	void operator=(const Relay&) = delete;
+	void switchOn();
+	void switchOff();
+private:
+	Relay();
+};
 
 #endif /* RELAY_H_ */

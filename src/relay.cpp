@@ -7,10 +7,24 @@
 
 #include "relay.hpp"
 
-/**
- * Init the relay peripheral. Supply the power to the relay.
- */
-void relay_Init() {
+Relay& Relay::getInstance()
+{
+	static Relay instance;
+	return instance;
+}
+
+void Relay::switchOn()
+{
+	HAL_GPIO_WritePin(RELAY_DATA_GPIOPORT, RELAY_DATA_GPIOPIN, GPIO_PIN_SET);
+}
+
+void Relay::switchOff()
+{
+	HAL_GPIO_WritePin(RELAY_DATA_GPIOPORT, RELAY_DATA_GPIOPIN, GPIO_PIN_RESET);
+}
+
+Relay::Relay()
+{
 	/* Init clock for data pin and for power pin */
 	if (RELAY_DATA_GPIOPORT == GPIOA || RELAY_POWER_GPIOPORT == GPIOA) {
 		__HAL_RCC_GPIOA_CLK_ENABLE();
@@ -43,12 +57,4 @@ void relay_Init() {
 	HAL_GPIO_Init(RELAY_POWER_GPIOPORT, &GPIO_Init);
 	// Toggle the power
 	HAL_GPIO_WritePin(RELAY_POWER_GPIOPORT, RELAY_POWER_GPIOPIN, GPIO_PIN_SET);
-}
-
-void relay_SwitchOn() {
-	HAL_GPIO_WritePin(RELAY_DATA_GPIOPORT, RELAY_DATA_GPIOPIN, GPIO_PIN_SET);
-}
-
-void relay_SwitchOff() {
-	HAL_GPIO_WritePin(RELAY_DATA_GPIOPORT, RELAY_DATA_GPIOPIN, GPIO_PIN_RESET);
 }
