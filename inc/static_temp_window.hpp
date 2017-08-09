@@ -16,8 +16,13 @@
 #include "lcd.hpp"
 #include "callbacks.hpp"
 
+// For Preset window
+#include <vector>
+#include "temp_controller.hpp"
+
+
 /**
- * Base class providing draw method.
+ * Base class providing draw method. Use hide method to force not-drawing of this window.
  */
 class StaticTempWindow : public StaticWindow, public IHideableWindow
 {
@@ -32,7 +37,7 @@ protected:
 };
 
 /**
- * Can run on background. Use hide method to force not-drawing of this window.
+ * Can run on background.
  */
 class StaticMeasureTempWindow : public StaticTempWindow, public IMinCallback
 {
@@ -42,6 +47,22 @@ public:
 	virtual void minCallback() override;
 	virtual void registerMinCallback() override;
 	void measure();
+private:
+	bool registeredCallback = false;
+};
+
+/**
+ * Used in mainframe to display temperature that is preset due to values
+ * stored in EEPROM.
+ */
+class StaticPresetTempWindow : public StaticTempWindow, public IMinCallback
+{
+public:
+	StaticPresetTempWindow(const Coord& c = Coord(0,0));
+	~StaticPresetTempWindow();
+	virtual void minCallback() override;
+	virtual void registerMinCallback() override;
+	void showPresetTemp();
 private:
 	bool registeredCallback = false;
 };
