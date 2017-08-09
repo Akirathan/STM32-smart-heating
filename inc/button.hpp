@@ -4,7 +4,7 @@
  *  Created on: Jul 14, 2017
  *      Author: mayfa
  *
- * This file contains definitions for generic button.
+ * This file contains definition for generic button.
  */
 
 #ifndef INC_BUTTONS_HPP_
@@ -15,10 +15,6 @@
 #include "window.hpp"
 
 class Button : public ControlWindow {
-	std::string name;
-	bool pushed = false;
-	bool focused = false;
-	void unsetFocus();
 public:
 	Button(const Coord& coord, const std::string& name);
 	Button();
@@ -27,6 +23,11 @@ public:
 	virtual void setFocus(Message msg) override;
 	bool isPushed() const;
 	void setPushed(bool b);
+private:
+	std::string name;
+	bool pushed = false;
+	bool focused = false;
+	void unsetFocus();
 };
 
 

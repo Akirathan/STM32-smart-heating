@@ -66,7 +66,7 @@ APP_OBJECTS += src/time_window.o
 APP_OBJECTS += src/static_time_window.o
 APP_OBJECTS += src/temp_window.o
 APP_OBJECTS += src/static_temp_window.o
-APP_OBJECTS += src/buttons.o
+APP_OBJECTS += src/button.o
 
 APP_OBJECTS += src/lcd.o
 APP_OBJECTS += src/window_system.o

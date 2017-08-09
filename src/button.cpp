@@ -5,7 +5,7 @@
  *      Author: mayfa
  */
 
-#include "buttons.hpp"
+#include <button.hpp>
 
 Button::Button()
 	: Button(Coord(0,0), "")
