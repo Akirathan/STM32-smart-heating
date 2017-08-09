@@ -20,7 +20,6 @@ static inline void set_receive();
 static void master_release_bus();
 static void master_pull_bus_low();
 static int slave_pull_bus_low();
-static int slave_release_bus();
 static inline void wait(uint32_t micros);
 
 // Private variables
@@ -311,22 +310,4 @@ static inline int slave_pull_bus_low()
 		return 0;
 	}
 }
-
-/**
- * Checks if slave released the bus.
- */
-static inline int slave_release_bus()
-{
-	set_receive();
-	// Wait a moment so the slave can pull the bus low if he intends to
-	wait(5);
-	if (HAL_GPIO_ReadPin(TEMP_DATA_GPIOPORT, TEMP_DATA_GPIOPIN) == GPIO_PIN_SET) {
-		// The bus is released
-		return 1;
-	}
-	else {
-		return 0;
-	}
-}
-
 } // namespace one_wire
