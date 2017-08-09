@@ -10,16 +10,8 @@
 
 #include "stm3210c_eval_lcd.h"
 #include "hideable_window.hpp"
-#include "rtc_controller.hpp"
-#include "temp_sensor.hpp"
 #include "window.hpp"
 #include "lcd.hpp"
-#include "callbacks.hpp"
-
-// For Preset window
-#include <vector>
-#include "temp_controller.hpp"
-
 
 /**
  * Base class providing draw method. Use hide method to force not-drawing of this window.
@@ -34,37 +26,6 @@ public:
 	void setTemp(double temp);
 protected:
 	double temp = 0;
-};
-
-/**
- * Can run on background.
- */
-class StaticMeasureTempWindow : public StaticTempWindow, public IMinCallback
-{
-public:
-	StaticMeasureTempWindow(const Coord& c = Coord(0,0));
-	~StaticMeasureTempWindow();
-	virtual void minCallback() override;
-	virtual void registerMinCallback() override;
-	void measure();
-private:
-	bool registeredCallback = false;
-};
-
-/**
- * Used in mainframe to display temperature that is preset due to values
- * stored in EEPROM.
- */
-class StaticPresetTempWindow : public StaticTempWindow, public IMinCallback
-{
-public:
-	StaticPresetTempWindow(const Coord& c = Coord(0,0));
-	~StaticPresetTempWindow();
-	virtual void minCallback() override;
-	virtual void registerMinCallback() override;
-	void showPresetTemp();
-private:
-	bool registeredCallback = false;
 };
 
 
