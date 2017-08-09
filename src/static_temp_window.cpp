@@ -14,36 +14,6 @@ StaticTempWindow::StaticTempWindow(const Coord& c)
 	: StaticWindow(c)
 { }
 
-/**
- * Unregisters minute callback from rtc.
- */
-StaticTempWindow::~StaticTempWindow()
-{
-	if (registeredCallback) {
-		RTCController::getInstance().unregisterMinuteCallback(this);
-	}
-}
-
-/**
- * Measures temperature and redraws window.
- */
-void StaticTempWindow::minCallback()
-{
-	// TempSensor is initialized just once.
-	TempSensor::init();
-	temp = TempSensor::measure_temperature();
-	draw();
-}
-
-void StaticTempWindow::registerMinCallback()
-{
-	RTCController::getInstance().registerMinuteCallback(this);
-}
-
-void StaticTempWindow::setTemp(double temp)
-{
-	this->temp = temp;
-}
 
 void StaticTempWindow::hide()
 {
@@ -55,20 +25,11 @@ void StaticTempWindow::show()
 	hidden = false;
 }
 
-/**
- * Registers for minute callback.
- */
-void StaticTempWindow::measure()
+void StaticTempWindow::setTemp(double temp)
 {
-	RTCController& rtc = RTCController::getInstance();
-
-	if (!rtc.isTimeSet()) {
-		//TODO: error handling
-	}
-
-	registerMinCallback();
-	registeredCallback = true;
+	this->temp = temp;
 }
+
 
 void StaticTempWindow::draw() const
 {
@@ -89,4 +50,47 @@ void StaticTempWindow::draw() const
 	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
 }
 
+StaticMeasureTempWindow::StaticMeasureTempWindow(const Coord& c)
+	: StaticTempWindow(c)
+{ }
 
+/**
+ * Unregisters minute callback from rtc.
+ */
+StaticMeasureTempWindow::~StaticMeasureTempWindow()
+{
+	if (registeredCallback) {
+		RTCController::getInstance().unregisterMinuteCallback(this);
+	}
+}
+
+/**
+ * Registers for minute callback.
+ */
+void StaticMeasureTempWindow::measure()
+{
+	RTCController& rtc = RTCController::getInstance();
+
+	if (!rtc.isTimeSet()) {
+		//TODO: error handling
+	}
+
+	registerMinCallback();
+	registeredCallback = true;
+}
+
+/**
+ * Measures temperature and redraws window.
+ */
+void StaticMeasureTempWindow::minCallback()
+{
+	// TempSensor is initialized just once.
+	TempSensor::init();
+	temp = TempSensor::measure_temperature();
+	draw();
+}
+
+void StaticMeasureTempWindow::registerMinCallback()
+{
+	RTCController::getInstance().registerMinuteCallback(this);
+}
