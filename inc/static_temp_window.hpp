@@ -17,22 +17,32 @@
 #include "callbacks.hpp"
 
 /**
- * Can run on background. Use hide method to force not-drawing of this window.
+ * Base class providing draw method.
  */
-class StaticTempWindow : public StaticWindow, public IMinCallback, public IHideableWindow
+class StaticTempWindow : public StaticWindow, public IHideableWindow
 {
 public:
 	StaticTempWindow(const Coord& c = Coord(0,0));
-	~StaticTempWindow();
 	virtual void draw() const override;
-	virtual void minCallback() override;
-	virtual void registerMinCallback() override;
 	void hide() override;
 	void show() override;
 	void setTemp(double temp);
+protected:
+	double temp = 0;
+};
+
+/**
+ * Can run on background. Use hide method to force not-drawing of this window.
+ */
+class StaticMeasureTempWindow : public StaticTempWindow, public IMinCallback
+{
+public:
+	StaticMeasureTempWindow(const Coord& c = Coord(0,0));
+	~StaticMeasureTempWindow();
+	virtual void minCallback() override;
+	virtual void registerMinCallback() override;
 	void measure();
 private:
-	double temp = 0;
 	bool registeredCallback = false;
 };
 
