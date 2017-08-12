@@ -11,7 +11,7 @@
  *
  */
 StaticTempWindow::StaticTempWindow(const Coord& c)
-	: StaticWindow(c)
+	: IStaticWindow(c)
 { }
 
 

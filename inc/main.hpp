@@ -21,7 +21,7 @@
 
 // Test includes
 #include "temp_sensor_tests.hpp"
-//#include "relay.hpp"
+#include "relay.hpp" //
 
 
 #endif //__MAIN_HPP

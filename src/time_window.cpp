@@ -20,7 +20,7 @@ TimeWindow::TimeWindow()
  * Initializes TimeWindow with 5 minuteJump.
  */
 TimeWindow::TimeWindow(const Coord& coord)
-	: ControlWindow(coord)
+	: IControlWindow(coord)
 { }
 
 /**

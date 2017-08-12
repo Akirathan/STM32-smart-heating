@@ -21,8 +21,8 @@ Window::Window(const Coord& coord)
 { }
 
 /**
- * Save system's font before changing
- * it.
+ * @brief
+ * Saves system's font before changing it.
  */
 void Window::saveFont() const
 {
@@ -51,11 +51,11 @@ uint32_t Window::getY() const
 	return coord.y;
 }
 
-ControlWindow::ControlWindow(const Coord& coord)
+IControlWindow::IControlWindow(const Coord& coord)
 	: Window(coord)
 { }
 
-StaticWindow::StaticWindow(const Coord& coord)
+IStaticWindow::IStaticWindow(const Coord& coord)
 	: Window(coord)
 { }
 

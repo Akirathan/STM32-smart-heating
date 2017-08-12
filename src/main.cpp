@@ -68,7 +68,7 @@ void main_test()
 
 	/* Interval setting */
 	std::vector<IntervalFrameData> interval_vec;
-	EEPROM& eeprom = eeprom.getInstance();
+	EEPROM& eeprom = EEPROM::getInstance();
 
 	if (eeprom.isEmpty()) {
 		SetIntervalFrame intv_fr;
@@ -82,8 +82,8 @@ void main_test()
 	}
 
 	/* Main frame */
-
-
+	MainFrame mainframe;
+	mainframe.passControl();
 }
 
 uint8_t memory_try()
@@ -161,11 +161,13 @@ int main()
 
 #endif
 
+	main_test();
+	//mainframe_test();
 
-	//main_test();
-	mainframe_test();
-	//static_time_window_test();
-	//intervalframe_test();
+	/*BSP_LCD_Init();
+	BSP_LCD_Clear(LCD_COLOR_BLACK);
+	BSP_LCD_DisplayStringAt(0, 0, (uint8_t *)"Hello1", CENTER_MODE);
+	BSP_LCD_DisplayStringAt(BSP_LCD_GetXSize()/2, LINE(2), (uint8_t *)"Hello2", LEFT_MODE);*/
 
 	volatile int a = 0;
 	while (1) {

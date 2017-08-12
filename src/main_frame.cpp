@@ -30,8 +30,8 @@ MainFrame::MainFrame()
 	BSP_LCD_SetFont(&Font16);
 
 	timeWindow = StaticTimeWindow(Coord(BSP_LCD_GetXSize()/2 - 30, LINE(1)), true);
-	actualTempWindow = StaticTempWindow(Coord(70, LINE(4)));
-	presetTempWindow = StaticTempWindow(Coord(220, LINE(4)));
+	actualTempWindow = StaticMeasureTempWindow(Coord(70, LINE(4)));
+	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));
 	overviewButton = Button(Coord(BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 40), "overview");
 	resetButton = Button(Coord(BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 20), "reset");
 }
@@ -41,13 +41,14 @@ MainFrame::MainFrame()
  */
 void MainFrame::passControl()
 {
+	// Initialize temperature controlling.
+	TempController::getInstance().controlTemperature();
+
 	// Register time and temperature windows for
 	// minute or second callbacks.
 	timeWindow.runClock();
 	actualTempWindow.measure();
-
-	// Initialize temperature controlling.
-	TempController::getInstance().controlTemperature();
+	presetTempWindow.showPresetTemp();
 
 	while (true) {
 		drawHeader();
@@ -56,6 +57,7 @@ void MainFrame::passControl()
 		// hidden from last frame.
 		timeWindow.show();
 		actualTempWindow.show();
+		presetTempWindow.show();
 
 		// Reset button state
 		overviewButton.setPushed(false);
@@ -79,6 +81,7 @@ void MainFrame::passControl()
 		// Hide windows registered for callbacks.
 		timeWindow.hide();
 		actualTempWindow.hide();
+		presetTempWindow.hide();
 
 		// Find out which button was pressed.
 		if (overviewButton.isPushed()) {

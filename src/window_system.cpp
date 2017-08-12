@@ -105,7 +105,7 @@ void WindowSystem::Windows::next()
 /**
  * Adds control window to the internal data representation and draw it.
  */
-void WindowSystem::Windows::addControl(ControlWindow* window)
+void WindowSystem::Windows::addControl(IControlWindow* window)
 {
 	ctrlWindows.push_back(window);
 
@@ -123,7 +123,7 @@ void WindowSystem::Windows::addControl(ControlWindow* window)
 /**
  * Adds static window to the internal data representation and draw it.
  */
-void WindowSystem::Windows::addStatic(StaticWindow* window)
+void WindowSystem::Windows::addStatic(IStaticWindow* window)
 {
 	staticWindows.push_back(window);
 
@@ -131,12 +131,12 @@ void WindowSystem::Windows::addStatic(StaticWindow* window)
 	staticWindows[staticWindows.size()-1]->draw();
 }
 
-void WindowSystem::addControl(ControlWindow* window)
+void WindowSystem::addControl(IControlWindow* window)
 {
 	return windows.addControl(window);
 }
 
-void WindowSystem::addStatic(StaticWindow* window)
+void WindowSystem::addStatic(IStaticWindow* window)
 {
 	return windows.addStatic(move(window));
 }

@@ -8,11 +8,11 @@
 #ifndef INC_INTERVALFRAME_HPP_
 #define INC_INTERVALFRAME_HPP_
 
+#include <button.hpp>
 #include <interval_frame_data.hpp>
 #include <vector>
 #include "stm3210c_eval.h"
 #include "stm3210c_eval_lcd.h"
-#include "buttons.hpp"
 #include "input.hpp"
 #include "stats.hpp"
 #include "time.hpp"
@@ -21,6 +21,7 @@
 #include "temp_window.hpp"
 #include "static_temp_window.hpp"
 #include "window_system.hpp"
+#include "lcd.hpp"
 
 class IntervalFrame {
 public:

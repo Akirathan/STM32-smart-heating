@@ -15,7 +15,7 @@
 #include <vector>
 #include "window.hpp"
 
-class TimeWindow : public ControlWindow {
+class TimeWindow : public IControlWindow {
 private:
 	enum selected_t {
 		MINUTES,

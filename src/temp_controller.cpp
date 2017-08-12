@@ -32,6 +32,10 @@ void TempController::minCallback()
 		// Turn heating on.
 		relay.switchOn();
 	}
+	// No interval is active.
+	else if (expected_temp == 0) {
+		relay.switchOff();
+	}
 }
 
 void TempController::registerMinCallback()
@@ -82,7 +86,7 @@ uint32_t TempController::currentIntervalTemperature()
 		}
 	}
 
-	// Unreachable code.
+	// In case when no interval is active.
 	return 0;
 }
 

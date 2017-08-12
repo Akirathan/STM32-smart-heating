@@ -14,7 +14,7 @@
 #include "stm3210c_eval_lcd.h"
 #include "window.hpp"
 
-class Button : public ControlWindow {
+class Button : public IControlWindow {
 public:
 	Button(const Coord& coord, const std::string& name);
 	Button();

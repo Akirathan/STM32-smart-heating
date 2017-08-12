@@ -17,7 +17,8 @@
 
 /**
  * Used in mainframe to display temperature that is preset due to values
- * stored in EEPROM.
+ * stored in EEPROM. Minute callback checks for supposed temperature from
+ * TempController.
  */
 class StaticPresetTempWindow : public StaticTempWindow, public IMinCallback
 {

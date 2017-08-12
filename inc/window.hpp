@@ -1,11 +1,11 @@
-/*
+/**
  * window.h
  *
  *  Created on: 18. 2. 2017
  *      Author: Mayfa
  *
- * This header file contains structure(s) representing a generic
- * type of window in program's GUI.
+ * @brief	This header file contains structure(s) representing a generic
+ * 			type of window in program's GUI.
  */
 #ifndef WINDOW_HPP_
 #define WINDOW_HPP_
@@ -18,12 +18,18 @@
 const uint16_t SEL_COLOR = LCD_COLOR_RED;
 
 /**
- * Message between windows and/or between window and system.
+ * @brief
+ * Enum representing messeges between Window and WindowSystem. Refer to
+ * @ref IControlWindow::eventHandler for more informations.
  */
 enum class Message {
 	NONE, ERROR, EXIT, FOCUS_LEFT, FOCUS_RIGHT
 };
 
+/**
+ * @brief
+ * Structure representing coordinates on LCD display.
+ */
 struct Coord {
 	uint16_t x;
 	uint16_t y;
@@ -32,6 +38,12 @@ struct Coord {
 
 bool operator<(const Coord &c1, const Coord &c2);
 
+/**
+ * @brief
+ * Base interface for every window GUI element. Clients should not directly
+ * inherit this interface, instead they should inherit @ref IControlWindow
+ * or @ref IStaticWindow.
+ */
 class Window {
 public:
 	Window(const Coord &coord);
@@ -46,18 +58,29 @@ protected:
 	void loadFont() const;
 };
 
-class ControlWindow: public Window {
+/**
+ * @brief
+ * Interface for user-controllable windows ie. those windows whose values
+ * can be modified via up/down joystick.
+ */
+class IControlWindow: public Window {
 public:
-	ControlWindow(const Coord& coord);
-	virtual ~ControlWindow() = default;
+	IControlWindow(const Coord& coord);
+	virtual ~IControlWindow() = default;
 	virtual Message eventHandler(JOYState_TypeDef joy_state) = 0;
 	virtual void setFocus(Message msg) = 0;
 };
 
-class StaticWindow: public Window {
+/**
+ * @brief
+ * Interface for user non-controllable windows ie. those windows that cannot
+ * be focused at. Classes that inherits this interface only shows some
+ * information.
+ */
+class IStaticWindow: public Window {
 public:
-	StaticWindow(const Coord &coord);
-	virtual ~StaticWindow() = default;
+	IStaticWindow(const Coord &coord);
+	virtual ~IStaticWindow() = default;
 };
 
 #endif
