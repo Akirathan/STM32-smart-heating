@@ -16,7 +16,7 @@
 /**
  * Base class providing draw method. Use hide method to force not-drawing of this window.
  */
-class StaticTempWindow : public StaticWindow, public IHideableWindow
+class StaticTempWindow : public IStaticWindow, public IHideableWindow
 {
 public:
 	StaticTempWindow(const Coord& c = Coord(0,0));

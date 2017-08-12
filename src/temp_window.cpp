@@ -17,7 +17,7 @@ TempWindow::TempWindow()
 { }
 
 TempWindow::TempWindow(const Coord &coord)
-	: ControlWindow(coord), temp(lowBond)
+	: IControlWindow(coord), temp(lowBond)
 { }
 
 Message TempWindow::eventHandler(JOYState_TypeDef joy_state) {

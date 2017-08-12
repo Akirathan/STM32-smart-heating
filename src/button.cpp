@@ -12,7 +12,7 @@ Button::Button()
 { }
 
 Button::Button(const Coord& coord, const std::string& name)
-	: ControlWindow(coord), name(name)
+	: IControlWindow(coord), name(name)
 { }
 
 /**
@@ -38,6 +38,7 @@ Message Button::eventHandler(JOYState_TypeDef joy_state)
 	switch (joy_state) {
 	case JOY_UP:
 	case JOY_DOWN:
+	case JOY_NONE:
 		return Message::NONE;
 	case JOY_LEFT:
 		unsetFocus();
@@ -55,8 +56,8 @@ Message Button::eventHandler(JOYState_TypeDef joy_state)
 }
 
 /**
- * Redraws this window and loads previously
- * configured font.
+ * @brief
+ * Redraws this window and loads previously configured font.
  */
 void Button::unsetFocus()
 {

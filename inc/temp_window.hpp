@@ -15,7 +15,7 @@
 #include <vector>
 #include "window.hpp"
 
-class TempWindow : public ControlWindow {
+class TempWindow : public IControlWindow {
 public:
 	TempWindow();
 	TempWindow(const Coord& coord);

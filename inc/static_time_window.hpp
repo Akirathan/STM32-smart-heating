@@ -18,7 +18,7 @@
 /**
  * Can run on background. Use hide method to force not-drawing of this window.
  */
-class StaticTimeWindow : public StaticWindow, public IHideableWindow,
+class StaticTimeWindow : public IStaticWindow, public IHideableWindow,
 	public ISecCallback, public IMinCallback
 {
 public:

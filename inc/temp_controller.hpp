@@ -28,11 +28,11 @@ public:
 	virtual void registerMinCallback() override;
 	void controlTemperature();
 	void reloadIntervalData(std::vector<IntervalFrameData>& data_vec);
+	uint32_t currentIntervalTemperature();
 private:
 	const double tempBoundary = 0.5;
 	std::vector<IntervalFrameData> dataVec;
 	TempController();
-	uint32_t currentIntervalTemperature();
 };
 
 #endif /* TEMP_CONTROLLER_HPP_ */

@@ -19,27 +19,27 @@ private:
 		Windows(WindowSystem &system);
 		void previous();
 		void next();
-		void addControl(ControlWindow* window);
-		void addStatic(StaticWindow* window);
+		void addControl(IControlWindow* window);
+		void addStatic(IStaticWindow* window);
 	private:
 		friend class WindowSystem;
 		WindowSystem& system;
 		size_t ctrlWindowIdx;
-		std::vector<ControlWindow *> ctrlWindows;
-		std::vector<StaticWindow *> staticWindows;
+		std::vector<IControlWindow *> ctrlWindows;
+		std::vector<IStaticWindow *> staticWindows;
 		size_t ctrlWindowIdxGet() const;
 		void ctrlWindowIdxInc();
 		void ctrlWindowIdxDec();
 	};
 public:
 	AppStatus_TypeDef passControl();
-	void addControl(ControlWindow* window);
-	void addStatic(StaticWindow* window);
+	void addControl(IControlWindow* window);
+	void addStatic(IStaticWindow* window);
 	WindowSystem();
 private:
 	friend class Windows;
 	Windows windows;
-	ControlWindow* currWindow;
+	IControlWindow* currWindow;
 };
 
 
