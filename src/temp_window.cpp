@@ -29,8 +29,9 @@ Message TempWindow::eventHandler(JOYState_TypeDef joy_state) {
 		else {
 			temp--;
 		}
-		draw(); // Redraw
+		draw();
 		break;
+
 	case JOY_UP:
 		if (temp == highBond) {
 			temp = lowBond;
@@ -38,60 +39,57 @@ Message TempWindow::eventHandler(JOYState_TypeDef joy_state) {
 		else {
 			temp++;
 		}
-		draw(); // Redraw
+		draw();
 		break;
+
 	case JOY_LEFT:
 		unsetFocus();
 		return Message::FOCUS_LEFT;
+
 	case JOY_RIGHT:
 		unsetFocus();
 		return Message::FOCUS_RIGHT;
+
 	default:
 		return Message::NONE;
 	}
 	return Message::NONE;
 }
 
-/**
- * Suppose font is already set.
- */
 void TempWindow::draw()const
 {
-	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)getTempstring().c_str(), LEFT_MODE);
+	char text[3];
+	LCD::Font font;
+
+	if (focused) {
+		font = LCD::SEL_FONT;
+	}
+	else {
+		font = LCD::NORMAL_FONT;
+	}
+
+	sprintf(text, "%02lu", temp);
+	LCD::print_string(coord.x, coord.y, (uint8_t *)text, LEFT_MODE, font);
 }
 
 /**
- * Redraws this window and loads font.
+ * @brief
+ * Redraws this window with @ref LCD::NORMAL_FONT.
  */
 void TempWindow::unsetFocus()
 {
 	focused = false;
-	loadFont();
 	draw();
 }
 
 /**
- * Saves current font for further drawing and
- * immediately redraws this window.
+ * @brief
+ * Redraws this window with @ref LCD::SEL_FONT.
  */
 void TempWindow::setFocus(Message msg)
 {
 	focused = true;
-	saveFont();
-	BSP_LCD_SetTextColor(SEL_COLOR);
 	draw();
-}
-
-/**
- * Convert temperature member temp_ to string.
- */
-string TempWindow::getTempstring() const
-{
-	char buff[2];
-	sprintf(buff, "%02lu", temp);
-
-	string s(buff);
-	return s;
 }
 
 uint32_t TempWindow::getTemp() const
