@@ -11,9 +11,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
 #include <vector>
 #include "window.hpp"
+#include "lcd.hpp"
 
 class TempWindow : public IControlWindow {
 public:
@@ -30,7 +30,6 @@ private:
 	// Temperature lower boundary
 	static const uint32_t lowBond = 8;
 	bool focused = false;
-	std::string getTempstring() const;
 	void unsetFocus();
 };
 
