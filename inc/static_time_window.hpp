@@ -24,6 +24,9 @@
  *
  * @note
  * Note that this class can (and should) run on background.
+ * @note
+ * Just one of @ref secCallback and @ref minCallback members is used at one
+ * time for any instance.
  */
 class StaticTimeWindow : public IStaticWindow, public IHideableWindow,
 	public ISecCallback, public IMinCallback
@@ -46,8 +49,6 @@ private:
 	uint8_t minutes = 0;
 	uint8_t seconds = 0;
 	bool secPrecision = true;
-	void secCallback_();
-	void minCallback_();
 	void incMin();
 	void incSec();
 };

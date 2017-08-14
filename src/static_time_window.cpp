@@ -62,22 +62,6 @@ void StaticTimeWindow::incSec()
 }
 
 /**
- * Used as callback function.
- */
-void StaticTimeWindow::secCallback_()
-{
-	// Increase seconds and redraw window
-	incSec();
-	draw();
-}
-
-void StaticTimeWindow::minCallback_()
-{
-	incMin();
-	draw();
-}
-
-/**
  * Prints hours and minutes. Prints also seconds if SECOND_PRECISION
  * is defined.
  */
@@ -140,12 +124,11 @@ void StaticTimeWindow::show()
 }
 
 /**
- * Initializes the clock and registers for second or
- * minute callback.
+ * @brief
+ * Initializes the clock and registers for second or minute callback.
  *
- * Note: that constructor just sets time as 00:00
- * Note: supposes that rtc is already initialized and the
- * time is set.
+ * @note
+ * Supposes that @ref RTCController is already initialized and the time is set.
  */
 void StaticTimeWindow::runClock()
 {
@@ -170,11 +153,14 @@ void StaticTimeWindow::runClock()
 }
 
 /**
- * Used as callback from rtc. Just calls member function.
+ * @note
+ * Used (called from @ref RTCController) with second precision.
  */
 void StaticTimeWindow::secCallback()
 {
-	secCallback_();
+	// Increase seconds and redraw window
+	incSec();
+	draw();
 }
 
 void StaticTimeWindow::registerSecCallback()
@@ -182,9 +168,14 @@ void StaticTimeWindow::registerSecCallback()
 	RTCController::getInstance().registerSecondCallback(this);
 }
 
+/**
+ * @note
+ * Used (called from @ref RTCController) without second precision.
+ */
 void StaticTimeWindow::minCallback()
 {
-	minCallback_();
+	incMin();
+	draw();
 }
 
 void StaticTimeWindow::registerMinCallback()
