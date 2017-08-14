@@ -7,20 +7,12 @@
 
 #include "temp_window.hpp"
 
-using namespace std;
-
-/**
- * Needed by intervalframe ctor.
- */
-TempWindow::TempWindow()
-	: TempWindow(Coord(0,0))
-{ }
-
 TempWindow::TempWindow(const Coord &coord)
 	: IControlWindow(coord), temp(lowBond)
 { }
 
-Message TempWindow::eventHandler(JOYState_TypeDef joy_state) {
+Message TempWindow::eventHandler(JOYState_TypeDef joy_state)
+{
 	switch (joy_state) {
 	case JOY_DOWN:
 		if (temp == lowBond) {

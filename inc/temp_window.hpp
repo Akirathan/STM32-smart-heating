@@ -8,17 +8,12 @@
 #ifndef INC_TEMP_WINDOW_HPP_
 #define INC_TEMP_WINDOW_HPP_
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
 #include "window.hpp"
 #include "lcd.hpp"
 
 class TempWindow : public IControlWindow {
 public:
-	TempWindow();
-	TempWindow(const Coord& coord);
+	TempWindow(const Coord& coord = Coord(0,0));
 	Message eventHandler(JOYState_TypeDef joy_state) override;
 	void draw()const override;
 	void setFocus(Message msg) override;
