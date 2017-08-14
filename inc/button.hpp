@@ -11,7 +11,7 @@
 #define INC_BUTTONS_HPP_
 
 #include <string>
-#include "stm3210c_eval_lcd.h"
+#include "lcd.hpp"
 #include "window.hpp"
 
 class Button : public IControlWindow {
