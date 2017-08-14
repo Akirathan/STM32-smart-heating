@@ -9,33 +9,21 @@
 
 ClkFrame::ClkFrame()
 {
-	/* Initialize joystick peripheral */
+	// Initialize joystick peripheral.
 	if (BSP_JOY_Init(JOY_MODE_GPIO) != IO_OK) {
 		// Error
 	}
 
-	/* Clear the display and init LCD peripheral */
-	if (BSP_LCD_Init() != LCD_OK) {
-		// Error
-	}
-	BSP_LCD_Clear(LCD_COLOR_BLACK);
+	// Clear the display and init LCD peripheral.
+	LCD::init();
 
-	time = TimeWindow(Coord(BSP_LCD_GetXSize()/2 - 35, BSP_LCD_GetYSize()/2 + 10));
-	ok_button = Button(Coord(BSP_LCD_GetXSize()/2 - 15, LINE(8)), "OK");
+	time = TimeWindow(Coord(LCD::get_x_size()/2 - 35, LCD::get_y_size()/2 + 10));
+	ok_button = Button(Coord(LCD::get_x_size()/2 - 15, LINE(8)), "OK");
 }
 
 void ClkFrame::drawHeader() const
 {
-	BSP_LCD_SetFont(&Font24);
-	BSP_LCD_SetTextColor(LCD_COLOR_LIGHTBLUE);
-	BSP_LCD_FillRect(0, 0, BSP_LCD_GetXSize(), 40);
-	BSP_LCD_SetTextColor(LCD_COLOR_GREEN);
-	BSP_LCD_SetBackColor(LCD_COLOR_LIGHTBLUE);
-	BSP_LCD_DisplayStringAt(0, 10, (uint8_t *)"Time setting", CENTER_MODE);
-
-	// Set font back
-	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-	BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
+	LCD::draw_header((uint8_t *)"Time setting");
 }
 
 RTC_TimeTypeDef ClkFrame::passControl()
@@ -54,6 +42,5 @@ RTC_TimeTypeDef ClkFrame::passControl()
 
 	return rtc_time;
 }
-
 
 

@@ -3,13 +3,6 @@
  *
  *  Created on: 4.2.2017
  *      Author: Mayfa
- *
- * This file contains a class for user time selection.
- * The user time selection consists of three windows - hours, minutes
- * and ok (button). User can switch between those windows with
- * left and right joystick buttons. When hours or minutes are selected
- * the up and down joystick buttons are used for increase/decrease
- * the values inside those windows.
  */
 
 #ifndef CLK_FRAME_HPP_
@@ -17,10 +10,15 @@
 
 #include <button.hpp>
 #include "stm3210c_eval.h"
-#include "stm3210c_eval_lcd.h"
 #include "time_window.hpp"
 #include "window_system.hpp"
+#include "lcd.hpp"
 
+/**
+ * @brief
+ * Represents class for user time selection. The user time selection consists
+ * of two windows - clock (hours : minutes) and ok button.
+ */
 class ClkFrame {
 public:
 	ClkFrame();
