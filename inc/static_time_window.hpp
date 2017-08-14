@@ -16,7 +16,14 @@
 #include "lcd.hpp"
 
 /**
- * Can run on background. Use hide method to force not-drawing of this window.
+ * @brief
+ * Class representing a static window that shows current time. Both formats
+ * (hours : minutes) and (hours : minutes : second) are supported - thatswhy
+ * this class derives both @ref ISecCallback and @ref IMinCallback.
+ * Format can be specified with a bool flag passed to constructor.
+ *
+ * @note
+ * Note that this class can (and should) run on background.
  */
 class StaticTimeWindow : public IStaticWindow, public IHideableWindow,
 	public ISecCallback, public IMinCallback
