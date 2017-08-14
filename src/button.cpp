@@ -20,16 +20,16 @@ Button::Button(const Coord& coord, const std::string& name)
  */
 void Button::draw() const
 {
-	if (focused) {
-		saveFont();
-		BSP_LCD_SetTextColor(SEL_COLOR);
-	}
-
-	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)name.c_str(), LEFT_MODE);
+	LCD::Font font;
 
 	if (focused) {
-		loadFont();
+		font = LCD::SEL_FONT;
 	}
+	else {
+		font = LCD::NORMAL_FONT;
+	}
+
+	LCD::print_string(coord.x, coord.y, (uint8_t *)name.c_str(), LEFT_MODE, font);
 }
 
 
