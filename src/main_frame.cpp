@@ -9,31 +9,27 @@
 
 void MainFrame::drawHeader()
 {
-	BSP_LCD_Clear(LCD_COLOR_BLACK);
-	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-	BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
-
-	BSP_LCD_DisplayStringAt(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE);
-	BSP_LCD_DisplayStringAt(185, LINE(3), (uint8_t *)"set temp", LEFT_MODE);
-	BSP_LCD_DisplayStringAt(BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 60,
-			(uint8_t *)"INTERVALS", LEFT_MODE);
+	LCD::print_string(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(185, LINE(3), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 60,
+			(uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
 }
 
 /**
- * Initializes JOY and LCD peripheral and places the windows
- * on display.
+ * @brief
+ * Initializes JOY and LCD peripheral and places the windows on display.
+ *
  */
 MainFrame::MainFrame()
 {
 	BSP_JOY_Init(JOY_MODE_GPIO);
 	LCD::init();
-	BSP_LCD_SetFont(&Font16);
 
-	timeWindow = StaticTimeWindow(Coord(BSP_LCD_GetXSize()/2 - 30, LINE(1)), true);
+	timeWindow = StaticTimeWindow(Coord(LCD::get_x_size()/2 - 30, LINE(1)), true);
 	actualTempWindow = StaticMeasureTempWindow(Coord(70, LINE(4)));
 	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));
-	overviewButton = Button(Coord(BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 40), "overview");
-	resetButton = Button(Coord(BSP_LCD_GetXSize()/2 - 30, BSP_LCD_GetYSize() - 20), "reset");
+	overviewButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 40), "overview");
+	resetButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 20), "reset");
 }
 
 /**

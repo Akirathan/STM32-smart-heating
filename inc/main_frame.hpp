@@ -10,7 +10,6 @@
 
 #include <button.hpp>
 #include "interval_frame.hpp"
-#include "stm3210c_eval_lcd.h"
 #include "eeprom.hpp"
 #include "static_time_window.hpp"
 #include "static_measure_temp_window.hpp"
