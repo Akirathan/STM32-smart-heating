@@ -8,13 +8,13 @@
 #ifndef INC_STATIC_TEMP_WINDOW_HPP_
 #define INC_STATIC_TEMP_WINDOW_HPP_
 
-#include "stm3210c_eval_lcd.h"
 #include "hideable_window.hpp"
 #include "window.hpp"
 #include "lcd.hpp"
 
 /**
- * Base class providing draw method. Use hide method to force not-drawing of this window.
+ * @brief
+ * Class representing static window just for showing temperature to user.
  */
 class StaticTempWindow : public IStaticWindow, public IHideableWindow
 {

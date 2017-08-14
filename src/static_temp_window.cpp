@@ -47,5 +47,5 @@ void StaticTempWindow::draw() const
 	uint32_t u_temp = (uint32_t)temp;
 	char text[3];
 	sprintf(text, "%lu", u_temp);
-	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
+	LCD::print_string(coord.x, coord.y, (uint8_t *)text, LEFT_MODE, LCD::NORMAL_FONT);
 }
