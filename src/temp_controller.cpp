@@ -13,6 +13,11 @@ TempController& TempController::getInstance()
 	return instance;
 }
 
+/**
+ * @brief
+ * Check if current temperature corresponds to the temperature that was set
+ * by the user in interval setting.
+ */
 void TempController::minCallback()
 {
 	// Switch heating off from previous callbacks
@@ -44,7 +49,8 @@ void TempController::registerMinCallback()
 }
 
 /**
- *
+ * @brief
+ * Loads data from @ref EEPROM.
  */
 TempController::TempController()
 {
@@ -90,6 +96,15 @@ uint32_t TempController::currentIntervalTemperature()
 	return 0;
 }
 
+/**
+ * @brief
+ * Reloads interval data.
+ *
+ * @param data_vec
+ *
+ * @note
+ * Called from @ref MainFrame to signal change in EEPROM data.
+ */
 void TempController::reloadIntervalData(std::vector<IntervalFrameData>& data_vec)
 {
 	dataVec = data_vec;

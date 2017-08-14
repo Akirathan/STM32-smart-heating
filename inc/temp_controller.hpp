@@ -17,7 +17,17 @@
 #include "temp_sensor.hpp"
 
 /**
- * Singleton class.
+ * @brief
+ * This class controls heating. Loads interval data from @ref EEPROM in
+ * constructor and periodically checks if actual temperature corresponds
+ * to the temperature that was preset by the user via @ref IntervalFrame.
+ *
+ * @note
+ * @ref MainFrame signals change in EEPROM data via @ref reloadIntervalData
+ * method.
+ *
+ * @note
+ * Implemented as singleton class.
  */
 class TempController : public IMinCallback {
 public:
