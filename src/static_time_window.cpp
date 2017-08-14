@@ -7,10 +7,11 @@
 
 #include "static_time_window.hpp"
 
-void error_handler(); // From main module
-
 /**
- * Constructor does not register for callbacks.
+ *
+ * @param c Coordinates.
+ * @param sec_precision Specifies clock format. When set to true, then
+ * long format (ie. hours:minutes:seconds) is used. Default is true.
  */
 StaticTimeWindow::StaticTimeWindow(const Coord& c, bool sec_precision)
 	: IStaticWindow(c), secPrecision(sec_precision)
@@ -18,11 +19,17 @@ StaticTimeWindow::StaticTimeWindow(const Coord& c, bool sec_precision)
 
 
 /**
- * Unregister from callback.
+ * @brief
+ * Unregisters from callback.
  */
 StaticTimeWindow::~StaticTimeWindow()
 {
-	RTCController::getInstance().unregisterSecondCallback(this);
+	if (secPrecision) {
+		RTCController::getInstance().unregisterSecondCallback(this);
+	}
+	else {
+		RTCController::getInstance().unregisterMinuteCallback(this);
+	}
 }
 
 
@@ -143,7 +150,7 @@ void StaticTimeWindow::show()
 void StaticTimeWindow::runClock()
 {
 	if (!RTCController::getInstance().isTimeSet()) {
-		error_handler();
+		// TODO: error
 	}
 
 	// Set time.
