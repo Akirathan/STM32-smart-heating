@@ -8,6 +8,10 @@
 #ifndef HIDEABLE_WINDOW_HPP_
 #define HIDEABLE_WINDOW_HPP_
 
+/**
+ * @brief
+ * Simple interface for hideable window.
+ */
 class IHideableWindow {
 public:
 	virtual ~IHideableWindow() = default;

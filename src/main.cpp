@@ -43,7 +43,8 @@ void static_time_window_test()
 {
 	/* Clock setting */
 	ClkFrame clk_frame;
-	RTC_TimeTypeDef rtc_time = clk_frame.passControl();
+	clk_frame.passControl();
+	RTC_TimeTypeDef rtc_time = clk_frame.getTime();
 	// Save time into rtc
 	RTCController::getInstance().setTime(&rtc_time);
 
@@ -62,7 +63,8 @@ void main_test()
 {
 	/* Clock setting */
 	ClkFrame clk_frame;
-	RTC_TimeTypeDef rtc_time = clk_frame.passControl();
+	clk_frame.passControl();
+	RTC_TimeTypeDef rtc_time = clk_frame.getTime();
 	// Save time into rtc
 	RTCController::getInstance().setTime(&rtc_time);
 

@@ -5,7 +5,7 @@
  *      Author: mayfa
  */
 
-#include <interval_frame_data.hpp>
+#include "interval_frame_data.hpp"
 
 IntervalFrameData::IntervalFrameData()
 	: from(0), to(0), temp(0)

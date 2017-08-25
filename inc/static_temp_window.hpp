@@ -15,6 +15,10 @@
 /**
  * @brief
  * Class representing static window just for showing temperature to user.
+ * @note
+ * Note that this class is also base class for @ref StaticMeasureTempWindow
+ * and @ref StaticPresetTempWindow so those derived classes do not have to
+ * implement @ref draw method.
  */
 class StaticTempWindow : public IStaticWindow, public IHideableWindow
 {

@@ -10,8 +10,6 @@
 #ifndef WINDOW_HPP_
 #define WINDOW_HPP_
 
-#include <cstdint>
-#include <vector>
 #include "stm3210c_eval_lcd.h"
 #include "stats.hpp"
 

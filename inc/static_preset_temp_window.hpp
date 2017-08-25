@@ -8,17 +8,16 @@
 #ifndef STATIC_PRESET_TEMP_WINDOW_HPP_
 #define STATIC_PRESET_TEMP_WINDOW_HPP_
 
-#include <vector>
 #include "temp_controller.hpp"
 #include "static_temp_window.hpp"
 #include "callbacks.hpp"
-#include "temp_controller.hpp"
 #include "rtc_controller.hpp"
 
 /**
+ * @brief
  * Used in mainframe to display temperature that is preset due to values
- * stored in EEPROM. Minute callback checks for supposed temperature from
- * TempController.
+ * stored in EEPROM. (Minute) callback checks for supposed temperature from
+ * @ref TempController.
  */
 class StaticPresetTempWindow : public StaticTempWindow, public IMinCallback
 {

@@ -11,6 +11,10 @@ StaticPresetTempWindow::StaticPresetTempWindow(const Coord& c)
 	: StaticTempWindow(c)
 { }
 
+/**
+ * @brief
+ * Unregisters from minute callback from @ref RTCController.
+ */
 StaticPresetTempWindow::~StaticPresetTempWindow()
 {
 	if (registeredCallback) {
@@ -18,6 +22,11 @@ StaticPresetTempWindow::~StaticPresetTempWindow()
 	}
 }
 
+/**
+ * @brief
+ * Gets temperature that is supposed to be set in the current interval and
+ * redraws this window with updated value.
+ */
 void StaticPresetTempWindow::minCallback()
 {
 	// Get supposed temperature from TempController and redraw this window.
@@ -32,6 +41,7 @@ void StaticPresetTempWindow::registerMinCallback()
 }
 
 /**
+ * @brief
  * Registers for minute callback.
  */
 void StaticPresetTempWindow::showPresetTemp()

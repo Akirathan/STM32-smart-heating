@@ -14,7 +14,11 @@
 #include "temp_sensor.hpp"
 
 /**
- * Can run on background.
+ * @brief
+ * Class for displaying actual temperature. Temperature is measured in every
+ * <code> minCallback </code> and the current temperature is then displayed.
+ * @note
+ * Note that this window can run on background.
  */
 class StaticMeasureTempWindow : public StaticTempWindow, public IMinCallback
 {
@@ -27,7 +31,6 @@ public:
 private:
 	bool registeredCallback = false;
 };
-
 
 
 #endif /* STATIC_MEASURE_TEMP_WINDOW_HPP_ */

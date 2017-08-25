@@ -1,7 +1,5 @@
 #include "window.hpp"
 
-using namespace std;
-
 // Storage of current system font.
 static uint16_t text_color;
 static uint16_t back_color;
