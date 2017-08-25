@@ -15,7 +15,8 @@
 #include "temp_window.hpp"
 
 /**
- * Used for setting intervals.
+ * @brief
+ * Used for interval setting.
  */
 class SetIntervalFrame : public IntervalFrame {
 public:
