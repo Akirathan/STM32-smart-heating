@@ -17,11 +17,12 @@
 #include "window_system.hpp"
 #include "lcd.hpp"
 #include "temp_controller.hpp"
+#include "frame.hpp"
 
-class MainFrame {
+class MainFrame : public IFrame {
 public:
 	MainFrame();
-	void passControl();
+	virtual void passControl() override;
 private:
 	StaticTimeWindow timeWindow;
 	StaticMeasureTempWindow actualTempWindow;

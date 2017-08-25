@@ -13,16 +13,18 @@
 #include "time_window.hpp"
 #include "window_system.hpp"
 #include "lcd.hpp"
+#include "frame.hpp"
 
 /**
  * @brief
  * Represents class for user time selection. The user time selection consists
  * of two windows - clock (hours : minutes) and ok button.
  */
-class ClkFrame {
+class ClkFrame : public IFrame {
 public:
 	ClkFrame();
-	RTC_TimeTypeDef passControl();
+	virtual void passControl() override;
+	RTC_TimeTypeDef getTime() const;
 private:
 	void drawHeader() const;
 	TimeWindow time;

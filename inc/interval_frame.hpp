@@ -12,7 +12,6 @@
 #include <interval_frame_data.hpp>
 #include <vector>
 #include "stm3210c_eval.h"
-#include "stm3210c_eval_lcd.h"
 #include "input.hpp"
 #include "stats.hpp"
 #include "time.hpp"
@@ -22,12 +21,12 @@
 #include "static_temp_window.hpp"
 #include "window_system.hpp"
 #include "lcd.hpp"
+#include "frame.hpp"
 
-class IntervalFrame {
+class IntervalFrame : public IFrame {
 public:
 	IntervalFrame();
 	virtual ~IntervalFrame() = default;
-	virtual void passControl() =0;
 protected:
 	Button nextButton;
 	Button endButton;
@@ -41,7 +40,7 @@ class SetIntervalFrame : public IntervalFrame {
 public:
 	SetIntervalFrame();
 	std::vector<IntervalFrameData>& getData();
-	void passControl() override;
+	virtual void passControl() override;
 private:
 	TimeWindow timeFromWindow;
 	TimeWindow timeToWindow;
@@ -58,7 +57,7 @@ private:
 class OverviewIntervalFrame : public IntervalFrame {
 public:
 	OverviewIntervalFrame(const std::vector<IntervalFrameData>& data);
-	void passControl() override;
+	virtual void passControl() override;
 private:
 	StaticTimeWindow timeFromWindow;
 	StaticTimeWindow timeToWindow;
