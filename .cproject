@@ -32,6 +32,7 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Utilities/Fonts/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9325/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9320/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/tests}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1807332257" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -56,6 +57,7 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Utilities/Fonts/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9325/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9320/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/tests}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1612094670" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1704184938" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="-std=c++14" valueType="string"/>
@@ -88,15 +90,17 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Utilities/Fonts/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9325/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9320/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/tests}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.73959962" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="BSP-STM3210C_EVAL|HAL_Driver-Src|ili9325|ili9320|STM3210C_EVAL|STM32F1xx_HAL_Driver Src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="tests|BSP-STM3210C_EVAL|HAL_Driver-Src|ili9325|ili9320|STM3210C_EVAL|STM32F1xx_HAL_Driver Src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="BSP-STM3210C_EVAL"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="HAL_Driver-Src"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="tests"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -134,6 +138,7 @@
 									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320/"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/tests}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.902171133" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -157,6 +162,7 @@
 									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320/"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/tests}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1608690170" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -186,6 +192,7 @@
 									<listOptionValue builtIn="false" value="/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Drivers/BSP/Components/ili9320/"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/tests}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.336087120" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
