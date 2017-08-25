@@ -27,4 +27,14 @@ For convenience there are .project and .cproject Eclipse files included, there i
 
 # Build
 
+# Architecture
+
+** Frames **
+Frame stands for a display view eg. what is displayed in current time.
+There are few different types of Frames, for example _ClkFrame_ or _IntervalFrame_.
+
+** (Second) interrupts **
+Class can get (second or minute) notifications (implemented as interrupts) if _ISecCallback_ or _IMinCallback_ interface is implemented.
+Implementation of one of those interfaces forces one to register the class for (second or minute) callbacks to _RTCController_.
+
 # Plans for the future
