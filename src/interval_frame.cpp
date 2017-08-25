@@ -18,14 +18,14 @@ void IntervalFrame::drawHeader()
 	LCD::print_string(20, LINE(4), (uint8_t *)"interval", LEFT_MODE, LCD::NORMAL_FONT);
 
 	// Temperature header.
-	LCD::print_string(BSP_LCD_GetXSize()/2 + 10, LINE(4), (uint8_t *)"temperature", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(LCD::get_x_size()/2 + 10, LINE(4), (uint8_t *)"temperature",
+			LEFT_MODE, LCD::NORMAL_FONT);
 }
 
 IntervalFrame::IntervalFrame()
 {
 	BSP_JOY_Init(JOY_MODE_GPIO);
 	LCD::init();
-	//BSP_LCD_SetFont(&Font16);
 
 	nextButton = Button(Coord(25, LINE(12)), "NEXT");
 	endButton = Button(Coord(230, LINE(12)), "END");

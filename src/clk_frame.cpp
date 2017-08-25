@@ -26,7 +26,22 @@ void ClkFrame::drawHeader() const
 	LCD::draw_header((uint8_t *)"Time setting");
 }
 
-RTC_TimeTypeDef ClkFrame::passControl()
+/**
+ * @brief
+ * Should be called after @ref ClkFrame::passControl.
+ */
+RTC_TimeTypeDef ClkFrame::getTime() const
+{
+	// Investigate window members
+
+	RTC_TimeTypeDef rtc_time;
+	rtc_time.Hours = time.getHours();
+	rtc_time.Minutes = time.getMinutes();
+
+	return rtc_time;
+}
+
+void ClkFrame::passControl()
 {
 	drawHeader();
 
@@ -34,13 +49,6 @@ RTC_TimeTypeDef ClkFrame::passControl()
 	system.addControl(&time);
 	system.addControl(&ok_button);
 	system.passControl();
-
-	// Investigate window members
-	RTC_TimeTypeDef rtc_time;
-	rtc_time.Hours = time.getHours();
-	rtc_time.Minutes = time.getMinutes();
-
-	return rtc_time;
 }
 
 
