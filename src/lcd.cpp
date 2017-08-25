@@ -16,9 +16,15 @@ static void set_font(const Font& font);
 static bool init_ = false;
 static Font curr_font = Font::NORMAL_FONT;
 
-
+/**
+ * @brief
+ * Initializes LCD peripheral and also clears display with black color.
+ */
 void init()
 {
+	if (init_) {
+		return;
+	}
 	BSP_LCD_Init();
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 	init_ = true;

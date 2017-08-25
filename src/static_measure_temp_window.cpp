@@ -12,7 +12,8 @@ StaticMeasureTempWindow::StaticMeasureTempWindow(const Coord& c)
 { }
 
 /**
- * Unregisters minute callback from rtc.
+ * @brief
+ * Unregisters minute callback from @ref RTCController.
  */
 StaticMeasureTempWindow::~StaticMeasureTempWindow()
 {
@@ -22,7 +23,8 @@ StaticMeasureTempWindow::~StaticMeasureTempWindow()
 }
 
 /**
- * Registers for minute callback.
+ * @brief
+ * Registers for minute callback to @ref RTCController.
  */
 void StaticMeasureTempWindow::measure()
 {
@@ -37,6 +39,7 @@ void StaticMeasureTempWindow::measure()
 }
 
 /**
+ * @brief
  * Measures temperature and redraws window.
  */
 void StaticMeasureTempWindow::minCallback()

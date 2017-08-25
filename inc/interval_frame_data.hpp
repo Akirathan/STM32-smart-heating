@@ -8,7 +8,7 @@
 #ifndef INTERVAL_FRAME_DATA_HPP_
 #define INTERVAL_FRAME_DATA_HPP_
 
-#include "stm3210c_eval.h"
+#include <cstdint>
 
 struct IntervalFrameData {
 	IntervalFrameData();
