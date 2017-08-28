@@ -1,19 +1,23 @@
-/*
- * eeprom.hpp
- *
- *  Created on: Jul 18, 2017
- *      Author: mayfa
+/**
+ * @file eeprom.hpp
+ * @author Pavel Marek
+ * @date 18.7.2017
  */
 
 #ifndef INC_EEPROM_HPP_
 #define INC_EEPROM_HPP_
 
-#include <interval_frame_data.hpp>
 #include <vector>
+#include "interval_frame_data.hpp"
 #include "stm3210c_eval_eeprom.h"
 
 /**
- * Singleton class.
+ * @brief Class representing EEPROM compoment.
+ *
+ * This class is used for storing interval frame data into EEPROM. Data are
+ * written as words (32 bits). First and last words are @ref FRAME_DELIM.
+ *
+ * @note Implemented as a singleton class.
  */
 class EEPROM {
 public:

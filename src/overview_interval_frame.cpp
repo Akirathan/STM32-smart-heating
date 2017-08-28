@@ -1,12 +1,15 @@
-/*
- * overview_interval_frame.cpp
- *
- *  Created on: Aug 25, 2017
- *      Author: mayfa
+/**
+ * @file overview_interval_frame.hpp
+ * @author Pavel Marek
+ * @date 25.8.2017
  */
 
 #include "overview_interval_frame.hpp"
 
+/**
+ * @brief Prints the data to the display and waits until user presses NEXT or END
+ * 		  button.
+ */
 void OverviewIntervalFrame::printData(const IntervalFrameData& data)
 {
 	Time::Time from = Time::deserialize(data.from);
@@ -53,14 +56,12 @@ OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData
 }
 
 /**
- * Supposes that eeprom is not empty.
+ * @note Supposes that eeprom is not empty.
  */
 void OverviewIntervalFrame::passControl()
 {
 	drawHeader();
 
-	/* Print the data until end button is pushed, or every
-	 * interval is printed. */
 	auto it = data.begin();
 	while (!endButton.isPushed() && it != data.end()) {
 		printData(*it);

@@ -1,8 +1,14 @@
-/*
- * one_wire.hpp
+/**
+ * @file one_wire.hpp
+ * @author Pavel Marek
+ * @date 26.12.2016
+ * @brief This file contains functions for communication with one-wire device
+ * 		  and defines for one-wire bus connection with GPIO.
  *
- *  Created on: 26. 12. 2016
- *      Author: Mayfa
+ * Those functions are implementation for one-wire protocol as described in
+ * DS18B20 manual.
+ *
+ * Only one slave device is supported on one-wire bus.
  */
 
 #ifndef ONE_WIRE_HPP_
@@ -23,10 +29,6 @@ uint8_t read_byte();
 uint8_t read_bit();
 void write_bit(uint8_t bit);
 void reset();
-
-// Testing functions.
-uint32_t time_test(uint32_t microsecs);
-void debug();
 
 } // namespace OneWire
 

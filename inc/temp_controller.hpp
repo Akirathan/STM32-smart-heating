@@ -1,8 +1,7 @@
-/*
- * temp_controller.hpp
- *
- *  Created on: Aug 8, 2017
- *      Author: mayfa
+/**
+ * @file temp_controller.hpp
+ * @author Pavel Marek
+ * @date 8.8.2017
  */
 
 #ifndef TEMP_CONTROLLER_HPP_
@@ -17,17 +16,19 @@
 #include "temp_sensor.hpp"
 
 /**
- * @brief
- * This class controls heating. Loads interval data from @ref EEPROM in
- * constructor and periodically checks if actual temperature corresponds
- * to the temperature that was preset by the user via @ref IntervalFrame.
+ * @brief This class controls heating.
  *
- * @note
- * @ref MainFrame signals change in EEPROM data via @ref reloadIntervalData
- * method.
+ * Loads interval data from @ref EEPROM in constructor and every minute
+ * checks if actual temperature corresponds to the temperature that was
+ * configured by the user in @ref IntervalFrame.
  *
- * @note
- * Implemented as singleton class.
+ * @attention @ref controlTemperature method must be called to register for
+ * 			  minute callbacks.
+ *
+ * @note @ref MainFrame signals change in EEPROM data via @ref reloadIntervalData
+ * 		 method.
+ *
+ * @note Implemented as a singleton class.
  */
 class TempController : public IMinCallback {
 public:

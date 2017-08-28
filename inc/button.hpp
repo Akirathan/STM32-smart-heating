@@ -1,10 +1,8 @@
-/*
- * buttons.hpp
- *
- *  Created on: Jul 14, 2017
- *      Author: mayfa
- *
- * This file contains definition for generic button.
+/**
+ * @file buttons.hpp
+ * @author Pavel Marek
+ * @date 14.7.2017
+ * @brief This file contains a definition for generic button.
  */
 
 #ifndef INC_BUTTONS_HPP_
@@ -14,6 +12,10 @@
 #include "lcd.hpp"
 #include "window.hpp"
 
+/**
+ * Currently there are just OK, END or NEXT buttons in the application and
+ * pressing of any of those buttons means ending current frame.
+ */
 class Button : public IControlWindow {
 public:
 	Button(const Coord& coord, const std::string& name);

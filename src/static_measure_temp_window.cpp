@@ -1,8 +1,7 @@
-/*
- * static_measure_temp_window.cpp
- *
- *  Created on: Aug 9, 2017
- *      Author: mayfa
+/**
+ * @file static_measure_temp_window.cpp
+ * @author Pavel Marek
+ * @date 9.8.2017
  */
 
 #include "static_measure_temp_window.hpp"
@@ -12,8 +11,7 @@ StaticMeasureTempWindow::StaticMeasureTempWindow(const Coord& c)
 { }
 
 /**
- * @brief
- * Unregisters minute callback from @ref RTCController.
+ * @brief Unregisters minute callback from @ref RTCController.
  */
 StaticMeasureTempWindow::~StaticMeasureTempWindow()
 {
@@ -23,8 +21,7 @@ StaticMeasureTempWindow::~StaticMeasureTempWindow()
 }
 
 /**
- * @brief
- * Registers for minute callback to @ref RTCController.
+ * @brief Registers for minute callback to @ref RTCController.
  */
 void StaticMeasureTempWindow::measure()
 {
@@ -39,8 +36,7 @@ void StaticMeasureTempWindow::measure()
 }
 
 /**
- * @brief
- * Measures temperature and redraws window.
+ * @brief Measures the temperature and redraws this window.
  */
 void StaticMeasureTempWindow::minCallback()
 {

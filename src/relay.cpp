@@ -1,8 +1,7 @@
-/*
- * relay.c
- *
- *  Created on: 31 Jan 2017
- *      Author: Mayfa
+/**
+ * @file relay.cpp
+ * @author Pavel Marek
+ * @date 31.6.2017
  */
 
 #include "relay.hpp"
@@ -25,7 +24,7 @@ void Relay::switchOff()
 
 Relay::Relay()
 {
-	/* Init clock for data pin and for power pin */
+	// Init clock for data pin and for power pin.
 	if (RELAY_DATA_GPIOPORT == GPIOA || RELAY_POWER_GPIOPORT == GPIOA) {
 		__HAL_RCC_GPIOA_CLK_ENABLE();
 	}
@@ -42,7 +41,7 @@ Relay::Relay()
 		__HAL_RCC_GPIOE_CLK_ENABLE();
 	}
 
-	/* Set the relay as output push-pull */
+	// Set the relay as output push-pull.
 	GPIO_InitTypeDef GPIO_Init;
 
 	GPIO_Init.Mode = GPIO_MODE_OUTPUT_PP;
@@ -52,9 +51,9 @@ Relay::Relay()
 
 	HAL_GPIO_Init(RELAY_DATA_GPIOPORT, &GPIO_Init);
 
-	/* Init the power connection */
+	// Init the power connection.
 	GPIO_Init.Pin = RELAY_POWER_GPIOPIN;
 	HAL_GPIO_Init(RELAY_POWER_GPIOPORT, &GPIO_Init);
-	// Toggle the power
+	// Toggle the power.
 	HAL_GPIO_WritePin(RELAY_POWER_GPIOPORT, RELAY_POWER_GPIOPIN, GPIO_PIN_SET);
 }

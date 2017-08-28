@@ -1,16 +1,14 @@
-/*
- * interface_hideable_window.hpp
- *
- *  Created on: Jul 26, 2017
- *      Author: mayfa
+/**
+ * @file interface_hideable_window.hpp
+ * @author Pavel Marek
+ * @date 26.7.2017
  */
 
 #ifndef HIDEABLE_WINDOW_HPP_
 #define HIDEABLE_WINDOW_HPP_
 
 /**
- * @brief
- * Simple interface for hideable window.
+ * @brief Simple interface for hideable window.
  */
 class IHideableWindow {
 public:
@@ -20,7 +18,6 @@ public:
 protected:
 	bool hidden = false;
 };
-
 
 
 #endif /* HIDEABLE_WINDOW_HPP_ */

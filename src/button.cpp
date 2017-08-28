@@ -1,11 +1,10 @@
-/*
- * butons.cpp
- *
- *  Created on: Jul 14, 2017
- *      Author: mayfa
+/**
+ * @file butons.cpp
+ * @author Pavel Marek
+ * @date 14.7.2017
  */
 
-#include <button.hpp>
+#include "button.hpp"
 
 Button::Button()
 	: Button(Coord(0,0), "")
@@ -15,9 +14,6 @@ Button::Button(const Coord& coord, const std::string& name)
 	: IControlWindow(coord), name(name)
 { }
 
-/**
- * Suppose font is already set.
- */
 void Button::draw() const
 {
 	LCD::Font font;
@@ -31,7 +27,6 @@ void Button::draw() const
 
 	LCD::print_string(coord.x, coord.y, (uint8_t *)name.c_str(), LEFT_MODE, font);
 }
-
 
 Message Button::eventHandler(JOYState_TypeDef joy_state)
 {
@@ -55,20 +50,12 @@ Message Button::eventHandler(JOYState_TypeDef joy_state)
 	return Message::ERROR;
 }
 
-/**
- * @brief
- * Redraws this window and loads previously configured font.
- */
 void Button::unsetFocus()
 {
 	focused = false;
 	draw();
 }
 
-/**
- * Saves current font for further drawing and
- * immediately redraws this window.
- */
 void Button::setFocus(Message msg)
 {
 	focused = true;
@@ -81,9 +68,8 @@ void Button::setPushed(bool b)
 }
 
 /**
- * Needed by interval_frame, when interval_frame
- * is gathering data it needs to know whether NEXT
- * or END button was pressed.
+ * Needed by @ref SetIntervalFrame, when SetIntervalFrame is gathering data it
+ * needs to know whether NEXT or END button was pressed.
  */
 bool Button::isPushed() const
 {

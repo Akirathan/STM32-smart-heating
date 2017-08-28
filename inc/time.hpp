@@ -1,8 +1,10 @@
-/*
- * time.hpp
+/**
+ * @file time.hpp
+ * @author Pavel Marek
+ * @date 14.7.2017
  *
- *  Created on: Jul 14, 2017
- *      Author: mayfa
+ * @brief This file contains functions to (de)serialize @ref Time::Time struct
+ * 		  to EEPROM.
  */
 
 #ifndef INC_TIME_HPP_

@@ -1,8 +1,7 @@
-/*
- * lcd.cpp
- *
- *  Created on: Jul 22, 2017
- *      Author: mayfa
+/**
+ * @file lcd.cpp
+ * @author Pavel Marek
+ * @date 22.7.2017
  */
 
 #include "lcd.hpp"
@@ -17,8 +16,10 @@ static bool init_ = false;
 static Font curr_font = Font::NORMAL_FONT;
 
 /**
- * @brief
- * Initializes LCD peripheral and also clears display with black color.
+ * @brief Initializes LCD peripheral and also clears display with black color.
+ *
+ * Ensures that @ref BSP_LCD_Init is called just once, because it takes too
+ * much time.
  */
 void init()
 {
@@ -30,6 +31,9 @@ void init()
 	init_ = true;
 }
 
+/**
+ * @brief Draws given text in a "header" style.
+ */
 void draw_header(uint8_t* text)
 {
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
@@ -71,16 +75,25 @@ sFONT* get_font()
 	return BSP_LCD_GetFont();
 }
 
+/**
+ * @brief Returns x size of the display in pixels.
+ */
 uint32_t get_x_size()
 {
 	return BSP_LCD_GetXSize();
 }
 
+/**
+ * @brief Returns y size of the display in pixels.
+ */
 uint32_t get_y_size()
 {
 	return BSP_LCD_GetYSize();
 }
 
+/**
+ * @brief Prints text in specified font.
+ */
 void print_string(uint16_t x, uint16_t y, uint8_t* text, Line_ModeTypdef mode, const Font& font)
 {
 	set_font(font);
@@ -94,6 +107,7 @@ bool is_initialized()
 
 void print_char(uint16_t x, uint16_t y, uint8_t ascii)
 {
+	BSP_LCD_DisplayChar(x, y, ascii);
 }
 
 } // namespace LCD

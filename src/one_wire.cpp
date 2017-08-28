@@ -1,8 +1,7 @@
-/*
- * one_wire.cpp
- *
- *  Created on: 26. 12. 2016
- *      Author: Mayfa
+/**
+ * @file one_wire.cpp
+ * @author Pavel Marek
+ * @date 26.12.2016
  */
 
 #include "one_wire.hpp"
@@ -26,7 +25,7 @@ static inline void wait(uint32_t micros);
 static bool initialized = false;
 
 /**
- * Init the one-wire peripheral.
+ * @brief Inits the one-wire peripheral.
  */
 uint32_t init()
 {
@@ -70,18 +69,6 @@ uint32_t init()
 }
 
 /**
- * Calibrate the wait function with this
- * function.
- */
-uint32_t time_test(uint32_t microsecs)
-{
-	uint32_t beginTicks = HAL_GetTick();
-	wait(microsecs);
-	uint32_t endTicks = HAL_GetTick();
-	return endTicks - beginTicks;
-}
-
-/**
  * Implemented with DWT.
  */
 static inline void wait(__IO uint32_t micros)
@@ -97,8 +84,7 @@ static inline void wait(__IO uint32_t micros)
 }
 
 /**
- * DWT peripheral is necessary for CPU
- * tick counter. The wait function is
+ * DWT peripheral is necessary for CPU tick counter. The wait function is
  * most accurate with DWT implementation.
  *
  * TODO: use macros from stm32f107xc.h instead
@@ -163,23 +149,17 @@ static inline void set_receive()
 	SET_BIT(TEMP_DATA_GPIOPORT->ODR, TEMP_DATA_GPIOPIN);
 }
 
+/**
+ * @brief Resets the slave device.
+ */
 void reset()
 {
 	master_pull_bus_low();
 	wait(490);
 }
 
-void debug()
-{
-	for (int i=0; i<10; ++i) {
-		master_release_bus();
-		wait(100);
-		master_pull_bus_low();
-		wait(100);
-	}
-}
-
 /**
+ * @brief Inits communication with one-wire device.
  * @return: 0 when there was no response
  * 			1 when there was response.
  */
@@ -205,7 +185,7 @@ int init_communication()
 }
 
 /**
- * Write a byte to the slave in LSB order.
+ * @brief Writes a byte to the slave in LSB order.
  */
 void write_byte(uint8_t byte)
 {
@@ -218,9 +198,6 @@ void write_byte(uint8_t byte)
 	}
 }
 
-/**
- * Each write/read time slot is at least 60 us long.
- */
 void write_bit(uint8_t bit)
 {
 	master_pull_bus_low();
@@ -280,7 +257,7 @@ uint8_t read_bit()
 }
 
 /**
- * Master releases the bus.
+ * @brief Releases the bus.
  */
 static inline void master_release_bus()
 {
@@ -288,7 +265,7 @@ static inline void master_release_bus()
 }
 
 /**
- * Master pulls the bus low.
+ * @brief Pulls the bus low.
  */
 static inline void master_pull_bus_low()
 {
@@ -297,8 +274,8 @@ static inline void master_pull_bus_low()
 }
 
 /**
- * Returns 1 if the bus is pulled low
- * by the slave and 0 if not.
+ * @brief Checks whether the slave device pulled the bus low.
+ * @return 1 if the bus is pulled low by the slave, 0 otherwise.
  */
 static inline int slave_pull_bus_low()
 {

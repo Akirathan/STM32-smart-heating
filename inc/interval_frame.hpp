@@ -1,8 +1,7 @@
-/*
- * interval_frame.hpp
- *
- *  Created on: 23. 2. 2017
- *      Author: Mayfa
+/**
+ * @file interval_frame.hpp
+ * @author Pavel Marek
+ * @date 23.2.2017
  */
 
 #ifndef INC_INTERVALFRAME_HPP_
@@ -14,11 +13,12 @@
 #include "frame.hpp"
 
 /**
- * @brief
- * Base class for @ref SetIntervalFrame and @ref OverviewIntervalFrame classes.
+ * @brief Base class for @ref SetIntervalFrame and @ref OverviewIntervalFrame
+ * 		  classes.
+ *
  * This frame consists of two time windows where user can set the interval time
  * and one @ref TempWindow when user can set temperature for that interval.
- * This base provides only "NEXT" and "END" buttons, @ref SetIntervalFrame
+ * This base class provides only "NEXT" and "END" buttons, @ref SetIntervalFrame
  * adds settable time and temp windows, whereas @ref OverviewIntervalFrame
  * adds non-settable windows.
  */
@@ -31,7 +31,6 @@ protected:
 	Button endButton;
 	void drawHeader();
 };
-
 
 
 #endif /* INC_INTERVALFRAME_HPP_ */

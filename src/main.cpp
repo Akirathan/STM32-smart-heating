@@ -1,9 +1,14 @@
+/**
+ * @file main.cpp
+ * @author Pavel Marek
+ * @brief This file contains main login of the application.
+ *
+ * It also contains clock configuration function provided by STM.
+ */
+
 #include "main.hpp"
 
-#define MY_DEBUG
-
-/* Private function prototypes */
-void SystemClock_Config(void);
+void SystemClock_Config();
 
 void error_handler() {
 	BSP_LED_Init(LED_RED);
@@ -61,14 +66,14 @@ void static_time_window_test()
 
 void main_test()
 {
-	/* Clock setting */
+	// Clock setting.
 	ClkFrame clk_frame;
 	clk_frame.passControl();
 	RTC_TimeTypeDef rtc_time = clk_frame.getTime();
-	// Save time into rtc
+	// Save time into rtc.
 	RTCController::getInstance().setTime(&rtc_time);
 
-	/* Interval setting */
+	// Interval setting.
 	std::vector<IntervalFrameData> interval_vec;
 	EEPROM& eeprom = EEPROM::getInstance();
 
@@ -83,7 +88,7 @@ void main_test()
 		eeprom.load(interval_vec);
 	}
 
-	/* Main frame */
+	// Main frame.
 	MainFrame mainframe;
 	mainframe.passControl();
 }
@@ -97,8 +102,8 @@ uint8_t memory_try()
 
 void write_try()
 {
-	print("ab\n");
-	print("cd");
+	IO::print("ab\n");
+	IO::print("cd");
 }
 
 void eeprom_try()
@@ -147,21 +152,6 @@ int main()
 	HAL_Init();
 	/* Initialize system and peripheral clocks */
 	SystemClock_Config();
-
-#ifndef MY_DEBUG
-	ClkFrame ClkFrame;
-	RTC_TimeTypeDef rtc_time = ClkFrame.passControl();
-
-	// Enable LED for second_it
-	BSP_LED_Init(LED_BLUE);
-
-	RTCController& RTCController = RTCController.getInstance(); // instantiation of rtc
-
-	if (RTCController.setTime(&rtc_time) != APP_OK) {
-		error_handler();
-	}
-
-#endif
 
 	main_test();
 	//mainframe_test();

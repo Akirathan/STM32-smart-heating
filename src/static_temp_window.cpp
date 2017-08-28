@@ -1,8 +1,7 @@
-/*
- * static_temp_window.cpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file static_temp_window.hpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #include "static_temp_window.hpp"

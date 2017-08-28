@@ -1,8 +1,7 @@
-/*
- * static_time_window.cpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file static_time_window.cpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #include "static_time_window.hpp"
@@ -19,8 +18,7 @@ StaticTimeWindow::StaticTimeWindow(const Coord& c, bool sec_precision)
 
 
 /**
- * @brief
- * Unregisters from callback.
+ * @brief Unregisters from callback.
  */
 StaticTimeWindow::~StaticTimeWindow()
 {
@@ -108,7 +106,7 @@ void StaticTimeWindow::setMinutes(uint8_t mins)
 }
 
 /**
- * Hides this window.
+ * @brief Hides this window.
  */
 void StaticTimeWindow::hide()
 {
@@ -116,7 +114,7 @@ void StaticTimeWindow::hide()
 }
 
 /**
- * "Unhides" this window.
+ * @brief "Unhides" this window.
  */
 void StaticTimeWindow::show()
 {
@@ -124,11 +122,8 @@ void StaticTimeWindow::show()
 }
 
 /**
- * @brief
- * Initializes the clock and registers for second or minute callback.
- *
- * @note
- * Supposes that @ref RTCController is already initialized and the time is set.
+ * @brief Initializes the clock and registers for second or minute callback.
+ * @note Supposes that @ref RTCController is already initialized and the time is set.
  */
 void StaticTimeWindow::runClock()
 {
@@ -152,10 +147,6 @@ void StaticTimeWindow::runClock()
 	}
 }
 
-/**
- * @note
- * Used (called from @ref RTCController) with second precision.
- */
 void StaticTimeWindow::secCallback()
 {
 	// Increase seconds and redraw window
@@ -169,8 +160,7 @@ void StaticTimeWindow::registerSecCallback()
 }
 
 /**
- * @note
- * Used (called from @ref RTCController) without second precision.
+ * @note Used without second precision.
  */
 void StaticTimeWindow::minCallback()
 {

@@ -1,18 +1,16 @@
-/*
- * callbacks.hpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
- *
- * This file contains classes for callback interfaces. The callbacks
- * shall be registered inside rtc singleton class.
+/**
+ * @file callbacks.hpp
+ * @author Pavel Marek
+ * @date 21.7.2017
+ * @brief This file contains classes for callback interfaces.
  */
 
 #ifndef INC_CALLBACKS_HPP_
 #define INC_CALLBACKS_HPP_
 
 /**
- * @brief
+ * @brief Interface for second callback.
+ *
  * Objects implementing this interface gets notification every second via
  * @ref ISecCallback::secCallback.
  */
@@ -22,17 +20,18 @@ public:
 	virtual void secCallback() = 0;
 	/**
 	 * @brief
-	 * This method should just register this object to RTCController's sec
+	 * This method should just register this object to @ref RTCController sec
 	 * callbacks. Note that there is no default implementation because it
-	 * would cause circular dependency on RTCController.
+	 * would cause circular dependency.
 	 */
 	virtual void registerSecCallback() = 0;
 };
 
 /**
- * @brief
+ * @brief Interface for minute callback.
+ *
  * Objects implementing this interface gets notification every minute via
- * @ref IMinCallback::minCallback
+ * @ref IMinCallback::minCallback.
  */
 class IMinCallback {
 public:
@@ -40,7 +39,7 @@ public:
 	virtual void minCallback() = 0;
 	/**
 	 * @brief
-	 * This method should just register this object to RTCController's min
+	 * This method should just register this object to @ref RTCController min
 	 * callbacks. Note that there is no default implementation because it
 	 * would cause circular dependency on RTCController.
 	 */

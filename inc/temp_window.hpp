@@ -1,8 +1,7 @@
-/*
- * temp_window.hpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file temp_window.hpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #ifndef INC_TEMP_WINDOW_HPP_
@@ -11,6 +10,11 @@
 #include "window.hpp"
 #include "lcd.hpp"
 
+/**
+ * @brief Control window for temperature configuration.
+ *
+ * The value cannot exceed interval given by @ref highBond and @ref lowBond.
+ */
 class TempWindow : public IControlWindow {
 public:
 	TempWindow(const Coord& coord = Coord(0,0));
@@ -18,7 +22,6 @@ public:
 	void draw()const override;
 	void setFocus(Message msg) override;
 	uint32_t getTemp() const;
-
 private:
 	uint32_t temp;
 	// Temperature higher boundary

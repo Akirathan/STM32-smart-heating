@@ -1,12 +1,11 @@
 /**
- * window.h
- *
- *  Created on: 18. 2. 2017
- *      Author: Mayfa
- *
- * @brief	This header file contains structure(s) representing a generic
- * 			type of window in program's GUI.
+ * @file window.hpp
+ * @author Pavel Marek
+ * @date 18.2.2017
+ * @brief This header file contains structure(s) representing a generic type
+ * 		  of window in program's GUI.
  */
+
 #ifndef WINDOW_HPP_
 #define WINDOW_HPP_
 
@@ -17,8 +16,9 @@ const uint16_t SEL_COLOR = LCD_COLOR_RED;
 
 /**
  * @brief
- * Enum representing messeges between Window and WindowSystem. Refer to
- * @ref IControlWindow::eventHandler for more informations.
+ * Enum representing messeges between Window and WindowSystem.
+ *
+ * Refer to @ref IControlWindow::eventHandler for more informations.
  */
 enum class Message {
 	NONE, ERROR, EXIT, FOCUS_LEFT, FOCUS_RIGHT
@@ -34,13 +34,12 @@ struct Coord {
 	Coord(uint16_t x, uint16_t y);
 };
 
-bool operator<(const Coord &c1, const Coord &c2);
-
 /**
  * @brief
- * Base interface for every window GUI element. Clients should not directly
- * inherit this interface, instead they should inherit @ref IControlWindow
- * or @ref IStaticWindow.
+ * Base interface for every window GUI element.
+ *
+ * Clients should not directly inherit this interface, instead they should
+ * inherit @ref IControlWindow or @ref IStaticWindow.
  */
 class Window {
 public:
@@ -58,22 +57,29 @@ protected:
 
 /**
  * @brief
- * Interface for user-controllable windows ie. those windows whose values
- * can be modified via up/down joystick.
+ * Interface for user-controllable windows.
+ *
+ * User-controllable windows are those windows whose values can be modified
+ * via up/down joystick.
  */
 class IControlWindow: public Window {
 public:
 	IControlWindow(const Coord& coord);
 	virtual ~IControlWindow() = default;
 	virtual Message eventHandler(JOYState_TypeDef joy_state) = 0;
+	/**
+	 * @brief Sets focus for this window.
+	 * @param msg is either @ref Message::LEFT or @ref Message::RIGHT.
+	 */
 	virtual void setFocus(Message msg) = 0;
 };
 
 /**
  * @brief
- * Interface for user non-controllable windows ie. those windows that cannot
- * be focused at. Classes that inherits this interface only shows some
- * information.
+ * Interface for user non-controllable windows.
+ *
+ * User non-controllable windows are those windows that cannot be focused.
+ * Classes that inherits this interface only shows some (text) information.
  */
 class IStaticWindow: public Window {
 public:

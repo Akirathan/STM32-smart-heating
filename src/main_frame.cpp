@@ -1,8 +1,7 @@
-/*
- * mainframe.cpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file mainframe.cpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #include "main_frame.hpp"
@@ -33,7 +32,13 @@ MainFrame::MainFrame()
 }
 
 /**
- * Control should remain in this method.
+ * @brief Controlls the main frame.
+ *
+ * When overview button is pressed, then current time and current temperature
+ * windows are hidden and @ref OverviewIntervalFrame is displayed. The same is
+ * done when reset button is pressed, except @ref SetIntervalFrame is displayed.
+ *
+ * @note This method contains an non-ending cycle.
  */
 void MainFrame::passControl()
 {

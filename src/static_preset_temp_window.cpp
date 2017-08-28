@@ -1,8 +1,7 @@
-/*
- * static_preset_temp_window.cpp
- *
- *  Created on: Aug 9, 2017
- *      Author: mayfa
+/**
+ * @file static_preset_temp_window.cpp
+ * @author Pavel Marek
+ * @date 9.8.2017
  */
 
 #include "static_preset_temp_window.hpp"
@@ -12,8 +11,7 @@ StaticPresetTempWindow::StaticPresetTempWindow(const Coord& c)
 { }
 
 /**
- * @brief
- * Unregisters from minute callback from @ref RTCController.
+ * @brief Unregisters from minute callback.
  */
 StaticPresetTempWindow::~StaticPresetTempWindow()
 {
@@ -23,9 +21,8 @@ StaticPresetTempWindow::~StaticPresetTempWindow()
 }
 
 /**
- * @brief
- * Gets temperature that is supposed to be set in the current interval and
- * redraws this window with updated value.
+ * @brief Gets temperature that is supposed to be set in the current interval
+ * 		  and redraws this window with updated value.
  */
 void StaticPresetTempWindow::minCallback()
 {
@@ -41,8 +38,7 @@ void StaticPresetTempWindow::registerMinCallback()
 }
 
 /**
- * @brief
- * Registers for minute callback.
+ * @brief Registers for minute callback.
  */
 void StaticPresetTempWindow::showPresetTemp()
 {
