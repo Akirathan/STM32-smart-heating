@@ -8,7 +8,7 @@
 #define INC_STATIC_TEMP_WINDOW_HPP_
 
 #include "hideable_window.hpp"
-#include "window.hpp"
+#include "static_window.hpp"
 #include "lcd.hpp"
 
 /**

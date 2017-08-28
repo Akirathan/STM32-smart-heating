@@ -9,7 +9,8 @@
 
 #include <io.hpp>
 #include <vector>
-#include "window.hpp"
+#include "control_window.hpp"
+#include "static_window.hpp"
 
 /**
  * @brief Window controller for frames.

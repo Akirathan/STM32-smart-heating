@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#include "window.hpp"
+#include "control_window.hpp"
 
 /**
  * @brief Control window for user time configuration.

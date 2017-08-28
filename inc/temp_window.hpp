@@ -7,7 +7,7 @@
 #ifndef INC_TEMP_WINDOW_HPP_
 #define INC_TEMP_WINDOW_HPP_
 
-#include "window.hpp"
+#include "control_window.hpp"
 #include "lcd.hpp"
 
 /**

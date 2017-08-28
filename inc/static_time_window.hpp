@@ -10,7 +10,7 @@
 #include <cstdio>
 #include "hideable_window.hpp"
 #include "rtc_controller.hpp"
-#include "window.hpp"
+#include "static_window.hpp"
 #include "callbacks.hpp"
 #include "lcd.hpp"
 
