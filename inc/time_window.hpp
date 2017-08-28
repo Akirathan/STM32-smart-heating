@@ -1,8 +1,7 @@
-/*
- * time_window.hpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file time_window.hpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #ifndef INC_TIME_WINDOW_HPP_
@@ -15,6 +14,13 @@
 #include <vector>
 #include "window.hpp"
 
+/**
+ * @brief Control window for user time configuration.
+ *
+ * Format of time is (hours : minutes) where hours and minutes acts like inner
+ * control windows that can be focused. When minutes are focused, the value
+ * jumps by @ref minuteJump value.
+ */
 class TimeWindow : public IControlWindow {
 private:
 	enum selected_t {
@@ -23,8 +29,7 @@ private:
 		NONE
 	} selected = NONE;
 public:
-	TimeWindow();
-	TimeWindow(const Coord& coord);
+	TimeWindow(const Coord& coord = Coord{0,0});
 	Message eventHandler(JOYState_TypeDef joy_state) override;
 	void draw()const override;
 	void setFocus(Message msg) override;
