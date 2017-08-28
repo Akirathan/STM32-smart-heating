@@ -1,8 +1,7 @@
-/*
- * time.cpp
- *
- *  Created on: Jul 14, 2017
- *      Author: mayfa
+/**
+ * @file time.hpp
+ * @author Pavel Marek
+ * @date 14.7.2017
  */
 
 #include "time.hpp"

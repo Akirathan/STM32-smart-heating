@@ -1,16 +1,19 @@
-/*
- * temp_sensor.hpp
+/**
+ * @file temp_sensor.hpp
+ * @author Pavel Marek
+ * @date 31.6.2017
  *
- *  Created on: 31 Jan 2017
- *      Author: Mayfa
+ * @brief This file contains macros, structures and functions necessary for
+ * 		  communication with DS18B20 temperature sensor.
  *
- * Use: First call temp_sensor_Init function that initializes the
- * underlying one-wire peripheral, then you can set alarm trigger
- * values with temp_sensor_SetAlarmHigh and temp_sensor_SetAlarmLow
- * functions and measurement resolution with temp_sensor_SetResolution
- * function. Note that the implicit resolution is 9 bit due to
- * documentation. Finally call temp_sensor_MeasureTemperature
- * function for temperature measurement.
+ * Use: First call @ref TempSensor::init function to initialize the underlying
+ * one-wire peripheral, then set alarm trigger values with @ref TempSensor::set_alarm
+ * function and measurement resolution with @ref TempSensor::set_resolution
+ * function. Note that the implicit resolution is 9 bit as meantioned in documentation.
+ * Finally call @ref TempSensor::measure_temperature for temperature measurement.
+ *
+ * @note This module is an implementation for functionality described in
+ * 		 DS18B20 documentation.
  */
 
 #ifndef TEMP_SENSOR_HPP_
@@ -33,6 +36,11 @@ typedef enum {
 	RESOLUTION_12_BIT = 0xFF,
 } resolution_t;
 
+/**
+ * @brief Structure containing configurable registers of DS18B20 device.
+ *
+ * This structure is used whenever writing to sensor is performed.
+ */
 typedef struct {
 	int8_t TH; // temperature high trigger register
 	int8_t TL; // temperature low trigger register
@@ -40,7 +48,11 @@ typedef struct {
 } config_t;
 
 /**
- * Doest not include CRC register.
+ * @brief Structure containing all the registers in DS18B20 device.
+ *
+ * This structure is used whenever reading from the sensor is performed.
+ *
+ * @note Does not include CRC register.
  */
 typedef struct {
 	uint8_t TEMP_LSB;

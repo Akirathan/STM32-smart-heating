@@ -1,8 +1,7 @@
-/*
- * temp_sensor.c
- *
- *  Created on: 31 Jan 2017
- *      Author: Mayfa
+/**
+ * @file temp_sensor.cpp
+ * @author Pavel Marek
+ * @date 31.6.2017
  */
 
 #include "temp_sensor.hpp"
@@ -19,7 +18,8 @@ static void write_scratchpad(config_t* config);
 static bool initialized = false;
 
 /**
- * Initializes one-wire peripheral which can be initialized just once.
+ * @brief Initializes underlying one-wire peripheral.
+ *
  * Also sets resolution to 10-bit.
  */
 uint32_t init()
@@ -55,8 +55,12 @@ double measure_temperature()
 }
 
 /**
+ * @brief Checks whether device's alarm flag is set.
+ *
  * This function should be called after temperature measurement, otherwise
  * bad result could be returned.
+ *
+ * @see DS18B20 documentation.
  */
 bool is_alarm_set()
 {
@@ -74,13 +78,11 @@ bool is_alarm_set()
 		// Master responds by sending the bit that slave has sent.
 		OneWire::write_bit(byte);
 	}
-
 	return true;
 }
 
 /**
- * Read the scratchpad from the sensor and
- * fills the data structure.
+ * @brief Reads the scratchpad from the sensor and fills @p data.
  */
 void read_data(data_t* data)
 {
@@ -99,6 +101,8 @@ void read_data(data_t* data)
 }
 
 /**
+ * @brief Sets alarm trigger values.
+ *
  * Sets the TH and TL registers. When the sensor measures temperature that is
  * outside given bounds, the alarm flag is set.
  */
@@ -114,7 +118,7 @@ void set_alarm(int8_t low, int8_t high)
 }
 
 /**
- * Gets resolution from CFG byte.
+ * @brief Gets resolution from CFG byte.
  */
 static resolution_t get_resolution(uint8_t cfg_byte)
 {
@@ -139,14 +143,12 @@ static resolution_t get_resolution(uint8_t cfg_byte)
 }
 
 /**
- * Set the given resolution. Note that the
- * higher the resolution is, more time for
- * the measurement is needed.
+ * @brief Sets measurement resolution.
  *
- * Note that this function should not be called from client code.
+ * @note The higher the resolution is, the longer it takes to measure the
+ * 		 temperature.
  *
- * @param resolution should be one of
- *   resolution_t values
+ * @note This function should not be called from client code.
  */
 void set_resolution(resolution_t resolution)
 {
@@ -172,7 +174,7 @@ void set_resolution(resolution_t resolution)
 }
 
 /**
- * Copies the configuration values to EEPROM.
+ * @brief Copies the configuration values to device's EEPROM.
  */
 void copy_scratchpad()
 {
@@ -182,8 +184,7 @@ void copy_scratchpad()
 }
 
 /**
- * Write the config data structure to the
- * temperature sensor.
+ * @brief Writes the @p config to the temperature sensor.
  */
 static void write_scratchpad(config_t* config)
 {
@@ -197,8 +198,7 @@ static void write_scratchpad(config_t* config)
 }
 
 /**
- * Read the scratchpad from the sensor and
- * sills the config structure.
+ * Read the scratchpad from the sensor and fills @p config.
  */
 void read_config(config_t* config)
 {

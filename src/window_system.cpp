@@ -13,7 +13,7 @@ WindowSystem::WindowSystem()
 /**
  * Frames pass control to this method. Windows object then
  * controls all the user's input and pass control back to system
- * when some of the windows sends Message::EXIT message.
+ * when some of the windows sends @ref Message::EXIT message.
  */
 AppStatus_TypeDef WindowSystem::passControl()
 {
@@ -128,6 +128,10 @@ void WindowSystem::Windows::addStatic(IStaticWindow* window)
 	staticWindows[staticWindows.size()-1]->draw();
 }
 
+/**
+ * @brief Adds one control window.
+ * @attention Order of adding is important, see docs for class.
+ */
 void WindowSystem::addControl(IControlWindow* window)
 {
 	return windows.addControl(window);

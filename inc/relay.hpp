@@ -1,8 +1,9 @@
-/*
- * relay.h
- *
- *  Created on: 31 Jan 2017
- *      Author: Mayfa
+/**
+ * @file relay.hpp
+ * @author Pavel Marek
+ * @date 31.6.2017
+ * @brief This file contains defines and a class for controlling the relay
+ * 		  module.
  */
 
 #ifndef RELAY_H_
@@ -18,6 +19,10 @@
 #define RELAY_POWER_GPIOPIN		GPIO_PIN_15
 #define RELAY_POWER_GPIOPORT	GPIOD
 
+/**
+ * @brief Class for controlling relay module.
+ * @note Implemented as a singleton class.
+ */
 class Relay {
 public:
 	static Relay& getInstance();

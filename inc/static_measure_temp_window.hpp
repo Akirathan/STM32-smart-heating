@@ -1,8 +1,7 @@
-/*
- * static_measure_temp_window.hpp
- *
- *  Created on: Aug 9, 2017
- *      Author: mayfa
+/**
+ * @file static_measure_temp_window.hpp
+ * @author Pavel Marek
+ * @date 9.8.2017
  */
 
 #ifndef STATIC_MEASURE_TEMP_WINDOW_HPP_
@@ -14,11 +13,12 @@
 #include "temp_sensor.hpp"
 
 /**
- * @brief
- * Class for displaying actual temperature. Temperature is measured in every
- * <code> minCallback </code> and the current temperature is then displayed.
- * @note
- * Note that this window can run on background.
+ * @brief Static window for displaying actual temperature.
+ *
+ * After @ref measure method is called, temperature is measured in every minute
+ * callback (@ref minCallback) and the current temperature is then displayed.
+ *
+ * @note Note that this window can run on background.
  */
 class StaticMeasureTempWindow : public StaticTempWindow, public IMinCallback
 {

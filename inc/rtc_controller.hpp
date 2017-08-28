@@ -1,8 +1,7 @@
-/*
- * rtc.hpp
- *
- *  Created on: 4.2.2017
- *      Author: Mayfa
+/**
+ * @file rtc_controller.hpp
+ * @author Pavel Marek
+ * @date 4.2.2017
  */
 
 #ifndef RTC_CONTROLLER_HPP_
@@ -15,7 +14,12 @@
 #include "callbacks.hpp"
 
 /**
- * Singleton class.
+ * @brief Class for controlling the RTC component.
+ *
+ * This class is basically a container for objects that are registered for
+ * minute or second callbacks.
+ *
+ * @note Implemented as a singleton class.
  */
 class RTCController {
 public:

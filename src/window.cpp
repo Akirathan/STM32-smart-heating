@@ -8,12 +8,6 @@ Coord::Coord(uint16_t x, uint16_t y)
 	: x(x), y(y)
 { }
 
-// FIXME
-bool operator<(const Coord& c1, const Coord& c2)
-{
-	return (c1.x <= c2.x) && (c1.y <= c2.y);
-}
-
 Window::Window(const Coord& coord)
 	: coord(coord)
 { }

@@ -1,8 +1,7 @@
-/*
- * static_time_window.hpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file static_time_window.hpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #ifndef INC_STATIC_TIME_WINDOW_HPP_
@@ -16,17 +15,16 @@
 #include "lcd.hpp"
 
 /**
- * @brief
- * Class representing a static window that shows current time. Both formats
- * (hours : minutes) and (hours : minutes : second) are supported - thatswhy
- * this class derives both @ref ISecCallback and @ref IMinCallback.
+ * @brief Static window for displaying current time.
+ *
+ * Both formats (hours : minutes) and (hours : minutes : second) are supported,
+ * thatswhy this class derives both @ref ISecCallback and @ref IMinCallback.
  * Format can be specified with a bool flag passed to constructor.
  *
- * @note
- * Note that this class can (and should) run on background.
- * @note
- * Just one of @ref secCallback and @ref minCallback members is used at one
- * time for any instance.
+ * @attention @ref runClock method must be called to receive callbacks.
+ * @note This class can (and should) run on background.
+ * @note Just one of @ref secCallback and @ref minCallback methods is used at a
+ * time.
  */
 class StaticTimeWindow : public IStaticWindow, public IHideableWindow,
 	public ISecCallback, public IMinCallback

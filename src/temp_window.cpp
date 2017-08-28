@@ -1,8 +1,7 @@
-/*
- * temp_window.cpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file temp_window.hpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #include "temp_window.hpp"
@@ -65,8 +64,7 @@ void TempWindow::draw()const
 }
 
 /**
- * @brief
- * Redraws this window with @ref LCD::NORMAL_FONT.
+ * @brief Redraws this window with @ref LCD::NORMAL_FONT.
  */
 void TempWindow::unsetFocus()
 {
@@ -75,8 +73,7 @@ void TempWindow::unsetFocus()
 }
 
 /**
- * @brief
- * Redraws this window with @ref LCD::SEL_FONT.
+ * @brief Redraws this window with @ref LCD::SEL_FONT.
  */
 void TempWindow::setFocus(Message msg)
 {

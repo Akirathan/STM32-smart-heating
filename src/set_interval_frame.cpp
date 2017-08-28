@@ -1,8 +1,7 @@
-/*
- * set_interval_frame.cpp
- *
- *  Created on: Aug 25, 2017
- *      Author: mayfa
+/**
+ * @file set_interval_frame.cpp
+ * @author Pavel Marek
+ * @date 25.8.2017
  */
 
 #include "set_interval_frame.hpp"
@@ -56,10 +55,6 @@ void SetIntervalFrame::drawHeader()
 	LCD::print_char(timeFromWindow.getX() + (font->Width)*5, LINE(6), '-');
 }
 
-/**
- * Initializes all the windows.
- * TODO: error handling
- */
 SetIntervalFrame::SetIntervalFrame()
 {
 	timeFromWindow = TimeWindow(Coord(15, LINE(6)));
@@ -67,6 +62,11 @@ SetIntervalFrame::SetIntervalFrame()
 	tempWindow = TempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
 }
 
+/**
+ * @brief Returns data from one interval.
+ *
+ * Must be called after @ref passControl function.
+ */
 std::vector<IntervalFrameData>& SetIntervalFrame::getData()
 {
 	return data;

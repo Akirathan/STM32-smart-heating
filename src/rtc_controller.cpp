@@ -1,12 +1,12 @@
-/*
- * rtc.cpp
- *
- *  Created on: 4.2.2017
- *      Author: Mayfa
+/**
+ * @file rtc_controller.cpp
+ * @author Pavel Marek
+ * @date 4.2.2017
  */
 
 #include <rtc_controller.hpp>
 
+// Uncomment this to disable second interrupt.
 #define ENABLE_SEC_INTERRUPT
 
 /**
@@ -25,10 +25,11 @@ RTCController& RTCController::getInstance()
 }
 
 /**
- * Initializes RTC peripheral. In case of wakeup from power reset mode,
- * RTC configuration is still saved in backup domain. This constructor
- * does not care about previous RTC initializations, and overwrites
- * this configuration into backup domain.
+ * @brief Initializes RTC peripheral.
+ *
+ * In case of wakeup from power reset mode, RTC configuration is still saved
+ * in backup domain. This constructor does not care about previous RTC
+ * initializations, and overwrites this configuration into backup domain.
  */
 RTCController::RTCController()
 {
@@ -46,7 +47,7 @@ RTCController::RTCController()
 	oscilator.LSEState = RCC_LSE_ON;
 	oscilator.LSIState = RCC_LSI_OFF;
 	if (HAL_RCC_OscConfig(&oscilator) != HAL_OK) {
-		//TODO: return HAL_ERROR;
+		//TODO HAL_ERROR;
 	}
 
 	// Configure the clock source for RTC.
@@ -54,7 +55,7 @@ RTCController::RTCController()
 	periphClock.PeriphClockSelection = RCC_PERIPHCLK_RTC;
 	periphClock.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
 	if (HAL_RCCEx_PeriphCLKConfig(&periphClock) != HAL_OK) {
-		// TODO: return HAL_ERROR;
+		// TODO HAL_ERROR;
 	}
 
 	__HAL_RCC_RTC_ENABLE(); // Enable RTC clock
@@ -78,6 +79,11 @@ RTCController::RTCController()
 #endif
 }
 
+/**
+ * @brief Sets current time into RTC.
+ *
+ * Wrapper for @ref HAL_RTC_SetTime function.
+ */
 AppStatus_TypeDef RTCController::setTime(RTC_TimeTypeDef* time)
 {
 	if (HAL_RTC_SetTime(&handle, time, RTC_FORMAT_BIN) != HAL_OK) {
@@ -89,7 +95,11 @@ AppStatus_TypeDef RTCController::setTime(RTC_TimeTypeDef* time)
 	}
 }
 
-
+/**
+ * @brief Gets current time from RTC.
+ *
+ * Wrapper for @ref HAL_RTC_GetTime function.
+ */
 AppStatus_TypeDef RTCController::getTime(RTC_TimeTypeDef* time)
 {
 	if (HAL_RTC_GetTime(&handle, time, RTC_FORMAT_BIN) != HAL_OK) {
@@ -105,6 +115,11 @@ bool RTCController::isTimeSet() const
 	return timeSet;
 }
 
+/**
+ * @brief Returns HAL handle for RTC.
+ *
+ * This method is called from @ref RTC_IRQHandler function.
+ */
 RTC_HandleTypeDef& RTCController::getHandle()
 {
 	return handle;
@@ -112,7 +127,11 @@ RTC_HandleTypeDef& RTCController::getHandle()
 
 
 /**
- * Called by second interrupt handler.
+ * @brief Called every second by interrupt handler.
+ *
+ * Calls registered objects' callbacks.
+ *
+ * @note Called by @ref RTC_IRQHandler function.
  */
 void RTCController::update()
 {
@@ -142,18 +161,24 @@ void RTCController::update()
 	}
 }
 
+/**
+ * @brief Registers an object for minute callback.
+ */
 void RTCController::registerMinuteCallback(IMinCallback* min_callback)
 {
 	minuteCallbackVec.push_back(min_callback);
 }
 
+/**
+ * @brief Registers an object for second callback.
+ */
 void RTCController::registerSecondCallback(ISecCallback* sec_callback)
 {
 	secondCallbackVec.push_back(sec_callback);
 }
 
 /**
- * Find pointer inside vector and deletes it.
+ * @brief Unregisters an object from second callback.
  */
 void RTCController::unregisterSecondCallback(ISecCallback* sec_callback)
 {
@@ -166,7 +191,7 @@ void RTCController::unregisterSecondCallback(ISecCallback* sec_callback)
 }
 
 /**
- * Find pointer inside vector and deletes it.
+ * @brief Unregisters an object from minute callback.
  */
 void RTCController::unregisterMinuteCallback(IMinCallback *min_callback)
 {

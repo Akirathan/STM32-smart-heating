@@ -1,8 +1,11 @@
-/*
- * lcd.hpp
+/**
+ * @file lcd.hpp
+ * @author Pavel Marek
+ * @date 24.4.2017
+ * @brief This file contains wrapper functions for BSP LCD in HAL library.
  *
- *  Created on: Jul 22, 2017
- *      Author: mayfa
+ * It also contains defines for normal and selection fonts (selection font is
+ * the font that control windows is displayed in when it is focused).
  */
 
 #ifndef INC_LCD_HPP_

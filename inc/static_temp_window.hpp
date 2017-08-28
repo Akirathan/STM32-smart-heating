@@ -1,8 +1,7 @@
-/*
- * static_temp_window.hpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file static_temp_window.hpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #ifndef INC_STATIC_TEMP_WINDOW_HPP_
@@ -13,12 +12,10 @@
 #include "lcd.hpp"
 
 /**
- * @brief
- * Class representing static window just for showing temperature to user.
- * @note
- * Note that this class is also base class for @ref StaticMeasureTempWindow
- * and @ref StaticPresetTempWindow so those derived classes do not have to
- * implement @ref draw method.
+ * @brief Static window used to display temperature to the user.
+ * @note Note that this class is also base class for @ref StaticMeasureTempWindow
+ * 		 and @ref StaticPresetTempWindow so those derived classes do not have to
+ * 		 implement @ref draw method.
  */
 class StaticTempWindow : public IStaticWindow, public IHideableWindow
 {

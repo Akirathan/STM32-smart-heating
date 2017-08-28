@@ -1,8 +1,7 @@
-/*
- * static_preset_temp_window.hpp
- *
- *  Created on: Aug 9, 2017
- *      Author: mayfa
+/**
+ * @file static_preset_temp_window.hpp
+ * @author Pavel Marek
+ * @date 9.8.2017
  */
 
 #ifndef STATIC_PRESET_TEMP_WINDOW_HPP_
@@ -14,10 +13,11 @@
 #include "rtc_controller.hpp"
 
 /**
- * @brief
- * Used in mainframe to display temperature that is preset due to values
- * stored in EEPROM. (Minute) callback checks for supposed temperature from
- * @ref TempController.
+ * @brief Static window used in @ref MainFrame to display temperature that was
+ * 		  configured and stored in EEPROM.
+ *
+ * After @ref showPresetTemp method is called, (minute) callback checks for
+ * preset temperature from @ref TempController.
  */
 class StaticPresetTempWindow : public StaticTempWindow, public IMinCallback
 {

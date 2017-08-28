@@ -1,8 +1,7 @@
-/*
- * clkframe.hpp
- *
- *  Created on: 4.2.2017
- *      Author: Mayfa
+/**
+ * @file clkframe.hpp
+ * @author Pavel Marek
+ * @date 4.2.2017
  */
 
 #ifndef CLK_FRAME_HPP_
@@ -16,9 +15,10 @@
 #include "frame.hpp"
 
 /**
- * @brief
- * Represents class for user time selection. The user time selection consists
- * of two windows - clock (hours : minutes) and ok button.
+ * @brief Represents class for user time selection.
+ *
+ * The user time selection consists of two windows - clock (hours : minutes)
+ * and ok button. This frame ends when ok button is pressed.
  */
 class ClkFrame : public IFrame {
 public:

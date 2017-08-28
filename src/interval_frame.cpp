@@ -1,15 +1,11 @@
-/*
- * interval_frame.cpp
- *
- *  Created on: 23. 2. 2017
- *      Author: Mayfa
- */
-
-#include <interval_frame.hpp>
-
 /**
- * Draws all headers.
+ * @file interval_frame.cpp
+ * @author Pavel Marek
+ * @date 23.2.2017
  */
+
+#include "interval_frame.hpp"
+
 void IntervalFrame::drawHeader()
 {
 	LCD::draw_header((uint8_t *)"Interval setting");

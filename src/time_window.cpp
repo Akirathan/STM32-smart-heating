@@ -6,16 +6,12 @@
 
 #include "time_window.hpp"
 
-/**
- * Initializes TimeWindow with 5 minuteJump.
- */
 TimeWindow::TimeWindow(const Coord& coord)
 	: IControlWindow(coord)
 { }
 
 /**
-* Draw this window without any formatting ie. without any selected
-* item.
+* Draws this window without any formatting ie. without any selected item.
 */
 void TimeWindow::noFontDraw() const
 {
@@ -27,8 +23,7 @@ void TimeWindow::noFontDraw() const
 }
 
 /**
- * Draw the time window and the selected item inside it.
- * TODO draw error symbol
+ * @brief Draws the time window and the selected item inside it.
  */
 void TimeWindow::draw() const
 {
@@ -73,9 +68,6 @@ void TimeWindow::draw() const
 	}
 }
 
-/**
- * Msg should be FOCUS_LEFT or FOCUS_RIGHT.
- */
 void TimeWindow::setFocus(Message msg)
 {
 	switch (msg) {
@@ -86,11 +78,11 @@ void TimeWindow::setFocus(Message msg)
 		setSelected(MINUTES);
 		break;
 	default:
-		// Should not happen
+		// Should not happen.
 		break;
 	}
 
-	draw(); // Redraw
+	draw();
 }
 
 Message TimeWindow::eventHandler(JOYState_TypeDef joy_state)

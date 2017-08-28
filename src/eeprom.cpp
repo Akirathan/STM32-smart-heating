@@ -1,8 +1,7 @@
-/*
- * eeprom.cpp
- *
- *  Created on: Jul 18, 2017
- *      Author: mayfa
+/**
+ * @file eeprom.cpp
+ * @author Pavel Marek
+ * @date 18.7.2017
  */
 
 #include "eeprom.hpp"
@@ -18,7 +17,7 @@ EEPROM::EEPROM()
 	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
 
 	if (BSP_EEPROM_Init() != EEPROM_OK) {
-		//error_handler(); TODO:
+		// TODO Error
 	}
 }
 
@@ -97,13 +96,16 @@ bool EEPROM::isEmpty()
 	}
 }
 
-// TODO: error handling
+/**
+ * @brief Loads data stored in EEPROM into @p data_vec.
+ *
+ * If EEPROM is empty, no data is pushed to @p data_vec.
+ */
 void EEPROM::load(std::vector<IntervalFrameData>& data_vec)
 {
 	uint16_t addr = 0;
 
 	if (readPage(addr) != FRAME_DELIM) {
-		// Error: expected start of frame
 		return;
 	}
 

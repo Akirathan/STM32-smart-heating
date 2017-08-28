@@ -1,11 +1,10 @@
-/*
- * clkframe.cpp
- *
- *  Created on: 4.2.2017
- *      Author: Mayfa
+/**
+ * @file clkframe.cpp
+ * @author Pavel Marek
+ * @date 4.2.2017
  */
 
-#include <clk_frame.hpp>
+#include "clk_frame.hpp"
 
 ClkFrame::ClkFrame()
 {
@@ -27,13 +26,11 @@ void ClkFrame::drawHeader() const
 }
 
 /**
- * @brief
- * Should be called after @ref ClkFrame::passControl.
+ * @brief Gets the time that was set in @ref ClkFrame::passControl.
  */
 RTC_TimeTypeDef ClkFrame::getTime() const
 {
-	// Investigate window members
-
+	// Investigate window members.
 	RTC_TimeTypeDef rtc_time;
 	rtc_time.Hours = time.getHours();
 	rtc_time.Minutes = time.getMinutes();
