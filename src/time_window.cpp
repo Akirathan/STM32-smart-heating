@@ -1,20 +1,10 @@
-/*
- * time_window.cpp
- *
- *  Created on: Jul 21, 2017
- *      Author: mayfa
+/**
+ * @file time_window.cpp
+ * @author Pavel Marek
+ * @date 21.7.2017
  */
 
 #include "time_window.hpp"
-
-using namespace std;
-
-/**
- * Needed by intervalframe ctor
- */
-TimeWindow::TimeWindow()
-	: TimeWindow(Coord(0, 0))
-{ }
 
 /**
  * Initializes TimeWindow with 5 minuteJump.
