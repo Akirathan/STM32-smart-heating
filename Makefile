@@ -61,6 +61,8 @@ APP_OBJECTS += hardware/startup_stm32f107xc.o
 APP_OBJECTS += hardware/syscalls.o
 
 APP_OBJECTS += src/window.o
+APP_OBJECTS += src/static_window.o
+APP_OBJECTS += src/control_window.o
 APP_OBJECTS += src/rtc_controller.o
 APP_OBJECTS += src/time_window.o
 APP_OBJECTS += src/static_time_window.o

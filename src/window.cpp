@@ -43,14 +43,6 @@ uint32_t Window::getY() const
 	return coord.y;
 }
 
-IControlWindow::IControlWindow(const Coord& coord)
-	: Window(coord)
-{ }
-
-IStaticWindow::IStaticWindow(const Coord& coord)
-	: Window(coord)
-{ }
-
 const Coord& Window::getCoord() const
 {
 	return coord;

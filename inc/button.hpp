@@ -10,7 +10,7 @@
 
 #include <string>
 #include "lcd.hpp"
-#include "window.hpp"
+#include "control_window.hpp"
 
 /**
  * Currently there are just OK, END or NEXT buttons in the application and
