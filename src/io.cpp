@@ -1,14 +1,18 @@
-/*
- * input.cpp
- *
- *  Created on: 24. 4. 2017
- *      Author: Mayfa
+/**
+ * @file input.cpp
+ * @author Pavel Marek
+ * @date 24.4.2017
  */
 
-#include "input.hpp"
+#include "io.hpp"
+
+namespace IO {
 
 /**
- * Wait for the user to push joystick in any direction.
+ * @brief Waits for the user to press joystick in any direction.
+ *
+ * Joystick is considered pressed when it is pushed down and up again, so when
+ * user holds the joystick down, nothing is happening.
  */
 JOYState_TypeDef read_joy()
 {
@@ -35,3 +39,5 @@ void print(char *ptr)
 
 	write(0, ptr, size);
 }
+
+} // namespace IO

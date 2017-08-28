@@ -1,29 +1,26 @@
-/*
- * window_system.cpp
- *
- *  Created on: Jul 13, 2017
- *      Author: mayfa
+/**
+ * @file window_system.cpp
+ * @author Pavel Marek
+ * @date 13.7.2017
  */
 
 #include "window_system.hpp"
-
-using namespace std;
 
 WindowSystem::WindowSystem()
 	: windows(*this), currWindow(nullptr)
 { }
 
 /**
- * Modules pass control to this method. Windows object then
+ * Frames pass control to this method. Windows object then
  * controls all the user's input and pass control back to system
  * when some of the windows sends Message::EXIT message.
  */
 AppStatus_TypeDef WindowSystem::passControl()
 {
-	/* Window managing */
+	// Window managing.
 	bool end = false;
 	while (!end) {
-		JOYState_TypeDef joy_state = read_joy();
+		JOYState_TypeDef joy_state = IO::read_joy();
 		Message msg = currWindow->eventHandler(joy_state);
 		switch (msg) {
 		case Message::NONE:
@@ -42,12 +39,9 @@ AppStatus_TypeDef WindowSystem::passControl()
 		}
 	}
 
-	/* Data gathering */
-
 	return APP_OK;
 }
 
-/*** System::Windows ***/
 WindowSystem::Windows::Windows(WindowSystem& system)
 	: system(system), ctrlWindowIdx(0)
 { }
@@ -86,6 +80,9 @@ void WindowSystem::Windows::ctrlWindowIdxDec()
 	}
 }
 
+/**
+ * Sets focus to previous control window.
+ */
 void WindowSystem::Windows::previous() {
 	ctrlWindowIdxDec();
 	system.currWindow = ctrlWindows[ctrlWindowIdxGet()];
@@ -93,7 +90,7 @@ void WindowSystem::Windows::previous() {
 }
 
 /**
- * Sets currWindow_ for System and focuses to the new currWindow_.
+ * Sets focus to next control window.
  */
 void WindowSystem::Windows::next()
 {
@@ -103,31 +100,31 @@ void WindowSystem::Windows::next()
 }
 
 /**
- * Adds control window to the internal data representation and draw it.
+ * Adds control window to the internal data representation and draws it.
  */
 void WindowSystem::Windows::addControl(IControlWindow* window)
 {
 	ctrlWindows.push_back(window);
 
-	// If this is the first added ControlWindow
+	// If this is the first added ControlWindow.
 	if (ctrlWindows.size() == 1) {
-		/* Add it to ctrlWindows and set focus to it */
+		// Add it to ctrlWindows and set focus to it.
 		system.currWindow = ctrlWindows[0];
 		system.currWindow->setFocus(Message::FOCUS_LEFT);
 	}
 
-	// Draw this control window
+	// Draw this control window.
 	ctrlWindows[ctrlWindows.size()-1]->draw();
 }
 
 /**
- * Adds static window to the internal data representation and draw it.
+ * Adds static window to the internal data representation and draws it.
  */
 void WindowSystem::Windows::addStatic(IStaticWindow* window)
 {
 	staticWindows.push_back(window);
 
-	// Draw this static window
+	// Draw this static window.
 	staticWindows[staticWindows.size()-1]->draw();
 }
 
@@ -138,5 +135,5 @@ void WindowSystem::addControl(IControlWindow* window)
 
 void WindowSystem::addStatic(IStaticWindow* window)
 {
-	return windows.addStatic(move(window));
+	return windows.addStatic(window);
 }
