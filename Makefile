@@ -72,15 +72,15 @@ APP_OBJECTS += src/button.o
 
 APP_OBJECTS += src/lcd.o
 APP_OBJECTS += src/window_system.o
+APP_OBJECTS += src/set_interval_frame.o
+APP_OBJECTS += src/overview_interval_frame.o
 APP_OBJECTS += src/clk_frame.o
 APP_OBJECTS += src/main_frame.o
 APP_OBJECTS += src/interval_frame_data.o
 APP_OBJECTS += src/interval_frame.o
-APP_OBJECTS += src/set_interval_frame.o
-APP_OBJECTS += src/overview_interval_frame.o
 
 APP_OBJECTS += src/eeprom.o
-APP_OBJECTS += src/input.o
+APP_OBJECTS += src/io.o
 APP_OBJECTS += src/temp_sensor.o
 APP_OBJECTS += src/main.o 
 APP_OBJECTS += src/one_wire.o
