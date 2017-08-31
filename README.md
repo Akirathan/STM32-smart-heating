@@ -18,11 +18,10 @@ Project is written in C++ and uses [HAL library](http://www.st.com/en/embedded-s
 - [5V relay]()
 
 ## Software requirements
-**arm-none-eabi-gcc** - Current version (6.3.1) is used.  
-**openocd** - Current version (0.9.0) is used.  
-  There is a config file stm3210c_eval.cfg for openocd. This file sets openocd to flash data through st-link debugger.
-
-You need to download [STM32 Cube](), the _HAL library_ is included in this archive.
+- arm-none-eabi-gcc - Current version (6.3.1) is used.  
+- openocd - Current version (0.9.0) is used.  
+  - There is a config file stm3210c_eval.cfg for openocd. This file sets openocd to flash data through st-link debugger.
+- HAL library included in [STM32 Cube F1](http://www.st.com/en/embedded-software/stm32cubef1.html).
 
 For convenience there are .project and .cproject Eclipse CDT files included, there is also a launch file for Eclipse CDT (but you need ARM MCU plugin to use this launch file for debugging).
 
@@ -32,7 +31,12 @@ There is just one Makefile that builds all the necessary HAL sources along with 
 
 # Architecture
 
-## GUI control
+(PICTURE)
+
+Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. For consistency purposes use of HAL is discouraged on places with appropriate controller.
+Frames and windows (described in GUI section) are in the top most layer. Besides _IO_ and _LCD_ controllers, windows can use other controllers - for example _StaticPresetTempWindow_ uses _TempController_ and _RTCController_.
+
+## GUI
 The only GUI elements are windows that are used to display a text information. They are divided into two categories: static and dynamic. Static windows just displays some information whereas dynamic windows can be focused (by pressing right/left joystick buttons) and the values they store can be changed (by pressing up/down joystick buttons). There is just one focused window at a time and its content is displayed in different (red) color.
 
 Every dynamic window should inherit from _IControlWindow_ and implement _eventHandler_ method accordingly. The functionality of _eventHandler_ is straightforward: control window returns _Message_ telling whether the focuse should be put onto left or right neighbor window, or the whole frame should be exitted.
