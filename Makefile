@@ -36,12 +36,10 @@ LDFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
 LDFLAGS += -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions
 LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
 LDFLAGS += -specs=nano.specs 
-#LDFLAGS += -specs=nosys.specs
 LDFLAGS += -static
 LDFLAGS += -T"./STM32F107XC_FLASH.ld"
 LDFLAGS += -Wl,-u,Reset_Handler -Wl,--defsym=malloc_getpagesize_P=0x1000 
 
-# Includes including library includes
 INCLUDES=\
 -I./inc \
 -I./hardware \
@@ -54,12 +52,12 @@ INCLUDES=\
 -I$(CMSIS)/Device/ST/STM32F1xx/Include \
 -I$(CMSIS)/Include
 
-# Application objects
+# Hardware objects
 APP_OBJECTS += hardware/stm32f1xx_it.o 
 APP_OBJECTS += hardware/system_stm32f1xx.o
 APP_OBJECTS += hardware/startup_stm32f107xc.o
 APP_OBJECTS += hardware/syscalls.o
-
+# Window objects
 APP_OBJECTS += src/window.o
 APP_OBJECTS += src/static_window.o
 APP_OBJECTS += src/control_window.o
@@ -71,8 +69,7 @@ APP_OBJECTS += src/static_temp_window.o
 APP_OBJECTS += src/static_measure_temp_window.o
 APP_OBJECTS += src/static_preset_temp_window.o
 APP_OBJECTS += src/button.o
-
-APP_OBJECTS += src/lcd.o
+# Frame objects
 APP_OBJECTS += src/window_system.o
 APP_OBJECTS += src/set_interval_frame.o
 APP_OBJECTS += src/overview_interval_frame.o
@@ -80,15 +77,16 @@ APP_OBJECTS += src/clk_frame.o
 APP_OBJECTS += src/main_frame.o
 APP_OBJECTS += src/interval_frame_data.o
 APP_OBJECTS += src/interval_frame.o
-
+# Low-level objects
+APP_OBJECTS += src/lcd.o
 APP_OBJECTS += src/eeprom.o
 APP_OBJECTS += src/io.o
 APP_OBJECTS += src/temp_sensor.o
-APP_OBJECTS += src/main.o 
 APP_OBJECTS += src/one_wire.o
 APP_OBJECTS += src/time.o
 APP_OBJECTS += src/temp_controller.o
 APP_OBJECTS += src/relay.o
+APP_OBJECTS += src/main.o 
 
 # Test objects
 TESTS_OBJECTS += tests/temp_sensor_tests.o
