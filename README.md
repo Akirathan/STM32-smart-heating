@@ -31,7 +31,7 @@ There is just one Makefile that builds all the necessary HAL sources along with 
 
 # Architecture
 
-![alt text](https://github.com/Akirathan/STM32-smart-heating/arch_pic.png)
+![alt text](https://github.com/Akirathan/STM32-smart-heating/blob/master/arch_pic.png)
 
 Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. For consistency purposes use of HAL is discouraged on places with appropriate controller.
 Frames and windows (described in GUI section) are in the top most layer. Besides _IO_ and _LCD_ controllers, windows can use other controllers - for example _StaticPresetTempWindow_ uses _TempController_ and _RTCController_.
