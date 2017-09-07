@@ -5,6 +5,36 @@ There is a possibility for the user to set certain temperature for a time interv
 
 Project is written in C++ and uses [HAL library](http://www.st.com/en/embedded-software/stm32cubef1.html).
 
+## Description
+![complete](common/complete.jpg)
+
+This is screenshot of STM3210C-Eval board (on the left) and STM32F4-Discovery board (on the right).
+Discovery board is used as a debugger because it embeds ST-link.
+Relay module (in the top right corner) and temperature sensor (on the left) are connected to Eval board through GPIO pins.
+
+![time-setting]()
+
+This is the first frame that is displayed when Eval board is powered on.
+User sets current time in this frame.
+User can cycle through three windows (hours, minutes and ok button) with right/left joystick buttons, and set the value in the currently selected window with up/down joystick button.
+Currently selected window is displayed in red color eg. red text.
+
+![interval-setting]()
+
+This frame lets user choose prefered temperature for a certain time interval.
+NEXT button lets user input another interval.
+Those informations (intervals and corresponding temperatures) are saved into device's EEPROM as soon as user hits END button.
+Note that there is 64 KB of EEPROM in Eval board, so the number of intervals is almost unlimited (three 32 bit words per interval).
+This frame is displayed in case when no interval informations are available in EEPROM.
+
+![main-frame]()
+
+This is the main frame of the application. 
+Three informations are displayed - current temperature (in `actual temp` window), temperature that was set for the current interval (in `set temp` window) and current time.
+There are also two buttons - `overview` and `reset` that lets user overview or reset all the saved intervals.
+When one of those buttons is pressed, "Interval setting" frame is displayed, and depending on which button was pressed, user can set time and temperature values or just cycle through interval with `NEXT` and `END` buttons.
+
+
 # Requirements
 
 ## Hardware requirements
@@ -32,6 +62,10 @@ There is just one Makefile that builds all the necessary HAL sources along with 
 
 Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. For consistency purposes use of HAL is discouraged on places with appropriate controller.
 Frames and windows (described in GUI section) are in the top most layer. Besides `IO` and `LCD` controllers, windows can use other controllers - for example `StaticPresetTempWindow` uses `TempController` and `RTCController`.
+
+## In details
+
+
 
 ### GUI
 The only GUI elements are windows that are used to display a text information. They are divided into two categories: static and dynamic. Static windows just displays some information whereas dynamic windows can be focused (by pressing right/left joystick buttons) and the values they store can be changed (by pressing up/down joystick buttons). There is just one focused window at a time and its content is displayed in different (red) color.
