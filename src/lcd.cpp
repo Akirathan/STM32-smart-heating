@@ -43,12 +43,11 @@ static void update()
  */
 void init()
 {
-	if (init_) {
-		return;
+	if (!init_) {
+		BSP_LCD_Init();
+		init_ = true;
 	}
-	BSP_LCD_Init();
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
-	init_ = true;
 }
 
 /**
