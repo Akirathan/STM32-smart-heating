@@ -2,4 +2,6 @@
 *.map
 *.log
 *.elf
-/.settings
+.settings
+.gitignore
+Doxyfile

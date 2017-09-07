@@ -36,16 +36,6 @@
 			<locationURI>STM32Cube/Drivers/STM32F1xx_HAL_Driver/Src</locationURI>
 		</link>
 	</linkedResources>
-	<filteredResources>
-		<filter>
-			<id>1503933355480</id>
-			<name>doc</name>
-			<type>22</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-			</matcher>
-		</filter>
-	</filteredResources>
 	<variableList>
 		<variable>
 			<name>STM32Cube</name>
