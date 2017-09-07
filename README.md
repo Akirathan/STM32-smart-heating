@@ -63,6 +63,22 @@ There is just one Makefile that builds all the necessary HAL sources along with 
 Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. For consistency purposes use of HAL is discouraged on places with appropriate controller.
 Frames and windows (described in GUI section) are in the top most layer. Besides `IO` and `LCD` controllers, windows can use other controllers - for example `StaticPresetTempWindow` uses `TempController` and `RTCController`.
 
+## In details
+First of all HAL is initialized and system clocks are initialized in `SystemClock_Config` function.
+This function was copied from HAL project templates.
+`ClkFrame` is then initialized and control is passed to it with `ClkFrame::passControl` method (refer to `IFrame::passControl` documentation for more information).
+`ClkFrame` is a class that handles "Time setting" frame.
+When user hits OK button, `ClkFrame::passControl` returns, time is retrieved and passed to `RTCController`.
+
+`SetIntervalFrame` is initialized in case when `EEPROM` contains no interval data.
+`SetIntervalFrame` class handles interval settings, and when user presses END button, `SetIntervalFrame::passControl` returns and finally `IntervalFrameData` (more specifically `std::vector<IntervalFrameData>` can be retrieved.
+
+`MainFrame` is then initialized.
+It is the final frame of the application and control does not return from its `MainFrame::passControl` method.
+`MainFrame` registers its static windows ( `StaticTimeWindow` and two `StaticTempWindow`s) for interrupts to `RTCController` (refer to *interrupts* section below).
+When *overview* or *reset* button is pushed, the three static windows are hidden (otherwise they would redraw themselves on every `callback` from `RTCController`) and `OverviewIntervalFrame` or `SetIntervalFrame` is initialized.
+
+
 ### GUI
 The only GUI elements are windows that are used to display a text information. They are divided into two categories: static and dynamic. Static windows just displays some information whereas dynamic windows can be focused (by pressing right/left joystick buttons) and the values they store can be changed (by pressing up/down joystick buttons). There is just one focused window at a time and its content is displayed in different (red) color.
 

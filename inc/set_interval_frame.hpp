@@ -18,7 +18,8 @@
 /**
  * @brief Used for interval setting.
  *
- * This frame is displayed when user presses SET button in main frame.
+ * This frame is displayed when user presses SET button in main frame,
+ * or when no EEPROM interval data are available after @ref ClkFrame.
  * One should call @ref passControl and then @ref getData methods in
  * this order.
  */
