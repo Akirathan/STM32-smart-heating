@@ -10,10 +10,30 @@ namespace LCD {
 
 // Private functions.
 static void set_font(const Font& font);
+static void update();
 
 // Private variables.
 static bool init_ = false;
 static Font curr_font = Font::NORMAL_FONT;
+
+/**
+ * Updates current font to HAL.
+ */
+static void update()
+{
+	switch (curr_font) {
+	case Font::SEL_FONT:
+		BSP_LCD_SetTextColor(SEL_FONT_TEXT_COLOR);
+		BSP_LCD_SetBackColor(SEL_FONT_BACK_COLOR);
+		BSP_LCD_SetFont(&SEL_FONT_FONT);
+		break;
+	case Font::NORMAL_FONT:
+		BSP_LCD_SetTextColor(NORMAL_FONT_TEXT_COLOR);
+		BSP_LCD_SetBackColor(NORMAL_FONT_BACK_COLOR);
+		BSP_LCD_SetFont(&NORMAL_FONT_FONT);
+		break;
+	}
+}
 
 /**
  * @brief Initializes LCD peripheral and also clears display with black color.
@@ -44,6 +64,8 @@ void draw_header(uint8_t* text)
 	BSP_LCD_SetTextColor(LCD_COLOR_GREEN);
 	BSP_LCD_SetBackColor(LCD_COLOR_LIGHTBLUE);
 	BSP_LCD_DisplayStringAt(0, 10, text, CENTER_MODE);
+	// Return back current font.
+	update();
 }
 
 static void set_font(const Font& font)
@@ -51,22 +73,9 @@ static void set_font(const Font& font)
 	if (curr_font == font) {
 		return;
 	}
-
-	switch (font) {
-	case Font::SEL_FONT:
-		curr_font = Font::SEL_FONT;
-
-		BSP_LCD_SetTextColor(SEL_FONT_TEXT_COLOR);
-		BSP_LCD_SetBackColor(SEL_FONT_BACK_COLOR);
-		BSP_LCD_SetFont(&SEL_FONT_FONT);
-		break;
-	case Font::NORMAL_FONT:
-		curr_font = Font::NORMAL_FONT;
-
-		BSP_LCD_SetTextColor(NORMAL_FONT_TEXT_COLOR);
-		BSP_LCD_SetBackColor(NORMAL_FONT_BACK_COLOR);
-		BSP_LCD_SetFont(&NORMAL_FONT_FONT);
-		break;
+	else {
+		curr_font = font;
+		update();
 	}
 }
 
