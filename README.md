@@ -58,15 +58,22 @@ There is just one Makefile that builds all the necessary HAL sources along with 
 
 # Architecture
 
+<<<<<<< HEAD
 ![](common/arch_pic.png)
+=======
+![](https://github.com/Akirathan/STM32-smart-heating/blob/master/arch_pic.png)
+>>>>>>> 07ebe07d95a29b9c5cf75a64c61f4ba2ef90db59
 
 Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. For consistency purposes use of HAL is discouraged on places with appropriate controller.
 Frames and windows (described in GUI section) are in the top most layer. Besides `IO` and `LCD` controllers, windows can use other controllers - for example `StaticPresetTempWindow` uses `TempController` and `RTCController`.
 
+<<<<<<< HEAD
 ## In details
 
 
 
+=======
+>>>>>>> 07ebe07d95a29b9c5cf75a64c61f4ba2ef90db59
 ### GUI
 The only GUI elements are windows that are used to display a text information. They are divided into two categories: static and dynamic. Static windows just displays some information whereas dynamic windows can be focused (by pressing right/left joystick buttons) and the values they store can be changed (by pressing up/down joystick buttons). There is just one focused window at a time and its content is displayed in different (red) color.
 
