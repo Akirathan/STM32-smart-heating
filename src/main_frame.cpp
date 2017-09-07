@@ -8,6 +8,10 @@
 
 void MainFrame::drawHeader()
 {
+	// Clear display.
+	LCD::init();
+
+	// Draw headers.
 	LCD::print_string(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE, LCD::NORMAL_FONT);
 	LCD::print_string(185, LINE(3), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
 	LCD::print_string(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 60,
@@ -74,7 +78,7 @@ void MainFrame::passControl()
 		system.addControl(&resetButton);
 
 		// Control from this function is returned when overview or reset button
-		// are pressed.
+		// is pressed.
 		system.passControl();
 
 		std::vector<IntervalFrameData> data_vec;
