@@ -79,19 +79,19 @@ void StaticTimeWindow::draw() const
 	// Print hours.
 	char text[2];
 	sprintf(text, "%02u", hours);
-	sFONT *font = BSP_LCD_GetFont();
-	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
-	BSP_LCD_DisplayStringAt(coord.x + (font->Width * 2), coord.y, (uint8_t *)":", LEFT_MODE);
+	sFONT *font = LCD::get_font();
+	LCD::print_string(coord.x, coord.y, (uint8_t *)text, LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(coord.x + (font->Width * 2), coord.y, (uint8_t *)":", LEFT_MODE, LCD::NORMAL_FONT);
 
 	// Print minutes.
 	sprintf(text, "%02u", minutes);
-	BSP_LCD_DisplayStringAt(coord.x + (font->Width * 3), coord.y, (uint8_t *)text, LEFT_MODE);
+	LCD::print_string(coord.x + (font->Width * 3), coord.y, (uint8_t *)text, LEFT_MODE, LCD::NORMAL_FONT);
 
 	// Print seconds.
 	if (secPrecision) {
-		BSP_LCD_DisplayStringAt(coord.x + (font->Width * 5), coord.y, (uint8_t *)":", LEFT_MODE);
+		LCD::print_string(coord.x + (font->Width * 5), coord.y, (uint8_t *)":", LEFT_MODE, LCD::NORMAL_FONT);
 		sprintf(text, "%02u", seconds);
-		BSP_LCD_DisplayStringAt(coord.x + (font->Width * 6), coord.y, (uint8_t *)text, LEFT_MODE);
+		LCD::print_string(coord.x + (font->Width * 6), coord.y, (uint8_t *)text, LEFT_MODE, LCD::NORMAL_FONT);
 	}
 }
 
