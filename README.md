@@ -12,14 +12,14 @@ This is screenshot of STM3210C-Eval board (on the left) and STM32F4-Discovery bo
 Discovery board is used as a debugger because it embeds ST-link.
 Relay module (in the top right corner) and temperature sensor (on the left) are connected to Eval board through GPIO pins.
 
-![time-setting]()
+![time-setting](common/time-setting.jpg)
 
 This is the first frame that is displayed when Eval board is powered on.
 User sets current time in this frame.
 User can cycle through three windows (hours, minutes and ok button) with right/left joystick buttons, and set the value in the currently selected window with up/down joystick button.
 Currently selected window is displayed in red color eg. red text.
 
-![interval-setting]()
+![interval-setting](common/interval-setting.jpg)
 
 This frame lets user choose prefered temperature for a certain time interval.
 NEXT button lets user input another interval.
@@ -27,7 +27,7 @@ Those informations (intervals and corresponding temperatures) are saved into dev
 Note that there is 64 KB of EEPROM in Eval board, so the number of intervals is almost unlimited (three 32 bit words per interval).
 This frame is displayed in case when no interval informations are available in EEPROM.
 
-![main-frame]()
+![main-frame](common/main-frame.jpg)
 
 This is the main frame of the application. 
 Three informations are displayed - current temperature (in `actual temp` window), temperature that was set for the current interval (in `set temp` window) and current time.
@@ -58,7 +58,7 @@ There is just one Makefile that builds all the necessary HAL sources along with 
 
 # Architecture
 
-![](https://github.com/Akirathan/STM32-smart-heating/blob/master/arch_pic.png)
+![](common/arch_pic.png)
 
 Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. For consistency purposes use of HAL is discouraged on places with appropriate controller.
 Frames and windows (described in GUI section) are in the top most layer. Besides `IO` and `LCD` controllers, windows can use other controllers - for example `StaticPresetTempWindow` uses `TempController` and `RTCController`.
