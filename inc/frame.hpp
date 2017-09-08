@@ -12,6 +12,11 @@
  */
 struct IFrame {
 	virtual ~IFrame() = default;
+	/**
+	 * @brief Main function for frames.
+	 *
+	 * Lifecycle of frame ends when this method returns.
+	 */
 	virtual void passControl() =0;
 };
 

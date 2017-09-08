@@ -17,7 +17,7 @@ Relay module (in the top right corner) and temperature sensor (on the left) are 
 This is the first frame that is displayed when Eval board is powered on.
 User sets current time in this frame.
 User can cycle through three windows (hours, minutes and ok button) with right/left joystick buttons, and set the value in the currently selected window with up/down joystick button.
-Currently selected window is displayed in red color eg. red text.
+Currently selected window is displayed in red color.
 
 ![interval-setting](common/interval-setting.jpg)
 
@@ -25,7 +25,7 @@ This frame lets user choose prefered temperature for a certain time interval.
 NEXT button lets user input another interval.
 Those informations (intervals and corresponding temperatures) are saved into device's EEPROM as soon as user hits END button.
 Note that there is 64 KB of EEPROM in Eval board, so the number of intervals is almost unlimited (three 32 bit words per interval).
-This frame is displayed in case when no interval informations are available in EEPROM.
+This frame is displayed after Time setting frame in case when no interval informations are available in EEPROM.
 
 ![main-frame](common/main-frame.jpg)
 
@@ -60,8 +60,9 @@ There is just one Makefile that builds all the necessary HAL sources along with 
 
 ![](common/arch_pic.png)
 
-Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. For consistency purposes use of HAL is discouraged on places with appropriate controller.
-Frames and windows (described in GUI section) are in the top most layer. Besides `IO` and `LCD` controllers, windows can use other controllers - for example `StaticPresetTempWindow` uses `TempController` and `RTCController`.
+Directly above hardware layer there are classes or namespaces that controlls the underlying hardware either directly or through HAL. 
+For consistency purposes use of HAL is discouraged on places with appropriate controller.
+Frames and windows (described in GUI section) are in the top most layer. Besides `IO` and `LCD` controllers, windows can use other controllers e.g. `StaticPresetTempWindow` uses `TempController` and `RTCController`.
 
 ## In details
 First of all HAL is initialized and system clocks are initialized in `SystemClock_Config` function.
@@ -71,7 +72,7 @@ This function was copied from HAL project templates.
 When user hits OK button, `ClkFrame::passControl` returns, time is retrieved and passed to `RTCController`.
 
 `SetIntervalFrame` is initialized in case when `EEPROM` contains no interval data.
-`SetIntervalFrame` class handles interval settings, and when user presses END button, `SetIntervalFrame::passControl` returns and finally `IntervalFrameData` (more specifically `std::vector<IntervalFrameData>` can be retrieved.
+`SetIntervalFrame` class handles interval settings, and when user presses END button, `SetIntervalFrame::passControl` returns and finally `IntervalFrameData` (more specifically `std::vector<IntervalFrameData>`) can be retrieved.
 
 `MainFrame` is then initialized.
 It is the final frame of the application and control does not return from its `MainFrame::passControl` method.
@@ -80,16 +81,25 @@ When *overview* or *reset* button is pushed, the three static windows are hidden
 
 
 ### GUI
-The only GUI elements are windows that are used to display a text information. They are divided into two categories: static and dynamic. Static windows just displays some information whereas dynamic windows can be focused (by pressing right/left joystick buttons) and the values they store can be changed (by pressing up/down joystick buttons). There is just one focused window at a time and its content is displayed in different (red) color.
+The only GUI elements are windows that are used to display a text information.
+They are divided into two categories: static and control. 
+Static windows just displays some information whereas control windows can be focused (by pressing right/left joystick buttons) and the values they store can be changed (by pressing up/down joystick buttons).
+There is just one focused window at a time and its content is displayed in different (red) color.
 
-Every dynamic window should inherit from `IControlWindow` and implement `eventHandler` method accordingly. The functionality of `eventHandler` is straightforward: control window returns `Message` telling whether the focuse should be put onto left or right neighbor window, or the whole frame should be exitted.
+Every control window should inherit from `IControlWindow` and implement `eventHandler` method accordingly.
+The functionality of `eventHandler` is straightforward: control window returns `Message` telling whether the focuse should be put onto left or right neighbor window, or the whole frame should be shut down.
 
 **Frames**
-Frame stands for a display view eg. what is displayed in current time. It is basically just a container that holds windows and is responsible for their displaying. There is no restriction on controlling the windows, however ther is a prefered way - to initialize all the windows and pass them to `WindowSystem` that reads user input and cycles through the windows accordingly until `Message::EXIT` is returned from one of the windows. One can then simply investigate windows' values and end the whole frame. Note that this all is done in `passControl` method.
+The term Frame stands for a display view i.e. what is displayed in current time. 
+It is basically just a container that holds windows and is responsible for their displaying.
+There is no restriction on controlling the windows, however there is a prefered way - to initialize all the windows and pass them to `WindowSystem` that reads user input and cycles through the windows accordingly until `Message::EXIT` is returned from one of the windows.
+One can then simply investigate windows' values and end the whole frame.
+Note that this all is done in `passControl` method.
 
 
 ### (Second) interrupts
-Class can get (second or minute) notifications (implemented as interrupts) if `ISecCallback` or `IMinCallback` interface is implemented. Implementation of one of those interfaces forces one to register the class for (second or minute) callbacks to `RTCController`.
+Class can get (second or minute) notifications (implemented as interrupts) if it implements `ISecCallback` or `IMinCallback` interface. 
+Implementation of one of those interfaces forces the implementer to register the class for (second or minute) callbacks to `RTCController`.
 
 # Possible improvements
 
