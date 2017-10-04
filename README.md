@@ -5,6 +5,8 @@ There is a possibility for the user to set certain temperature for a time interv
 
 Project is written in C++ and uses [HAL library](http://www.st.com/en/embedded-software/stm32cubef1.html).
 
+**Documentation** is accessible through this [link](https://akirathan.github.io/STM32-smart-heating/)
+
 ## Description
 ![complete](common/complete.jpg)
 
