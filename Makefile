@@ -53,6 +53,7 @@ INCLUDES=\
 -I$(CMSIS)/Device/ST/STM32F1xx/Include \
 -I$(CMSIS)/Include \
 -I$(LWIP)/src/include \
+-I$(LWIP)/src/include/lwip \
 -I$(LWIP)/src/include/ipv4 \
 -I$(LWIP)/system
 

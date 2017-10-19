@@ -40,6 +40,7 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/ipv4&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/system&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/lwip&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1807332257" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -66,6 +67,7 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Drivers/BSP/Components/ili9320/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/tests}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/lwip&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/ipv4&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/system&quot;"/>
 								</option>
@@ -104,6 +106,7 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/ipv4&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/system&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/lwip&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.73959962" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
