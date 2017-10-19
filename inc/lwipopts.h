@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright © 2015 STMicroelectronics International N.V. 
+  * <h2><center>&copy; Copyright ï¿½ 2015 STMicroelectronics International N.V. 
   * All rights reserved.</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -125,19 +125,6 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* ---------- ICMP options ---------- */
 #define LWIP_ICMP                       1
-
-
-/* ---------- DHCP options ---------- */
-/* Define LWIP_DHCP to 1 if you want DHCP configuration of
-   interfaces. DHCP is not implemented in lwIP 0.5.1, however, so
-   turning this on does currently not work. */
-#define LWIP_DHCP               1
-
-
-/* ---------- UDP options ---------- */
-#define LWIP_UDP                1
-#define UDP_TTL                 255
-
 
 /* ---------- Statistics options ---------- */
 #define LWIP_STATS 0
