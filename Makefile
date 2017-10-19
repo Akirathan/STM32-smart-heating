@@ -170,8 +170,13 @@ $(LWIP)/src/core/ipv4/ip_addr.o \
 $(LWIP)/src/core/ipv4/ip_frag.o 
 
 
-OBJECTS = $(HAL_OBJECTS) $(BSP_OBJECTS) $(APP_OBJECTS) $(TESTS_OBJECTS) \
+OBJECTS = \
+	$(HAL_OBJECTS) \
+	$(BSP_OBJECTS) \
+	$(APP_OBJECTS) \
+	$(TESTS_OBJECTS) \
 	$(LWIP_OBJECTS)
+
 
 DEPENDENCIES=$(OBJECTS:.o=.d)
 
