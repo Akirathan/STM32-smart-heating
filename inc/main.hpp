@@ -13,6 +13,11 @@
 #include "stm3210c_eval_sd.h"
 #include "stm3210c_eval_eeprom.h"
 
+// lwIP includes.
+#include "ethernetif.h"
+#include "init.h"
+#include "tcp.h"
+
 // My includes.
 #include "interval_frame.hpp"
 #include "main_frame.hpp"

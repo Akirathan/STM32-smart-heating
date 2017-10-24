@@ -128,22 +128,37 @@ void eeprom_try()
 }
 
 /**
- * Pin set as input pullup is read as set.
+ * Receives packets in while loop.
  */
-void gpio_test()
+void net_try()
 {
-	// Enable clock
-	__HAL_RCC_GPIOE_CLK_ENABLE();
+	struct netif net;
 
-	// Set PE3 as input pullup
-	GPIO_InitTypeDef gpio;
-	gpio.Pin = GPIO_PIN_3;
-	gpio.Mode = GPIO_MODE_INPUT;
-	gpio.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	gpio.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(GPIOE, &gpio);
+	lwip_init();
 
-	GPIO_PinState pin_state = HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3); // set expected
+	// Init IP address.
+	struct ip_addr ip;
+	struct ip_addr netmask;
+	struct ip_addr gw;
+	IP4_ADDR(&ip, 198, 0, 0, 2);
+	IP4_ADDR(&netmask, 255, 255, 255, 0);
+	IP4_ADDR(&gw, 198, 0, 0, 2);
+
+	// Config.
+	netif_add(&net, &ip, &netmask, &gw, NULL, &ethernetif_init,
+			(void (*) (netif *))&ethernetif_input);
+	netif_set_default(&net);
+	netif_set_up(&net);
+	netif_set_link_callback(&net, ethernetif_update_config);
+
+	// Set TCP.
+	struct tcp_pcb * pcb;
+	pcb = tcp_new();
+	err_t err = tcp_bind(pcb, IP_ADDR_ANY, 7);
+
+	while (true) {
+		ethernetif_input(&net);
+	}
 }
 
 int main()
@@ -153,13 +168,9 @@ int main()
 	/* Initialize system and peripheral clocks */
 	SystemClock_Config();
 
-	main_test();
+	net_try();
+	//main_test();
 	//mainframe_test();
-
-	/*BSP_LCD_Init();
-	BSP_LCD_Clear(LCD_COLOR_BLACK);
-	BSP_LCD_DisplayStringAt(0, 0, (uint8_t *)"Hello1", CENTER_MODE);
-	BSP_LCD_DisplayStringAt(BSP_LCD_GetXSize()/2, LINE(2), (uint8_t *)"Hello2", LEFT_MODE);*/
 
 	volatile int a = 0;
 	while (1) {

@@ -30,7 +30,7 @@ CFLAGS += -DSTM32F107VCTx -DUSE_HAL_DRIVER -DUSE_STM3210C_EVAL -DSTM3210C_EVAL
 CFLAGS += -g -Wall 
 #CFLAGS += -Os
 
-CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics -fno-rtti
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics -fno-rtti -fpermissive
 CXXFLAGS += -std=c++14 
 
 LDFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft 
@@ -153,6 +153,7 @@ $(BSP)/Components/ili9320/ili9320.o \
 $(BSP)/Components/stmpe811/stmpe811.o
 
 LWIP_OBJECTS = \
+$(LWIP)/src/netif/etharp.o \
 $(LWIP)/src/core/def.o \
 $(LWIP)/src/core/init.o \
 $(LWIP)/src/core/lwip_timers.o \
@@ -168,7 +169,8 @@ $(LWIP)/src/core/ipv4/icmp.o \
 $(LWIP)/src/core/ipv4/inet.o \
 $(LWIP)/src/core/ipv4/ip.o \
 $(LWIP)/src/core/ipv4/ip_addr.o \
-$(LWIP)/src/core/ipv4/ip_frag.o 
+$(LWIP)/src/core/ipv4/ip_frag.o \
+$(LWIP)/src/core/ipv6/inet6.o 
 
 
 OBJECTS = \
@@ -190,6 +192,10 @@ clean:
 	rm -f **/*.d
 	rm -f $(HAL_OBJECTS)
 	rm -f $(BSP_OBJECTS)
+	rm -f $(BSP_OBJECTS)
+	rm -f $(APP_OBJECTS)
+	rm -f $(TESTS_OBJECTS)
+	rm -f $(LWIP_OBJECTS)
 
 # Link final elf
 $(ELF): $(OBJECTS)

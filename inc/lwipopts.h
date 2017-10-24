@@ -123,6 +123,9 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_WND                 (2*TCP_MSS)
 
 
+/* ---------- UDP options ---------- */
+#define LWIP_UDP				0
+
 /* ---------- ICMP options ---------- */
 #define LWIP_ICMP                       1
 
