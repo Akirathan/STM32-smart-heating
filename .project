@@ -35,6 +35,21 @@
 			<type>2</type>
 			<locationURI>STM32Cube/Drivers/STM32F1xx_HAL_Driver/Src</locationURI>
 		</link>
+		<link>
+			<name>fatfs_src</name>
+			<type>2</type>
+			<locationURI>$%7BSTM32Cube%7D/Middlewares/Third_Party/FatFs/src</locationURI>
+		</link>
+		<link>
+			<name>lwip_core</name>
+			<type>2</type>
+			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Middlewares/Third_Party/LwIP/src/core</location>
+		</link>
+		<link>
+			<name>lwip_ipv4</name>
+			<type>2</type>
+			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Middlewares/Third_Party/LwIP/src/core/ipv4</location>
+		</link>
 	</linkedResources>
 	<filteredResources>
 		<filter>
