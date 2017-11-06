@@ -127,6 +127,16 @@ void eeprom_try()
 	}
 }
 
+static err_t net_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
+{
+
+}
+
+static err_t net_tcp_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
+{
+
+}
+
 /**
  * Receives packets in while loop.
  */
@@ -154,11 +164,56 @@ void net_try()
 	// Set TCP.
 	struct tcp_pcb * pcb;
 	pcb = tcp_new();
-	err_t err = tcp_bind(pcb, IP_ADDR_ANY, 7);
+	err_t err = tcp_bind(pcb, IP_ADDR_ANY, 4567);
+
+	if (err == ERR_OK) {
+		pcb = tcp_listen(pcb);
+	}
 
 	while (true) {
 		ethernetif_input(&net);
 	}
+}
+
+void fat_try(bool formatted, const std::string& fname)
+{
+	if (FATFS_LinkDriver(&SD_Driver, "") != 0) {
+		error_handler();
+	}
+
+	// Mount.
+	FATFS fs;
+	FRESULT res;
+	if ((res = f_mount(&fs, "", 0)) != F_OK) {
+		error_handler();
+	}
+
+	// Format.
+	if (!formatted) {
+		if ((res = f_mkfs("", 0, 0)) != F_OK) {
+			error_handler();
+		}
+	}
+
+	// Open.
+	FIL file;
+	if ((res = f_open(&file, fname.c_str(), FA_READ)) != F_OK) {
+		error_handler();
+	}
+
+	// Read.
+	uint8_t rxbuff[512];
+	UINT br;
+	f_read(&file, rxbuff, 512, &br);
+
+	// Fill wrbuffer.
+	uint8_t wrbuff[512];
+	for (int i = 0; i < 512; ++i) {
+		wrbuff[i] = i;
+	}
+
+	// Write.
+	f_write(&file, wrbuff, 512, &br);
 }
 
 int main()
@@ -168,9 +223,9 @@ int main()
 	/* Initialize system and peripheral clocks */
 	SystemClock_Config();
 
+	fat_try(false, "file.txt");
 	net_try();
-	//main_test();
-	//mainframe_test();
+	main_test();
 
 	volatile int a = 0;
 	while (1) {

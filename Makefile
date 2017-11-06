@@ -8,6 +8,7 @@ CMSIS = $(STM32F1CUBE)/Drivers/CMSIS
 BSP = $(STM32F1CUBE)/Drivers/BSP
 HAL = $(STM32F1CUBE)/Drivers/STM32F1xx_HAL_Driver
 LWIP = $(STM32F1CUBE)/Middlewares/Third_Party/LwIP
+FATFS = $(STM32F1CUBE)/Middlewares/Third_Party/FatFs
 UTILITIES = $(STM32F1CUBE)/Utilities
 
 # Toolchain paths (adjust to match your needs)
@@ -55,7 +56,9 @@ INCLUDES=\
 -I$(LWIP)/src/include \
 -I$(LWIP)/src/include/lwip \
 -I$(LWIP)/src/include/ipv4 \
--I$(LWIP)/system
+-I$(LWIP)/system \
+-I$(FATFS)/src \
+-I$(FATFS)/src/drivers
 
 # Hardware objects
 APP_OBJECTS += hardware/stm32f1xx_it.o 
@@ -148,6 +151,7 @@ $(BSP)/STM3210C_EVAL/stm3210c_eval_io.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval_lcd.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval_eeprom.o \
+$(BSP)/STM3210C_EVAL/stm3210c_eval_sd.o \
 $(BSP)/Components/ili9325/ili9325.o \
 $(BSP)/Components/ili9320/ili9320.o \
 $(BSP)/Components/stmpe811/stmpe811.o
@@ -172,13 +176,20 @@ $(LWIP)/src/core/ipv4/ip_addr.o \
 $(LWIP)/src/core/ipv4/ip_frag.o \
 $(LWIP)/src/core/ipv6/inet6.o 
 
+FATFS_OBJECTS = \
+$(FATFS)/src/drivers/sd_diskio.o \
+$(FATFS)/src/diskio.o \
+$(FATFS)/src/ff.o \
+$(FATFS)/src/ff_gen_drv.o 
+
 
 OBJECTS = \
 	$(HAL_OBJECTS) \
 	$(BSP_OBJECTS) \
 	$(APP_OBJECTS) \
 	$(TESTS_OBJECTS) \
-	$(LWIP_OBJECTS)
+	$(LWIP_OBJECTS) \
+	$(FATFS_OBJECTS)
 
 
 DEPENDENCIES=$(OBJECTS:.o=.d)
@@ -196,6 +207,7 @@ clean:
 	rm -f $(APP_OBJECTS)
 	rm -f $(TESTS_OBJECTS)
 	rm -f $(LWIP_OBJECTS)
+	rm -f $(FATFS_OBJECTS)
 
 # Link final elf
 $(ELF): $(OBJECTS)
