@@ -2,6 +2,11 @@
 *.map
 *.log
 *.elf
+*.plist
 .settings
 .gitignore
+notes.txt
 Doxyfile
+proj/cmake/build
+proj/cmake/CMakeFiles
+proj/cmake/CMakeCache.txt

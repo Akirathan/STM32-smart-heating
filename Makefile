@@ -7,6 +7,8 @@ STM32F1CUBE = /home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0
 CMSIS = $(STM32F1CUBE)/Drivers/CMSIS
 BSP = $(STM32F1CUBE)/Drivers/BSP
 HAL = $(STM32F1CUBE)/Drivers/STM32F1xx_HAL_Driver
+LWIP = $(STM32F1CUBE)/Middlewares/Third_Party/LwIP
+FATFS = $(STM32F1CUBE)/Middlewares/Third_Party/FatFs
 UTILITIES = $(STM32F1CUBE)/Utilities
 
 # Toolchain paths (adjust to match your needs)
@@ -29,11 +31,11 @@ CFLAGS += -DSTM32F107VCTx -DUSE_HAL_DRIVER -DUSE_STM3210C_EVAL -DSTM3210C_EVAL
 CFLAGS += -g -Wall 
 #CFLAGS += -Os
 
-CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics -fno-rtti
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics -fno-rtti -fpermissive
 CXXFLAGS += -std=c++14 
 
 LDFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft 
-LDFLAGS += -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions
+LDFLAGS += -Wl,-Map=output.map -fno-exceptions # -Wl,--gc-sections
 LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
 LDFLAGS += -specs=nano.specs 
 LDFLAGS += -static
@@ -50,13 +52,20 @@ INCLUDES=\
 -I$(BSP)/Components/ili9320 \
 -I$(UTILITIES)/Fonts \
 -I$(CMSIS)/Device/ST/STM32F1xx/Include \
--I$(CMSIS)/Include
+-I$(CMSIS)/Include \
+-I$(LWIP)/src/include \
+-I$(LWIP)/src/include/lwip \
+-I$(LWIP)/src/include/ipv4 \
+-I$(LWIP)/system \
+-I$(FATFS)/src \
+-I$(FATFS)/src/drivers
 
 # Hardware objects
 APP_OBJECTS += hardware/stm32f1xx_it.o 
 APP_OBJECTS += hardware/system_stm32f1xx.o
 APP_OBJECTS += hardware/startup_stm32f107xc.o
 APP_OBJECTS += hardware/syscalls.o
+APP_OBJECTS += hardware/ethernetif.o
 # Window objects
 APP_OBJECTS += src/window.o
 APP_OBJECTS += src/static_window.o
@@ -105,7 +114,8 @@ $(HAL)/Src/stm32f1xx_hal_dma.o \
 $(HAL)/Src/stm32f1xx_hal_spi.o \
 $(HAL)/Src/stm32f1xx_hal_i2c.o \
 $(HAL)/Src/stm32f1xx_hal_i2s.o \
-$(HAL)/Src/stm32f1xx_hal_cortex.o 
+$(HAL)/Src/stm32f1xx_hal_cortex.o \
+$(HAL)/Src/stm32f1xx_hal_eth.o 
 
 # Available HAL module objects
 HAL_OBJECTS_EXTRA=\
@@ -131,7 +141,6 @@ $(HAL)/Src/stm32f1xx_hal_cec.o \
 $(HAL)/Src/stm32f1xx_hal_crc.o \
 $(HAL)/Src/stm32f1xx_hal_dac.o \
 $(HAL)/Src/stm32f1xx_hal_dac_ex.o \
-$(HAL)/Src/stm32f1xx_hal_eth.o \
 $(HAL)/Src/stm32f1xx_hal_flash.o \
 $(HAL)/Src/stm32f1xx_hal_flash_ex.o \
 $(HAL)/Src/stm32f1xx_hal_uart.o \
@@ -142,11 +151,46 @@ $(BSP)/STM3210C_EVAL/stm3210c_eval_io.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval_lcd.o \
 $(BSP)/STM3210C_EVAL/stm3210c_eval_eeprom.o \
+$(BSP)/STM3210C_EVAL/stm3210c_eval_sd.o \
 $(BSP)/Components/ili9325/ili9325.o \
 $(BSP)/Components/ili9320/ili9320.o \
 $(BSP)/Components/stmpe811/stmpe811.o
 
-OBJECTS = $(HAL_OBJECTS) $(BSP_OBJECTS) $(APP_OBJECTS) $(TESTS_OBJECTS)
+LWIP_OBJECTS = \
+$(LWIP)/src/netif/etharp.o \
+$(LWIP)/src/core/def.o \
+$(LWIP)/src/core/init.o \
+$(LWIP)/src/core/lwip_timers.o \
+$(LWIP)/src/core/mem.o \
+$(LWIP)/src/core/memp.o \
+$(LWIP)/src/core/netif.o \
+$(LWIP)/src/core/pbuf.o \
+$(LWIP)/src/core/raw.o \
+$(LWIP)/src/core/tcp.o \
+$(LWIP)/src/core/tcp_in.o \
+$(LWIP)/src/core/tcp_out.o \
+$(LWIP)/src/core/ipv4/icmp.o \
+$(LWIP)/src/core/ipv4/inet.o \
+$(LWIP)/src/core/ipv4/ip.o \
+$(LWIP)/src/core/ipv4/ip_addr.o \
+$(LWIP)/src/core/ipv4/ip_frag.o \
+$(LWIP)/src/core/ipv6/inet6.o 
+
+FATFS_OBJECTS = \
+$(FATFS)/src/drivers/sd_diskio.o \
+$(FATFS)/src/diskio.o \
+$(FATFS)/src/ff.o \
+$(FATFS)/src/ff_gen_drv.o 
+
+
+OBJECTS = \
+	$(HAL_OBJECTS) \
+	$(BSP_OBJECTS) \
+	$(APP_OBJECTS) \
+	$(TESTS_OBJECTS) \
+	$(LWIP_OBJECTS) \
+	$(FATFS_OBJECTS)
+
 
 DEPENDENCIES=$(OBJECTS:.o=.d)
 
@@ -159,6 +203,11 @@ clean:
 	rm -f **/*.d
 	rm -f $(HAL_OBJECTS)
 	rm -f $(BSP_OBJECTS)
+	rm -f $(BSP_OBJECTS)
+	rm -f $(APP_OBJECTS)
+	rm -f $(TESTS_OBJECTS)
+	rm -f $(LWIP_OBJECTS)
+	rm -f $(FATFS_OBJECTS)
 
 # Link final elf
 $(ELF): $(OBJECTS)
