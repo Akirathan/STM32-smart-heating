@@ -35,7 +35,7 @@ CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-threadsafe-statics -fno-rtti -fpermiss
 CXXFLAGS += -std=c++14 
 
 LDFLAGS = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft 
-LDFLAGS += -Wl,-Map=output.map -Wl,--gc-sections -fno-exceptions
+LDFLAGS += -Wl,-Map=output.map -fno-exceptions # -Wl,--gc-sections
 LDFLAGS += -Wl,--start-group -lc -lm -Wl,--end-group
 LDFLAGS += -specs=nano.specs 
 LDFLAGS += -static
