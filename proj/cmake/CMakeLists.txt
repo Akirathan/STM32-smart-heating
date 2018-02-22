@@ -1,5 +1,3 @@
-set(CMAKE_TOOLCHAIN_FILE "toolchain.cmake")
-
 cmake_minimum_required(VERSION 3.5)
 project(generic_eval C CXX)
 
