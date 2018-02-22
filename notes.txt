@@ -1,0 +1,144 @@
+23.2.2017
+--- changes ---
+interval_window module
+	- Changed the behaviour of passing the control to this (generally other) modules, ie. one should
+	just call Windows::pass_control method that will draw all the windows and process all the user's
+	input.
+	
+
+--- abstract design ---
+FRAME HANDLING
+1) Main module passes control via pass_control method to Frame::System
+	- pass_control method returns when some of the window returns Message::EXIT message.
+2) Frame::System creates Window and passes it to Frame::System::Windows and Frame::System::Windows immediately draws this Window
+3) Frame::System cycles through the windows via Windows::prev() and Windows::next() methods
+	- System can dynamically add an window via Windows::add(Window) method.
+	- System can dynamically delete and window via Windows::delete() method.
+		- Windows destructs the corresponding Window object and the ~Window() undraws this object from the screen.
+	- Windows::prev() and Windows::next() methods returns Window& to the corresponding Window so the system can find out what
+	type of Window it is via dynamic_cast.
+	
+[ - System saves the instance of current Window.]
+	
+	
+
+
+--- modules ---
+WINDOW MODULE
+	- During initialization sets this->Windth and this->Height so the destructor knows precisely how to undraw this Window.
+	- Destructor undraws this window off the screen i.e. fills a rectangle around this window.
+	- Message event_handler(JOYState_TypeDef) serves as a communication between system and window.
+		- System passes JOYState event to the Window and the Window returns Message to the system.
+
+
+WINDOWS MODULE
+	- The data structure of windows is ordered via coordinates, so the window cycling is correct.
+		- By correct we mean that none of the windows is "overjumped".
+		
+	
+	
+|======|
+| TODO |
+|======|
+- eeprom should return reference to std::vector<IntervalFrameData> and TempController
+should not copy this vector as a member.
+
+- Should classes that inherits some callback interface register for callbacks in their
+constructor?
+
+|=======|
+| NOTES |
+|=======|
+21.3.2017
+Measuring timer precision with OMEGA logic analyser. Here are some observations:
+1) When a (general purpose TIM3) timer is set to tick every 1 us and interrupt handler just toggles GPIO pin,
+	then the real measured time between every GPIO pin toggle is around 3 us.
+2) When TIM3 timer is set to tick every 5 us and interrupt handler just toggles GPIO pin, then the real
+	measured time between every GPIO toggle has arround 0.2 us overhead.
+3) PE13 GPIO pin was set as push-pull output. No matter which speed for that GPIO pin was specified, the maximum
+	pin toggle rate was 400ns = 0.4us (GPIO pin toggling in infinite loop).
+	
+STM32_HAL_LIBRARY (examples/TIM/TIM_Base)
+	I found a misstake in this example. In readme the APB1 prescaler has supposedly value of 4. But in
+	SystemClock_Config the value of APB1 prescaler is 2.
+	
+Conclusion:
+Using a timer with 1 us interrupt rate is useless. The timer should have at least 3 us interrupt rate so there
+is minimal overhead. 
+	Waiting implemented with DWT is on the other hand precise, but more tests should be done.
+	
+22.3.2017
+- Waiting implemented with DWT seems ok. Overflow of DWT->CYCCNT register seems not to crash the waiting process.
+- The Core debug of Cortex M3 is connected to CPU via SWD or JTag interface and is independent on processor state.
+- one_wire_InitCommunication does not work - should be tested next time.
+
+23.3.2017
+- pull-up resistor on F1/F4 - F1 does not work as intended, nevertheless the one_wire_InitCommunication acts
+	same on F1 and on F4.
+- one_wire and temp_sensor c++ modules were converted to c modules so they are compiled with c compiler.
+- initial startup lasts 150-180 ms.
+- F1 pull-up resistor does not write 1 to I/O pin so the OMEGA logic analyser does not trigger rising edge, on
+	the other hand for F4 pull-up it does.
+- TODO: try to load TM libraries and TM one_wire and debug it with OMEGA logic analyser.
+
+31.3.2017
+- using DS18B20 with TM libraries gives same result as using it with my libraries.
+- the configuration register is reset each time the MCU writes to it. On the other hand writing to TH and 
+	TL registers stores ok. 
+- Temperature conversion gives absurd values.
+
+24.4.2017
+- small changes in TimeWindow class
+	- TimeWindow::event_handler should take care of redrawing itself.
+- 
+
+
+-------------------------------------------------------
+	Moved from Attolic toolchain to GCC toolchain
+-------------------------------------------------------
+
+13.7.2017
+- Makefile: without USE_STM3210C_EVAL symbol defined in CFLAGS the BSP_IO_Init function does not work.
+- BSP_IO fails with timeout when program runs many times without power reset.
+	possible cause: bad memory allocation
+
+14.7.2017
+- After while STM crashes by itself. Suddenly the LCD screen refreshes and error_handler is called.
+	this is not done in my code. What is happening? Use of C++ STL should be ok, no dynamic memory
+	allocation is done...
+- In simple dynamic memory allocation program (calling malloc), the object is allocated on the same address every time
+	the program is run (device reset).
+- C++ functions in global namespace - is it bad practise?
+- TODO: serialization, device logging
+
+15.11.2017
+- Succesfully linked lwIP and FAT libraries.
+- Can web server (ie Ethernet interrupts) and temperature measurement work alongside each other?
+ie. can ethernet buffer overflow, when temperature interrupt service routine takes too long?
+- Learn something about Ethernet peripheral
+	- PHY - physical layer of (OSI) model
+	- MII (media independent interface) - ...
+
+23.11.2017
+- Ethernet has dedicated DMA, so Rx buffer cannot overflow.
+- TODO: code review, check how does AHB bus look like.
+
+15.2.2018
+- 5H prace na CMaku.
+
+21.2.2018
+- zprovozneny CMake build.
+- povolit dynamickou alokaci pameti?
+- jak vypisovat float (nejen na obrazovku)?
+- Podarilo se mi spustit funkcni cmake, cube se preklada jako OBJECT library.
+- Integrovat CubeMX
+
+22.2.2018
+- Podle BSP zkopirovat informace o inicializaci periferii do CubeMX (respektive kopirovat to z originalniho CubeMX projektu).
+	- Aby bylo videt co vsechno se pouziva za piny a taky z vyukovych duvodu.
+- Pridat Error_Handler() na mista kde muze nastat nejaka chyba.
+	- Typicky je to chyba pri inicializaci nejake periferie a takova chyba je urcite fatalni.
+- Pridat genericky cmake "pre-script"
+	- Buildovani by ted melo fungovat na win i lin s minimalnima zmenama skriptu.
+	- Akorat prestalo fungovat flashovani pres openocd na linuxu.
+
