@@ -5,7 +5,6 @@
 *.plist
 .settings
 .gitignore
-notes.txt
 Doxyfile
 proj/cmake/build
 build
