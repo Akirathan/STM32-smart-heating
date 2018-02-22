@@ -44,7 +44,9 @@ static void update()
 void init()
 {
 	if (!init_) {
-		BSP_LCD_Init();
+		if (BSP_LCD_Init() != LCD_OK) {
+			Error_Handler();
+		}
 		init_ = true;
 	}
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
