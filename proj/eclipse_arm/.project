@@ -31,6 +31,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/proj/cmake</locationURI>
 		</link>
 		<link>
+			<name>generic_eval_debug.launch</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/generic_eval_debug.launch</locationURI>
+		</link>
+		<link>
 			<name>src</name>
 			<type>2</type>
 			<locationURI>PARENT-2-PROJECT_LOC/src</locationURI>
