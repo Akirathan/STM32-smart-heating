@@ -141,4 +141,5 @@ ie. can ethernet buffer overflow, when temperature interrupt service routine tak
 - Pridat genericky cmake "pre-script"
 	- Buildovani by ted melo fungovat na win i lin s minimalnima zmenama skriptu.
 	- Akorat prestalo fungovat flashovani pres openocd na linuxu.
+	- Zpravilo to bootovani pres system memory (asi jsem posral flash pamet).
 

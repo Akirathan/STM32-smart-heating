@@ -6,6 +6,7 @@ set(TOOLCHAIN_FILE "toolchain.cmake")
 # Set these variables according to your system.
 set(CMAKE "cmake")
 set(VERBOSE_MAKEFILE TRUE)
+set(GENERATOR "Unix Makefiles")
 
 
 if (VERBOSE_MAKEFILE)
@@ -16,6 +17,7 @@ endif()
 
 execute_process(COMMAND
   "${CMAKE}"
+  "-G${GENERATOR}"
   "-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}"
   "${VERBOSE_MAKEFILE_OPT}"
   "-B${BUILD_DIR}"
