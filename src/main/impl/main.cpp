@@ -216,12 +216,13 @@ void eeprom_try()
 	f_write(&file, wrbuff, 512, &br);
 }*/
 
+extern "C" {
+	extern int cube_main();
+}
+
 int main()
 {
-
-	HAL_Init();
-	/* Initialize system and peripheral clocks */
-	SystemClock_Config();
+	cube_main();
 
 	//fat_try(false, "file.txt");
 	//net_try();

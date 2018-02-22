@@ -7,8 +7,8 @@
 #ifndef CLK_FRAME_HPP_
 #define CLK_FRAME_HPP_
 
-#include <button.hpp>
 #include "stm3210c_eval.h"
+#include <button.hpp>
 #include "time_window.hpp"
 #include "window_system.hpp"
 #include "lcd.hpp"

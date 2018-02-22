@@ -4,6 +4,7 @@
  * @date 4.2.2017
  */
 
+#include "stm3210c_eval.h"
 #include "clk_frame.hpp"
 
 ClkFrame::ClkFrame()

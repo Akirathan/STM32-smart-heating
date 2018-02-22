@@ -26,19 +26,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>BSP-STM3210C_EVAL</name>
+			<name>cmake</name>
 			<type>2</type>
-			<locationURI>STM32Cube/Drivers/BSP/STM3210C_EVAL</locationURI>
-		</link>
-		<link>
-			<name>fatfs_src</name>
-			<type>2</type>
-			<locationURI>$%7BSTM32Cube%7D/Middlewares/Third_Party/FatFs/src</locationURI>
-		</link>
-		<link>
-			<name>lwip_core</name>
-			<type>2</type>
-			<location>/home/mayfa/Dev/STM/STM32Cube_FW_F1_V1.3.0/Middlewares/Third_Party/LwIP/src/core</location>
+			<locationURI>PARENT-2-PROJECT_LOC/proj/cmake</locationURI>
 		</link>
 		<link>
 			<name>src</name>

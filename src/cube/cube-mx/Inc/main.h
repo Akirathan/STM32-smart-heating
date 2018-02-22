@@ -51,10 +51,22 @@
 
 #define TEMP_DATA_Pin GPIO_PIN_4
 #define TEMP_DATA_GPIO_Port GPIOE
+#define LCD_CS_Pin GPIO_PIN_2
+#define LCD_CS_GPIO_Port GPIOB
 #define RELAY_DATA_Pin GPIO_PIN_12
 #define RELAY_DATA_GPIO_Port GPIOD
 #define RELAY_POWER_Pin GPIO_PIN_15
 #define RELAY_POWER_GPIO_Port GPIOD
+#define LCD_SCL_Pin GPIO_PIN_10
+#define LCD_SCL_GPIO_Port GPIOC
+#define LCD_SDI_Pin GPIO_PIN_11
+#define LCD_SDI_GPIO_Port GPIOC
+#define LCD_SDO_Pin GPIO_PIN_12
+#define LCD_SDO_GPIO_Port GPIOC
+#define STMPE811_SCLK_Pin GPIO_PIN_6
+#define STMPE811_SCLK_GPIO_Port GPIOB
+#define STMPE811_SDA_Pin GPIO_PIN_7
+#define STMPE811_SDA_GPIO_Port GPIOB
 
 /* ########################## Assert Selection ############################## */
 /**

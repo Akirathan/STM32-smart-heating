@@ -1,4 +1,3 @@
-# TODO: only C?
 project(main C CXX)
 
 set(SOURCES
@@ -22,6 +21,7 @@ set(SOURCES
 	"impl/static_temp_window.cpp"
 	"impl/static_time_window.cpp"
 	"impl/static_window.cpp"
+	"impl/syscalls.c"
 	"impl/temp_controller.cpp"
 	"impl/temp_sensor.cpp"
 	"impl/temp_window.cpp"
