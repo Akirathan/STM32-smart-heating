@@ -136,7 +136,7 @@ RTC_HandleTypeDef& RTCController::getHandle()
 void RTCController::update()
 {
 	if (timeSet == false) {
-		return ;
+		return;
 	}
 
 	RTC_TimeTypeDef rtc_time;

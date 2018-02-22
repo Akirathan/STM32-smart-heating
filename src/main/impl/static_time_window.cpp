@@ -71,7 +71,8 @@ void StaticTimeWindow::draw() const
 
 	/* Check if lcd is initialized */
 	// This is needed because this method is called
-	// from second interrupt handler.
+	// from second interrupt handler and LCD may not
+	// be initialized yet.
 	if (!LCD::is_initialized()) {
 		return;
 	}
@@ -128,7 +129,7 @@ void StaticTimeWindow::show()
 void StaticTimeWindow::runClock()
 {
 	if (!RTCController::getInstance().isTimeSet()) {
-		// TODO: error
+		Error_Handler();
 	}
 
 	// Set time.

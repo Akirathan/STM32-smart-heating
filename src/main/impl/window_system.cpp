@@ -43,7 +43,8 @@ AppStatus_TypeDef WindowSystem::passControl()
 }
 
 WindowSystem::Windows::Windows(WindowSystem& system)
-	: system(system), ctrlWindowIdx(0)
+	: system(system),
+	  ctrlWindowIdx(0)
 { }
 
 /**

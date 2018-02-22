@@ -59,7 +59,8 @@ TempController::TempController()
 	// Load data from EEPROM
 	EEPROM& eeprom = EEPROM::getInstance();
 	if (eeprom.isEmpty()) {
-		// TODO Error: EEPROM supposed to contain data.
+		// Error: EEPROM supposed to contain data.
+		Error_Handler();
 	}
 	eeprom.load(dataVec);
 }
@@ -82,7 +83,8 @@ uint32_t TempController::currentIntervalTemperature()
 	RTC_TimeTypeDef curr_time {0,0,0};
 	RTCController& rtc = RTCController::getInstance();
 	if (!rtc.isTimeSet()) {
-		// TODO Error: RTC time supposed to be set.
+		// Error: RTC time supposed to be set.
+		Error_Handler();
 	}
 	rtc.getTime(&curr_time);
 

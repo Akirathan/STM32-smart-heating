@@ -4,16 +4,10 @@
  * @date 4.2.2017
  */
 
-#include "stm3210c_eval.h"
 #include "clk_frame.hpp"
 
 ClkFrame::ClkFrame()
 {
-	// Initialize joystick peripheral.
-	if (BSP_JOY_Init(JOY_MODE_GPIO) != IO_OK) {
-		// Error
-	}
-
 	// Clear the display and init LCD peripheral.
 	LCD::init();
 

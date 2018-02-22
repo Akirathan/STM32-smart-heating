@@ -11,7 +11,8 @@ Button::Button()
 { }
 
 Button::Button(const Coord& coord, const std::string& name)
-	: IControlWindow(coord), name(name)
+	: IControlWindow(coord),
+	  name(name)
 { }
 
 void Button::draw() const

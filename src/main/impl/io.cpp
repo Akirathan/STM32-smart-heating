@@ -6,6 +6,8 @@
 
 #include "io.hpp"
 
+static bool initialized = false;
+
 namespace IO {
 
 /**
@@ -16,7 +18,12 @@ namespace IO {
  */
 JOYState_TypeDef read_joy()
 {
-	BSP_JOY_Init(JOY_MODE_GPIO);
+	if (!initialized) {
+		if (BSP_JOY_Init(JOY_MODE_GPIO) != HAL_OK) {
+			Error_Handler();
+		}
+		initialized = true;
+	}
 
 	while (1) {
 		JOYState_TypeDef joyState = BSP_JOY_GetState();

@@ -17,7 +17,7 @@ EEPROM::EEPROM()
 	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
 
 	if (BSP_EEPROM_Init() != EEPROM_OK) {
-		// TODO Error
+		Error_Handler();
 	}
 }
 
@@ -48,7 +48,9 @@ void EEPROM::writePage(uint32_t page, uint16_t addr)
 		if (i != 0) page >>= 8;
 	}
 
-	BSP_EEPROM_WriteBuffer(buff, addr, 4);
+	if (BSP_EEPROM_WriteBuffer(buff, addr, 4) != EEPROM_OK) {
+		Error_Handler();
+	}
 }
 
 // TODO: error handling
@@ -58,7 +60,9 @@ uint32_t EEPROM::readPage(uint16_t addr)
 	uint32_t num_bytes = 4;
 	uint32_t word = 0;
 
-	BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes);
+	if (BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes) != EEPROM_OK) {
+		Error_Handler();
+	}
 
 	for (int i = 0; i < 4; ++i){
 		word |= buff[i];

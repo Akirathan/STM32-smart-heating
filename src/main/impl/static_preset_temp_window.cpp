@@ -45,7 +45,7 @@ void StaticPresetTempWindow::showPresetTemp()
 	RTCController& rtc = RTCController::getInstance();
 
 	if (!rtc.isTimeSet()) {
-		//TODO: error handling
+		Error_Handler();
 	}
 
 	registerMinCallback();

@@ -37,7 +37,8 @@ void StaticTempWindow::draw() const
 	}
 
 	// This is needed because the draw function is called
-	// from second interrupt handler.
+	// from second interrupt handler and LCD may not be
+	// initialized yet.
 	if (!LCD::is_initialized()) {
 		return;
 	}
