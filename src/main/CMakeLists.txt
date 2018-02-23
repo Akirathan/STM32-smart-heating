@@ -42,3 +42,13 @@ include_directories(
 	$<TARGET_PROPERTY:cube,INCLUDE_DIRECTORIES>
 	"impl"
 )
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	COMMAND ${CMAKE_SIZE} ${PROJECT_NAME}
+	COMMENT "Size of the binary:"
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	COMMAND ${CMAKE_OBJCOPY} -O binary ${PROJECT_NAME} ${PROJECT_NAME}.bin
+	COMMENT "Generating raw objcopy"
+) 
