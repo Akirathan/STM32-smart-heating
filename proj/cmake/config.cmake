@@ -5,7 +5,7 @@ set(TOOLCHAIN_FILE "toolchain.cmake")
 
 # Set these variables according to your system.
 set(CMAKE "cmake")
-set(VERBOSE_MAKEFILE TRUE)
+set(VERBOSE_MAKEFILE FALSE)
 set(GENERATOR "Unix Makefiles")
 
 
@@ -24,7 +24,14 @@ execute_process(COMMAND
   "-H."
 )
 
+# Enable parallel build
+if (GENERATOR STREQUAL "Unix Makefiles")
+	set(BUILD_CMD "${CMAKE} --build ${BUILD_DIR} -- -j5")
+else()
+	set(BUILD_CMD "${CMAKE} --build ${BUILD_DIR}")
+endif()
+
 # Create build script
 file(WRITE "build.bat"
-  "${CMAKE} --build ${BUILD_DIR}"
+  ${BUILD_CMD}
 )
