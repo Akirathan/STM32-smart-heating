@@ -142,4 +142,9 @@ ie. can ethernet buffer overflow, when temperature interrupt service routine tak
 	- Buildovani by ted melo fungovat na win i lin s minimalnima zmenama skriptu.
 	- Akorat prestalo fungovat flashovani pres openocd na linuxu.
 	- Zpravilo to bootovani pres system memory (asi jsem posral flash pamet).
+- Spraveny cmake build pro windows (bylo potreba specifikovat "Unix Makefiles" generator)
+
+23.2.2018
+- Ukazalo se, ze builduju spatnou binarku (ma nejakou vadnou hlavicku)
+	- Musim to porovnat s jinou spravnou binarkou.
 
