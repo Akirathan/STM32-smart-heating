@@ -10,7 +10,6 @@
 #include <vector>
 #include "stm32f1xx_hal.h"
 #include "stm3210c_eval.h"
-#include "stats.hpp"
 #include "callbacks.hpp"
 
 /**
@@ -26,8 +25,8 @@ public:
 	static RTCController& getInstance();
 	void operator=(const RTCController&) = delete;
 	RTCController(const RTCController&) = delete;
-	AppStatus_TypeDef setTime(RTC_TimeTypeDef* time);
-	AppStatus_TypeDef getTime(RTC_TimeTypeDef* time);
+	void setTime(RTC_TimeTypeDef* time);
+	void getTime(RTC_TimeTypeDef* time);
 	bool isTimeSet() const;
 	void registerMinuteCallback(IMinCallback* min_callback);
 	void registerSecondCallback(ISecCallback* sec_callback);

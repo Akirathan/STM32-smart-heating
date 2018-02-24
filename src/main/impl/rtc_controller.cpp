@@ -39,15 +39,13 @@ RTCController::RTCController()
  *
  * Wrapper for @ref HAL_RTC_SetTime function.
  */
-AppStatus_TypeDef RTCController::setTime(RTC_TimeTypeDef* time)
+void RTCController::setTime(RTC_TimeTypeDef* time)
 {
 	if (HAL_RTC_SetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
-		return APP_ERROR;
+		Error_Handler();
 	}
-	else {
-		timeSet = true;
-		return APP_OK;
-	}
+
+	timeSet = true;
 }
 
 /**
@@ -55,13 +53,10 @@ AppStatus_TypeDef RTCController::setTime(RTC_TimeTypeDef* time)
  *
  * Wrapper for @ref HAL_RTC_GetTime function.
  */
-AppStatus_TypeDef RTCController::getTime(RTC_TimeTypeDef* time)
+void RTCController::getTime(RTC_TimeTypeDef* time)
 {
 	if (HAL_RTC_GetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
-		return APP_ERROR;
-	}
-	else {
-		return APP_OK;
+		Error_Handler();
 	}
 }
 
