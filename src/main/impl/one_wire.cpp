@@ -33,36 +33,7 @@ uint32_t init()
 		return 0;
 	}
 
-	// Init clock
-	if (TEMP_DATA_GPIOPORT == GPIOA) {
-		__HAL_RCC_GPIOA_CLK_ENABLE()
-		;
-	}
-	else if (TEMP_DATA_GPIOPORT == GPIOB) {
-		__HAL_RCC_GPIOB_CLK_ENABLE()
-		;
-	}
-	else if (TEMP_DATA_GPIOPORT == GPIOC) {
-		__HAL_RCC_GPIOC_CLK_ENABLE()
-		;
-	}
-	else if (TEMP_DATA_GPIOPORT == GPIOD) {
-		__HAL_RCC_GPIOD_CLK_ENABLE()
-		;
-	}
-	else if (TEMP_DATA_GPIOPORT == GPIOE) {
-		__HAL_RCC_GPIOE_CLK_ENABLE()
-		;
-	}
-
-	// Init CLK debug
-	GPIO_InitTypeDef init;
-	init.Mode = GPIO_MODE_OUTPUT_PP;
-	init.Pin = CLK_PIN;
-	init.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	init.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(CLK_PORT, &init);
-
+	// TODO: initialization is done in cube-mx
 	initialized = true;
 	// Init DWT
 	return init_DWT();
@@ -128,9 +99,9 @@ static uint32_t init_DWT()
 static inline void set_transmit()
 {
 	// PE4 <- output, medium speed, nopull
-	MODIFY_REG(TEMP_DATA_GPIOPORT->CRL,
-			(GPIO_CRL_CNF0 << TEMP_DATA_GPIOPIN) | (GPIO_CRL_MODE0_1 << TEMP_DATA_GPIOPIN),
-			(GPIO_CRL_MODE0_0 << TEMP_DATA_GPIOPIN));
+	MODIFY_REG(TEMP_DATA_GPIO_Port->CRL,
+			(GPIO_CRL_CNF0 << TEMP_DATA_Pin) | (GPIO_CRL_MODE0_1 << TEMP_DATA_Pin),
+			(GPIO_CRL_MODE0_0 << TEMP_DATA_Pin));
 }
 
 /**
@@ -142,11 +113,11 @@ static inline void set_transmit()
 static inline void set_receive()
 {
 	// PE4 <- input, medium speed, pullup
-	MODIFY_REG(TEMP_DATA_GPIOPORT->CRL,
-			(GPIO_CRL_CNF0_0 << TEMP_DATA_GPIOPIN) | (GPIO_CRL_MODE0 << TEMP_DATA_GPIOPIN),
-			(GPIO_CRL_CNF0_1 << TEMP_DATA_GPIOPIN));
+	MODIFY_REG(TEMP_DATA_GPIO_Port->CRL,
+			(GPIO_CRL_CNF0_0 << TEMP_DATA_Pin) | (GPIO_CRL_MODE0 << TEMP_DATA_Pin),
+			(GPIO_CRL_CNF0_1 << TEMP_DATA_Pin));
 
-	SET_BIT(TEMP_DATA_GPIOPORT->ODR, TEMP_DATA_GPIOPIN);
+	SET_BIT(TEMP_DATA_GPIO_Port->ODR, TEMP_DATA_Pin);
 }
 
 /**
@@ -270,7 +241,7 @@ static inline void master_release_bus()
 static inline void master_pull_bus_low()
 {
 	set_transmit();
-	HAL_GPIO_WritePin(TEMP_DATA_GPIOPORT, TEMP_DATA_GPIOPIN, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(TEMP_DATA_GPIO_Port, TEMP_DATA_Pin, GPIO_PIN_RESET);
 }
 
 /**
@@ -280,7 +251,7 @@ static inline void master_pull_bus_low()
 static inline int slave_pull_bus_low()
 {
 	set_receive();
-	if (HAL_GPIO_ReadPin(TEMP_DATA_GPIOPORT, TEMP_DATA_GPIOPIN) == GPIO_PIN_RESET) {
+	if (HAL_GPIO_ReadPin(TEMP_DATA_GPIO_Port, TEMP_DATA_Pin) == GPIO_PIN_RESET) {
 		return 1;
 	}
 	else {
