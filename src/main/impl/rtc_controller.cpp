@@ -6,8 +6,7 @@
 
 #include <rtc_controller.hpp>
 
-// Uncomment this to disable second interrupt.
-#define ENABLE_SEC_INTERRUPT
+extern RTC_HandleTypeDef hrtc; // from cube-mx
 
 /**
  * Second interrupt handler.
@@ -33,50 +32,6 @@ RTCController& RTCController::getInstance()
  */
 RTCController::RTCController()
 {
-	RCC_OscInitTypeDef oscilator;
-
-	// Enable the LSE oscilator.
-	HAL_RCC_GetOscConfig(&oscilator); // Get current state of oscillators
-	oscilator.OscillatorType = RCC_OSCILLATORTYPE_LSE;
-	// The PLLs will not be really disabled,
-	// we just dont want the HAL_RCC_OscConfig
-	// function to disable the PLL so it can
-	// configure them.
-	oscilator.PLL.PLLState = RCC_PLL_NONE;
-	oscilator.PLL2.PLL2State = RCC_PLL2_NONE;
-	oscilator.LSEState = RCC_LSE_ON;
-	oscilator.LSIState = RCC_LSI_OFF;
-	if (HAL_RCC_OscConfig(&oscilator) != HAL_OK) {
-		//TODO HAL_ERROR;
-	}
-
-	// Configure the clock source for RTC.
-	RCC_PeriphCLKInitTypeDef periphClock;
-	periphClock.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-	periphClock.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
-	if (HAL_RCCEx_PeriphCLKConfig(&periphClock) != HAL_OK) {
-		// TODO HAL_ERROR;
-	}
-
-	__HAL_RCC_RTC_ENABLE(); // Enable RTC clock
-
-	// Initialize RTC, configure prescaler, etc.
-	handle.Instance = RTC;
-	handle.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
-	HAL_RTC_Init(&handle);
-
-#ifdef ENABLE_SEC_INTERRUPT
-	// Configure the NVIC for RTC global interrupt
-	HAL_NVIC_SetPriority(RTC_IRQn, 0, 0);
-
-	// Enable the RTC global Interrupt
-	HAL_NVIC_EnableIRQ(RTC_IRQn);
-
-	// Enable second interrupt
-	HAL_RTCEx_SetSecond_IT(&handle);
-#else
-	HAL_RTCEx_DeactivateSecond(&handle);
-#endif
 }
 
 /**
@@ -86,7 +41,7 @@ RTCController::RTCController()
  */
 AppStatus_TypeDef RTCController::setTime(RTC_TimeTypeDef* time)
 {
-	if (HAL_RTC_SetTime(&handle, time, RTC_FORMAT_BIN) != HAL_OK) {
+	if (HAL_RTC_SetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
 		return APP_ERROR;
 	}
 	else {
@@ -102,7 +57,7 @@ AppStatus_TypeDef RTCController::setTime(RTC_TimeTypeDef* time)
  */
 AppStatus_TypeDef RTCController::getTime(RTC_TimeTypeDef* time)
 {
-	if (HAL_RTC_GetTime(&handle, time, RTC_FORMAT_BIN) != HAL_OK) {
+	if (HAL_RTC_GetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
 		return APP_ERROR;
 	}
 	else {
@@ -113,16 +68,6 @@ AppStatus_TypeDef RTCController::getTime(RTC_TimeTypeDef* time)
 bool RTCController::isTimeSet() const
 {
 	return timeSet;
-}
-
-/**
- * @brief Returns HAL handle for RTC.
- *
- * This method is called from @ref RTC_IRQHandler function.
- */
-RTC_HandleTypeDef& RTCController::getHandle()
-{
-	return handle;
 }
 
 

@@ -26,7 +26,6 @@ public:
 	static RTCController& getInstance();
 	void operator=(const RTCController&) = delete;
 	RTCController(const RTCController&) = delete;
-	RTC_HandleTypeDef& getHandle();
 	AppStatus_TypeDef setTime(RTC_TimeTypeDef* time);
 	AppStatus_TypeDef getTime(RTC_TimeTypeDef* time);
 	bool isTimeSet() const;
@@ -37,7 +36,6 @@ public:
 	void update();
 private:
 	RTCController();
-	RTC_HandleTypeDef handle;
 	std::vector<IMinCallback *> minuteCallbackVec;
 	std::vector<ISecCallback *> secondCallbackVec;
 	bool timeSet = false;

@@ -105,8 +105,9 @@ int cube_main(void)
   MX_RTC_Init();
   MX_I2C1_Init();
   MX_SPI3_Init();
-  /* USER CODE BEGIN 2 */
 
+  /* USER CODE BEGIN 2 */
+  HAL_RTCEx_SetSecond_IT(&hrtc);
   /* USER CODE END 2 */
 
   /* Infinite loop */
