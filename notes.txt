@@ -148,3 +148,8 @@ ie. can ethernet buffer overflow, when temperature interrupt service routine tak
 - Ukazalo se, ze builduju spatnou binarku (ma nejakou vadnou hlavicku)
 	- Musim to porovnat s jinou spravnou binarkou.
 
+24.2.2018
+- BUGFIXED: binarka byla v poradku, prehledl jsem nekonecny cyklus v cube_main.
+	- Musel jsem take povolit serial wire debug v CubeMX (to zpusobovalo to, ze se neslo pripojit pres st-link)
+- pozorovani: binarky maji ruzne "hlavicky"
+	- oba dva linker skripty (od Atollic a od CubeMx) funguji nejspis spravne
