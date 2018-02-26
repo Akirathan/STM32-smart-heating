@@ -30,8 +30,6 @@ uint32_t init()
 
 	uint32_t ret = OneWire::init();
 
-	// TODO error handling
-
 	set_resolution(RESOLUTION_10_BIT);
 	initialized = true;
 	return ret;

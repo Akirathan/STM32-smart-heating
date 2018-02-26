@@ -7,7 +7,8 @@
 #include "window_system.hpp"
 
 WindowSystem::WindowSystem()
-	: windows(*this), currWindow(nullptr)
+	: windows(*this),
+	  currWindow(nullptr)
 { }
 
 /**
