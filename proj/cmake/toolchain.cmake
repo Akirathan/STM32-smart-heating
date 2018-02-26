@@ -1,7 +1,7 @@
 # Modify these to match your needs.
 set(TARGET_TRIPLET "arm-none-eabi")
-#set(TOOLCHAIN_PREFIX "/home/mayfa/gcc-arm-none-eabi-6-2017-q2-update")
-set(TOOLCHAIN_PREFIX "c:/Program Files (x86)/GNU Tools ARM Embedded/6 2017-q2-update")
+set(TOOLCHAIN_PREFIX "/home/mayfa/gcc-arm-none-eabi-6-2017-q2-update")
+#set(TOOLCHAIN_PREFIX "c:/Program Files (x86)/GNU Tools ARM Embedded/6 2017-q2-update")
 set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/../../STM32F107XC_FLASH.ld")
 
 message("Processing toolchain file ...")
@@ -54,6 +54,7 @@ add_compile_options(
   -ffunction-sections
   -fdata-sections
   -Wall
+  -g # TODO
 )
 
 # Specific options for CXX
