@@ -20,7 +20,6 @@ void IntervalFrame::drawHeader()
 
 IntervalFrame::IntervalFrame()
 {
-	BSP_JOY_Init(JOY_MODE_GPIO);
 	LCD::init();
 
 	nextButton = Button(Coord(25, LINE(12)), "NEXT");

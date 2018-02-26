@@ -25,7 +25,6 @@ void MainFrame::drawHeader()
  */
 MainFrame::MainFrame()
 {
-	BSP_JOY_Init(JOY_MODE_GPIO);
 	LCD::init();
 
 	timeWindow = StaticTimeWindow(Coord(LCD::get_x_size()/2 - 30, LINE(1)), true);
