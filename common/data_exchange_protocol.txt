@@ -1,0 +1,16 @@
+Ucel protokolu:
+- Vymenovani dat oboustrane mezi serverem a STM.
+
+Vlastnosti protokolu:
+- Nezavisly na nizsich vrstvach (TODO)
+
+Implementace na techto transportnich vrstvach:
+- TCP
+
+Druhy paketu:
+- SEND_ME
+- SEND_TO
+
+<ID komunikacnich objektu; komunikacni objekt>:
+1 = intervaly (posilane jako JSON soubor)
+2 = aktualni teplota (double)

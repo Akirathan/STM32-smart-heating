@@ -147,9 +147,20 @@ ie. can ethernet buffer overflow, when temperature interrupt service routine tak
 23.2.2018
 - Ukazalo se, ze builduju spatnou binarku (ma nejakou vadnou hlavicku)
 	- Musim to porovnat s jinou spravnou binarkou.
+- pozorovani: binarky maji ruzne "hlavicky"
+	- oba dva linker skripty (od Atollic a od CubeMx) funguji nejspis spravne
 
 24.2.2018
 - BUGFIXED: binarka byla v poradku, prehledl jsem nekonecny cyklus v cube_main.
 	- Musel jsem take povolit serial wire debug v CubeMX (to zpusobovalo to, ze se neslo pripojit pres st-link)
-- pozorovani: binarky maji ruzne "hlavicky"
-	- oba dva linker skripty (od Atollic a od CubeMx) funguji nejspis spravne
+
+26.2.2018
+- necham adresarovou strukturu FatFS tak, jak je v cube
+
+28.2.2018
+- Vytvoreni specifikace connection_protocol a data_exchange_protocol
+- Zacal jsem implementovat v Pythonu connection_protocol (demonstrace funkcnosti)
+- Do STM nebudu davat TLS (potrebne pro HTTPS), protoze by to byla netrivialni integrace,
+necham tam jen LwIP.
+
+

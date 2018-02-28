@@ -1,0 +1,31 @@
+GENERATOR_PORT = 25671
+// GENERATOR_URL = https://smartheating.com/port
+
+Handshake (TCP):
+STM    -> server : ID
+server -> STM    : OK (ID found) / ERROR
+STM    -> server : Magic
+server -> STM    : OK (Magic is correct) + generated_port / ERROR
+STM    -> server : OK / ERROR (weird port?)
+
+Ucel protokolu:
+Navazani a udrzeni spojeni mezi STM a serverem. To se hodi pro pripad, kdy
+klient komunikuje se serverem a chce videt sve zarizeni online.
+
+Zpracovani chyb:
+Kdyz kdykoli v prubehu vznikne chyba, TCP spojeni se ukonci a STM musi znova
+kontaktovat server.
+
+Ukol serveru:
+- poslouchat na GENERATOR_PORT (na GENERATOR_URL)
+- drzet databazi (vyrobenych) STM zarizeni (jejich ID), kterou aktualizuje
+administrator
+- vytvorit a udrzovat pripojeni pro vsechny STM zarizeni
+
+(Sekvence) vytvoreni pripojeni:
+- STM kontaktuje server (pomoci handshake na GENERATOR_PORT, nebo na GENERATOR_URL)
+- server vygeneruje port pro nove spojeni a posle ho STM
+- STM se pripoji na prave vygenerovany port
+
+Zabezpeceni:
+...
