@@ -7,6 +7,7 @@ project(cube ASM C CXX)
 
 set(CUBEMX_PATH "cube-mx")
 set(HAL_PATH "STM32F1xx_HAL_Driver")
+set(FATFS_PATH "Middlewares/Third_Party/fatfs")
 
 set(BSP_SOURCES
 	"BSP/STM3210C_EVAL/stm3210c_eval_io.c"
@@ -37,14 +38,6 @@ set(HAL_SOURCES
 	"${HAL_PATH}/Src/stm32f1xx_hal_pwr.c"
 )
 
-set(HW_SOURCES
-	"hardware/startup_stm32f107xc.s"
-	"hardware/stm32f1xx_hal_msp.c"
-	"hardware/stm32f1xx_it.cpp"
-	"hardware/syscalls.c"
-	"hardware/system_stm32f1xx.c"
-)
-
 set(CUBEMX_SOURCES
 	"${CUBEMX_PATH}/Src/main.c"
 	"${CUBEMX_PATH}/Src/stm32f1xx_hal_msp.c"
@@ -53,10 +46,18 @@ set(CUBEMX_SOURCES
 	"${CUBEMX_PATH}/startup_stm32f107xc.s"
 )
 
+set(FATFS_SOURCES
+	"${FATFS_PATH}/src/drivers/sd_diskio.c"
+	"${FATFS_PATH}/src/diskio.c"
+	"${FATFS_PATH}/src/ff.c"
+	"${FATFS_PATH}/src/ff_gen_drv.c"
+)
+
 add_library(${PROJECT_NAME} OBJECT
 	"${BSP_SOURCES}"
 	"${HAL_SOURCES}"
 	"${CUBEMX_SOURCES}"
+	"${FATFS_SOURCES}"
 )
 
 # TODO: fix this include (neccessary for ISR)
@@ -71,4 +72,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"CMSIS/Device/ST/STM32F1xx/Include"
 	"CMSIS/Include"
 	"${CUBEMX_PATH}/Inc"
+	"${FATFS_PATH}/src"
+	"${FATFS_PATH}/src/drivers"
 )

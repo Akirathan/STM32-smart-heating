@@ -175,22 +175,23 @@ void eeprom_try()
 	}
 }*/
 
-/*void fat_try(bool formatted, const std::string& fname)
+void fat_try(bool formatted, const std::string& fname)
 {
-	if (FATFS_LinkDriver(&SD_Driver, "") != 0) {
+	char path[5];
+	if (FATFS_LinkDriver(&SD_Driver, path) != 0) {
 		error_handler();
 	}
 
 	// Mount.
 	FATFS fs;
 	FRESULT res;
-	if ((res = f_mount(&fs, "", 0)) != F_OK) {
+	if ((res = f_mount(&fs, path, 0)) != F_OK) {
 		error_handler();
 	}
 
 	// Format.
 	if (!formatted) {
-		if ((res = f_mkfs("", 0, 0)) != F_OK) {
+		if ((res = f_mkfs(path, 0, 0)) != F_OK) {
 			error_handler();
 		}
 	}
@@ -214,7 +215,7 @@ void eeprom_try()
 
 	// Write.
 	f_write(&file, wrbuff, 512, &br);
-}*/
+}
 
 extern "C" {
 	extern int cube_main();
@@ -224,9 +225,9 @@ int main()
 {
 	cube_main();
 
-	//fat_try(false, "file.txt");
+	fat_try(false, "file.txt");
 	//net_try();
-	main_test();
+	//main_test();
 
 	volatile int a = 0;
 	while (1) {

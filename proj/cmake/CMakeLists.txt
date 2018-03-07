@@ -8,5 +8,6 @@ endif()
 
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
 set(MAIN_DIR "${ROOT_DIR}/src/main")
+set(CUBE_DIR "${ROOT_DIR}/src/cube")
 
 add_subdirectory("${ROOT_DIR}/src/main" "${CMAKE_BINARY_DIR}/main")
