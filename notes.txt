@@ -163,4 +163,61 @@ ie. can ethernet buffer overflow, when temperature interrupt service routine tak
 - Do STM nebudu davat TLS (potrebne pro HTTPS), protoze by to byla netrivialni integrace,
 necham tam jen LwIP.
 
+5.3.2018
+|===================================================|
+| diskuse o integraci connection_protocolu s Apache |
+|===================================================|
+- data_exchange_protocol bude fungovat v ramci connection_protocolu
+	- Jinak by museli zase si dohadovat novy port, coz je zbytecne
+
+- Apache bude s (pythonovskym) procesem, ktery implementuje connection_protocol,
+  komunikovat pomoci obousmerne roury. Pozdeji by se connection_protocol mohl dat
+  implementovat jako samostatny server.
+- Jina moznost byla implementovat connection_protocol v ramci Apache, coz neni mozne
+  navic to neodpovida Apache use-case.
+- Pouzit Tomcat by sice slo, ale implementovat connection_protocol v Tomcat je hodne
+  slozite, navic to opet neodpovida Tomcat use-case (je to servlet kontejner).
+
+- connection_protocol proces bude tedy prijimat na stdin prikazy typu "send", "receive",
+  nebo "list connected machines"
+
+- connection_protocol by se dal "zjednodusit" a zabezpecit tak, ze by se implementoval
+  pomoci HTTP authentication - tj. STM by pripojilo na stranku typu /port.html, a server
+  by pozadoval authentikaci. Problem je ze takovy pristup by potreboval implementaci
+  TLS na strane STM (coz by vyzadovalo CycloneSSL, ktery vyzaduje CycloneTCP-IP).
+	- Stejne bychom ale potreboval data_exchange_protocol
+=====================================================
+
+7.3.2018
+======================
+Konzultace ohledne IOT
+======================
+My protocol:
+- Nema smysl delat obousmerny kanal na jinem portu, komunikace bude probihat pouze v ramci HTTP
+- STM bude posilat kazdych n sekund act HTTP request a config HTTP request, server
+  muze odpovedet na config request tak, aby si STM zmenilo hodnoty a poslat mu to
+- Je jedno, jestli se intervaly budou posilat jako JSON, nebo binarne
+
+Bezpecnost:
+- Bezpecnost bude resena dvojici ID (coz muze byt serial number, nebo MAC adresa treba)
+  a klic, ktery vygeneruje server na zaklade zadosti "pridat zarizeni".
+- Je potreba, aby do zarizeni se dal zadat IP serveru a zaroven tajny klic
+  (coz je treba osmimistny hex).
+- mezi STM a serverem bude probihat symetricke sifrovani (napriklad pomoci DES, nebo 3DES)
+  pomoci tajneho klice --> sifrovat se bude pouze content requestu, nikoli header.
+ - Timto je vyresena autentikace jak STM tak serveru
+
+Synchronizace:
+- Synchronizace mezi STM, serverem a klientem - tj. na klientovi edituji a zaroven na
+  STM.
+- Implementovat tak, ze platit bude nejpozdeji zadana hodnota.
+- Na serveru bude databaze aktualnich teplot, a intervalu a bude tam k nim timestamp
+- Server se nebude po kazde, co se pripoji klient, cist (posilat request) na STM
+  => coz by se asi delo v pripade obousmerneho kanalu.
+
+Web server:
+- Server bude LAMP stack (linux, apache, mysql, php)
+- TODO: zvolit si server-side technologie [Djangoo | RubyonRails | NodeJS ]
+- TODO: zvolit si client-side technologie [...]
+- zvoleni technologii konzultovat s Buresem
 
