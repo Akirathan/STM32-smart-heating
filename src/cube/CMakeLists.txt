@@ -8,6 +8,7 @@ project(cube ASM C CXX)
 set(CUBEMX_PATH "cube-mx")
 set(HAL_PATH "STM32F1xx_HAL_Driver")
 set(FATFS_PATH "Middlewares/Third_Party/fatfs")
+set(LWIP_PATH "Middlewares/Third_Party/LwIP")
 
 set(BSP_SOURCES
 	"BSP/STM3210C_EVAL/stm3210c_eval_io.c"
@@ -53,15 +54,38 @@ set(FATFS_SOURCES
 	"${FATFS_PATH}/src/ff_gen_drv.c"
 )
 
+set(LWIP_SOURCES
+	"${LWIP_PATH}/src/netif/ethernetif.c"
+	"${LWIP_PATH}/src/netif/etharp.c"
+	"${LWIP_PATH}/src/core/def.c"
+	"${LWIP_PATH}/src/core/init.c"
+	"${LWIP_PATH}/src/core/lwip_timers.c"
+	"${LWIP_PATH}/src/core/mem.c"
+	"${LWIP_PATH}/src/core/memp.c"
+	"${LWIP_PATH}/src/core/netif.c"
+	"${LWIP_PATH}/src/core/pbuf.c"
+	"${LWIP_PATH}/src/core/raw.c"
+	"${LWIP_PATH}/src/core/tcp.c"
+	"${LWIP_PATH}/src/core/tcp_in.c"
+	"${LWIP_PATH}/src/core/ipv4/icmp.c"
+	"${LWIP_PATH}/src/core/ipv4/inet.c"
+	"${LWIP_PATH}/src/core/ipv4/ip.c"
+	"${LWIP_PATH}/src/core/ipv4/ip_addr.c"
+	"${LWIP_PATH}/src/core/ipv4/ip_frag.c"
+	"${LWIP_PATH}/src/core/ipv6/inet6.c"
+)
+
 add_library(${PROJECT_NAME} OBJECT
 	"${BSP_SOURCES}"
 	"${HAL_SOURCES}"
 	"${CUBEMX_SOURCES}"
 	"${FATFS_SOURCES}"
+	"${LWIP_SOURCES}"
 )
 
 # TODO: fix this include (neccessary for ISR)
 include_directories("${MAIN_DIR}/impl")
+include_directories("${MAIN_DIR}/lwip_conf") # For LwIP options and ethernetif.h
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	"${HAL_PATH}/Inc"
@@ -72,6 +96,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"CMSIS/Device/ST/STM32F1xx/Include"
 	"CMSIS/Include"
 	"${CUBEMX_PATH}/Inc"
+
+	# FATFS includes
 	"${FATFS_PATH}/src"
 	"${FATFS_PATH}/src/drivers"
+
+	# LWIP includes
+	"${LWIP_PATH}/src/include"
+	"${LWIP_PATH}/src/include/lwip"
+	"${LWIP_PATH}/src/include/ipv4"
+	"${LWIP_PATH}/system"
 )

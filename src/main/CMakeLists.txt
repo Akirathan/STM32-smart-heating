@@ -43,6 +43,7 @@ include_directories(
 	"impl"
 )
 
+
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_SIZE} ${PROJECT_NAME}
 	COMMENT "Size of the binary:"
