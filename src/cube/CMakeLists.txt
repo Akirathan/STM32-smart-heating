@@ -5,7 +5,10 @@
 
 project(cube ASM C CXX)
 
+message("Running cube cmake, USE_CUBE_MX=${USE_CUBE_MX}")
+
 set(CUBEMX_PATH "cube-mx")
+set(HW_PATH "hardware")
 set(HAL_PATH "STM32F1xx_HAL_Driver")
 set(FATFS_PATH "Middlewares/Third_Party/fatfs")
 set(LWIP_PATH "Middlewares/Third_Party/LwIP")
@@ -39,13 +42,22 @@ set(HAL_SOURCES
 	"${HAL_PATH}/Src/stm32f1xx_hal_pwr.c"
 )
 
-set(CUBEMX_SOURCES
-	"${CUBEMX_PATH}/Src/main.c"
-	"${CUBEMX_PATH}/Src/stm32f1xx_hal_msp.c"
-	"${CUBEMX_PATH}/Src/stm32f1xx_it.c"
-	"${CUBEMX_PATH}/Src/system_stm32f1xx.c"
-	"${CUBEMX_PATH}/startup_stm32f107xc.s"
-)
+if(USE_CUBE_MX)
+	set(CUBEMX_SOURCES
+		"${CUBEMX_PATH}/startup_stm32f107xc.s"
+		"${CUBEMX_PATH}/Src/system_stm32f1xx.c"
+		"${CUBEMX_PATH}/Src/stm32f1xx_it.c"
+		"${CUBEMX_PATH}/Src/stm32f1xx_hal_msp.c"
+		"${CUBEMX_PATH}/Src/main.c"
+	)
+else()
+	set(HW_SOURCES
+		"${HW_PATH}/startup_stm32f107xc.s"
+		"${HW_PATH}/system_stm32f1xx.c"
+		"${HW_PATH}/stm32f1xx_it.cpp"
+		"${HW_PATH}/stm32f1xx_hal_msp.c"
+	)
+endif()
 
 set(FATFS_SOURCES
 	"${FATFS_PATH}/src/drivers/sd_diskio.c"
@@ -75,12 +87,20 @@ set(LWIP_SOURCES
 	"${LWIP_PATH}/src/core/ipv6/inet6.c"
 )
 
-add_library(${PROJECT_NAME} OBJECT
+set(SOURCES
 	"${BSP_SOURCES}"
 	"${HAL_SOURCES}"
-	"${CUBEMX_SOURCES}"
 	"${FATFS_SOURCES}"
-	"${LWIP_SOURCES}"
+#	"${LWIP_SOURCES}"
+)
+if(USE_CUBE_MX)
+	set(SOURCES ${SOURCES} ${CUBEMX_SOURCES})
+else()
+	set(SOURCES ${SOURCES} ${HW_SOURCES})
+endif()
+
+add_library(${PROJECT_NAME} OBJECT
+	${SOURCES}
 )
 
 # TODO: fix this include (neccessary for ISR)
@@ -95,7 +115,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"Utilities/Fonts"
 	"CMSIS/Device/ST/STM32F1xx/Include"
 	"CMSIS/Include"
-	"${CUBEMX_PATH}/Inc"
 
 	# FATFS includes
 	"${FATFS_PATH}/src"
@@ -107,3 +126,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${LWIP_PATH}/src/include/ipv4"
 	"${LWIP_PATH}/system"
 )
+
+if(USE_CUBE_MX)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${CUBEMX_PATH}/Inc)
+else()
+	target_include_directories(${PROJECT_NAME} PUBLIC ${HW_PATH})
+endif()
