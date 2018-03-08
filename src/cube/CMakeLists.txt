@@ -79,6 +79,7 @@ set(LWIP_SOURCES
 	"${LWIP_PATH}/src/core/raw.c"
 	"${LWIP_PATH}/src/core/tcp.c"
 	"${LWIP_PATH}/src/core/tcp_in.c"
+	"${LWIP_PATH}/src/core/tcp_out.c"
 	"${LWIP_PATH}/src/core/ipv4/icmp.c"
 	"${LWIP_PATH}/src/core/ipv4/inet.c"
 	"${LWIP_PATH}/src/core/ipv4/ip.c"
@@ -91,7 +92,7 @@ set(SOURCES
 	"${BSP_SOURCES}"
 	"${HAL_SOURCES}"
 	"${FATFS_SOURCES}"
-#	"${LWIP_SOURCES}"
+	"${LWIP_SOURCES}"
 )
 if(USE_CUBE_MX)
 	set(SOURCES ${SOURCES} ${CUBEMX_SOURCES})

@@ -11,7 +11,7 @@ set(GENERATOR "Unix Makefiles")
 
 # If true, sources from cube-mx will be linked, otherwise sources from
 # hardware directory will be linked.
-set(USE_CUBE_MX FALSE)
+set(USE_CUBE_MX TRUE)
 
 ######################################################################
 

@@ -14,9 +14,9 @@
 #include "stm3210c_eval_eeprom.h"
 
 // lwIP includes.
-//#include "ethernetif.h"
-//#include "init.h"
-//#include "tcp.h"
+#include "ethernetif.h"
+#include "init.h"
+#include "tcp.h"
 
 // FAT includes.
 #include "ff_gen_drv.h"

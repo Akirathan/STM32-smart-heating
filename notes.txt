@@ -220,4 +220,13 @@ Web server:
 - TODO: zvolit si server-side technologie [Djangoo | RubyonRails | NodeJS ]
 - TODO: zvolit si client-side technologie [...]
 - zvoleni technologii konzultovat s Buresem
+======================
+
+8.3.2018 (zprovoznovani ETH)
+- Zjistil jsem, ze zdrojaky pro FatFS a LwIP by sly vygenerovat pres CubeMX, ale
+  rozhodl jsem se je takto negenerovat, protoze bych stejne dosahl stejnych vysledku
+  a znamenalo by to dalsi (de-facto zbytecnou) praci navic.
+- Slinkoval jsem LwIP s pouzitim CubeMX.
+	- CubeMX poskytuje ETH inicializaci zakladni, ethernetif.c poskytuje inicializaci
+	  DMA deskriptor retezcu (tj. pokrocilou inicializaci).
 

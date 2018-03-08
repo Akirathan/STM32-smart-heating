@@ -127,20 +127,20 @@ void eeprom_try()
 	}
 }
 
-/*static err_t net_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
+static err_t net_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 {
 
-}*/
+}
 
-/*static err_t net_tcp_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
+static err_t net_tcp_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
 {
 
-}*/
+}
 
 /**
  * Receives packets in while loop.
  */
-/*void net_try()
+void net_try()
 {
 	struct netif net;
 
@@ -173,7 +173,7 @@ void eeprom_try()
 	while (true) {
 		ethernetif_input(&net);
 	}
-}*/
+}
 
 void fat_try(bool formatted, const std::string& fname)
 {
@@ -226,7 +226,7 @@ int main()
 	cube_main();
 
 	fat_try(false, "file.txt");
-	//net_try();
+	net_try();
 	//main_test();
 
 	volatile int a = 0;
