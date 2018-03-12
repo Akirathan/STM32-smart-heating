@@ -152,7 +152,7 @@ void net_try()
 	struct ip_addr gw;
 	IP4_ADDR(&ip, 198, 0, 0, 2);
 	IP4_ADDR(&netmask, 255, 255, 255, 0);
-	IP4_ADDR(&gw, 198, 0, 0, 2);
+	IP4_ADDR(&gw, 198, 0, 0, 1);
 
 	// Config.
 	netif_add(&net, &ip, &netmask, &gw, NULL, &ethernetif_init,

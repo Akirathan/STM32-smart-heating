@@ -1,34 +1,64 @@
 project(main C CXX)
 
+set(GUI_PATH "${CMAKE_CURRENT_SOURCE_DIR}/gui")
+set(FRAMES_PATH "${GUI_PATH}/frames")
+set(WINDOWS_PATH "${GUI_PATH}/windows")
+set(HARDWARE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/hardware")
+set(MAIN_PATH "${CMAKE_CURRENT_SOURCE_DIR}/main")
+set(LWIP_CONF_PATH "${CMAKE_CURRENT_SOURCES_DIR}/lwip_conf")
+
+
+set(FRAMES_SOURCES
+	"${FRAMES_PATH}/clk_frame.cpp"
+	"${FRAMES_PATH}/interval_frame.cpp"
+	"${FRAMES_PATH}/main_frame.cpp"
+	"${FRAMES_PATH}/overview_interval_frame.cpp"
+	"${FRAMES_PATH}/set_interval_frame.cpp"
+)
+
+set(WINDOWS_SOURCES
+	"${WINDOWS_PATH}/button.cpp"
+	"${WINDOWS_PATH}/control_window.cpp"
+	"${WINDOWS_PATH}/static_measure_temp_window.cpp"
+	"${WINDOWS_PATH}/static_preset_temp_window.cpp"
+	"${WINDOWS_PATH}/static_temp_window.cpp"
+	"${WINDOWS_PATH}/static_time_window.cpp"
+	"${WINDOWS_PATH}/static_window.cpp"
+	"${WINDOWS_PATH}/temp_window.cpp"
+	"${WINDOWS_PATH}/time_window.cpp"
+	"${WINDOWS_PATH}/window.cpp"
+)
+
+set(GUI_SOURCES
+	${FRAMES_SOURCES}
+	${WINDOWS_SOURCES}
+	"${GUI_PATH}/window_system.cpp"
+)
+
+set(HARDWARE_SOURCES
+	"${HARDWARE_PATH}/eeprom.cpp"
+	"${HARDWARE_PATH}/io.cpp"
+	"${HARDWARE_PATH}/lcd.cpp"
+	"${HARDWARE_PATH}/one_wire.cpp"
+	"${HARDWARE_PATH}/relay.cpp"
+	"${HARDWARE_PATH}/syscalls.c"
+)
+
+set(MAIN_SOURCES
+	"${MAIN_PATH}/interval_frame_data.cpp"
+	"${MAIN_PATH}/main.cpp"
+	"${MAIN_PATH}/rtc_controller.cpp"
+	"${MAIN_PATH}/temp_controller.cpp"
+	"${MAIN_PATH}/temp_sensor.cpp"
+	"${MAIN_PATH}/time.cpp"
+)
+
 set(SOURCES
-	"impl/button.cpp"
-	"impl/clk_frame.cpp"
-	"impl/control_window.cpp"
-	"impl/eeprom.cpp"
-	"impl/interval_frame.cpp"
-	"impl/interval_frame_data.cpp"
-	"impl/io.cpp"
-	"impl/lcd.cpp"
-	"impl/main.cpp"
-	"impl/main_frame.cpp"
-	"impl/one_wire.cpp"
-	"impl/overview_interval_frame.cpp"
-	"impl/relay.cpp"
-	"impl/rtc_controller.cpp"
-	"impl/set_interval_frame.cpp"
-	"impl/static_measure_temp_window.cpp"
-	"impl/static_preset_temp_window.cpp"
-	"impl/static_temp_window.cpp"
-	"impl/static_time_window.cpp"
-	"impl/static_window.cpp"
-	"impl/syscalls.c"
-	"impl/temp_controller.cpp"
-	"impl/temp_sensor.cpp"
-	"impl/temp_window.cpp"
-	"impl/time.cpp"
-	"impl/time_window.cpp"
-	"impl/window.cpp"
-	"impl/window_system.cpp"
+	${FRAMES_SOURCES}
+	${WINDOWS_SOURCES}
+	${GUI_SOURCES}
+	${HARDWARE_SOURCES}
+	${MAIN_SOURCES}
 )
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../cube" "${CMAKE_BINARY_DIR}/cube")
@@ -40,7 +70,12 @@ add_executable(${PROJECT_NAME}
 
 include_directories(
 	$<TARGET_PROPERTY:cube,INCLUDE_DIRECTORIES>
-	"impl"
+	${GUI_PATH}
+	${FRAMES_PATH}
+	${WINDOWS_PATH}
+	${HARDWARE_PATH}
+	${MAIN_PATH}
+	${LWIP_CONF_PATH}
 )
 
 
