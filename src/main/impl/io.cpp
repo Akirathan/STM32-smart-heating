@@ -8,6 +8,30 @@
 
 static bool initialized = false;
 
+extern "C" {
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (BSP_IO_ITGetStatus(JOY_SEL_PIN) != 0) {
+
+	}
+	else if (BSP_IO_ITGetStatus(JOY_LEFT_PIN) != 0) {
+
+	}
+	else if (BSP_IO_ITGetStatus(JOY_UP_PIN) != 0) {
+
+	}
+	else if (BSP_IO_ITGetStatus(JOY_RIGHT_PIN) != 0) {
+
+	}
+	else if (BSP_IO_ITGetStatus(JOY_DOWN_PIN) != 0) {
+
+	}
+
+	// Clear IO expander IT
+	BSP_IO_ITClear(JOY_ALL_PINS);
+}
+}
+
 namespace IO {
 
 /**

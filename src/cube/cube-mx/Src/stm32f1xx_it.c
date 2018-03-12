@@ -36,7 +36,7 @@
 #include "stm32f1xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "stm3210c_eval.h"
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -207,6 +207,10 @@ void RTC_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-
+/* IOE_IT_EXTI_IRQHANDLER */
+void EXTI15_10_IRQHandler(void)
+{
+  HAL_GPIO_EXTI_IRQHandler(IOE_IT_PIN);
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
