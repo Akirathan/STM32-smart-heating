@@ -8,6 +8,7 @@
 #define SET_INTERVAL_FRAME_HPP_
 
 #include <vector>
+#include "callbacks.hpp"
 #include "interval_frame.hpp"
 #include "interval_frame_data.hpp"
 #include "time_window.hpp"
@@ -23,12 +24,15 @@
  * One should call @ref passControl and then @ref getData methods in
  * this order.
  */
-class SetIntervalFrame : public IntervalFrame {
+class SetIntervalFrame : public IntervalFrame, IExitMessageCallback {
 public:
 	SetIntervalFrame();
+	virtual void exitMessageCallback() override;
+	virtual void registerExitMessageCallback() override;
 	std::vector<IntervalFrameData>& getData();
 	virtual void passControl() override;
 private:
+	WindowSystem system;
 	TimeWindow timeFromWindow;
 	TimeWindow timeToWindow;
 	TempWindow tempWindow;

@@ -7,6 +7,31 @@
 #include "set_interval_frame.hpp"
 
 /**
+ * @note This callback method is called when next or end button is pushed.
+ */
+void SetIntervalFrame::exitMessageCallback()
+{
+	// Investigate windows members.
+	Time::Time time_f(timeFromWindow.getHours(), timeFromWindow.getMinutes());
+	Time::Time time_t(timeToWindow.getHours(), timeToWindow.getMinutes());
+	uint32_t temp = tempWindow.getTemp();
+
+	// Store current interval data.
+	IntervalFrameData curr_data(Time::serialize(time_f), Time::serialize(time_t), temp);
+	data.push_back(curr_data);
+
+	if (!endButton.isPushed()) {
+		// Process next interval.
+		processInterval();
+	}
+}
+
+void SetIntervalFrame::registerExitMessageCallback()
+{
+	system.registerExitMessageCallbackReceiver(this);
+}
+
+/**
  * Processes one interval.
  */
 void SetIntervalFrame::processInterval()
@@ -28,7 +53,6 @@ void SetIntervalFrame::processInterval()
 	endButton.setPushed(false);
 
 	// Add all windows to the system.
-	WindowSystem system;
 	system.addControl(&timeFromWindow);
 	system.addControl(&timeToWindow);
 	system.addControl(&tempWindow);
@@ -36,32 +60,12 @@ void SetIntervalFrame::processInterval()
 	system.addControl(&endButton);
 
 	if (!callbackRegistered) {
-		system.registerExitMessageCallback(this);
+		system.registerExitMessageCallbackReceiver(this);
 		callbackRegistered = true;
 	}
 	system.run();
 }
 
-/**
- * Registered callback method for exit message ie. one of windows emits exit
- * message.
- */
-void SetIntervalFrame::intervalProcessedCallback()
-{
-	// Investigate windows members.
-	Time::Time time_f(timeFromWindow.getHours(), timeFromWindow.getMinutes());
-	Time::Time time_t(timeToWindow.getHours(), timeToWindow.getMinutes());
-	uint32_t temp = tempWindow.getTemp();
-
-	// Store current interval data.
-	IntervalFrameData curr_data(Time::serialize(time_f), Time::serialize(time_t), temp);
-	data.push_back(curr_data);
-
-	if (!endButton.isPushed()) {
-		// Process next interval.
-		processInterval();
-	}
-}
 
 void SetIntervalFrame::drawHeader()
 {
