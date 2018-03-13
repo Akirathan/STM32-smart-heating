@@ -10,6 +10,7 @@
 #include <vector>
 #include "io.hpp"
 #include "control_window.hpp"
+#include "callbacks.hpp"
 #include "static_window.hpp"
 
 /**
@@ -30,7 +31,7 @@
  *
  * @note Note that the order is especially important for control windows.
  */
-class WindowSystem {
+class WindowSystem : public IJoystickCallback {
 private:
 	class Windows {
 	public:
@@ -39,6 +40,7 @@ private:
 		void next();
 		void addControl(IControlWindow* window);
 		void addStatic(IStaticWindow* window);
+		void drawAllWindows();
 	private:
 		friend class WindowSystem;
 		WindowSystem& system;
@@ -50,7 +52,11 @@ private:
 		void ctrlWindowIdxDec();
 	};
 public:
-	AppStatus_TypeDef passControl();
+	virtual void joyCallback(JOYState_TypeDef joyState) override;
+	virtual void registerJoyCallback() override;
+	void registerExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
+	void unregisterExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
+	void run();
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
 	WindowSystem();
@@ -58,6 +64,7 @@ private:
 	friend class Windows;
 	Windows windows;
 	IControlWindow* currWindow;
+	std::vector<IExitMessageCallback *> exitMsgCallbackReceivers;
 };
 
 

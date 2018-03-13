@@ -11,36 +11,66 @@ WindowSystem::WindowSystem()
 	  currWindow(nullptr)
 { }
 
-/**
- * Frames pass control to this method. Windows object then
- * controls all the user's input and pass control back to system
- * when some of the windows sends @ref Message::EXIT message.
- */
-AppStatus_TypeDef WindowSystem::passControl()
+
+void WindowSystem::joyCallback(JOYState_TypeDef joyState)
 {
-	// Window managing.
-	bool end = false;
-	while (!end) {
-		JOYState_TypeDef joy_state = IO::read_joy();
-		Message msg = currWindow->eventHandler(joy_state);
-		switch (msg) {
-		case Message::NONE:
-			break;
-		case Message::FOCUS_LEFT:
-			windows.previous();
-			break;
-		case Message::FOCUS_RIGHT:
-			windows.next();
-			break;
-		case Message::ERROR:
-			// TODO ...
-			break;
-		case Message::EXIT:
-			end = true;
+	Message msg = currWindow->eventHandler(joyState);
+	switch (msg) {
+	case Message::NONE:
+		break;
+	case Message::FOCUS_LEFT:
+		windows.previous();
+		break;
+	case Message::FOCUS_RIGHT:
+		windows.next();
+		break;
+	case Message::ERROR:
+		// TODO ...
+		break;
+	case Message::EXIT:
+		// Call all registered callback receivers.
+		for (IExitMessageCallback *receiver : exitMsgCallbackReceivers) {
+			receiver->exitMessageCallback();
+		}
+		break;
+	}
+}
+
+void WindowSystem::registerJoyCallback()
+{
+	IO::registerJoyCallback(this);
+}
+
+/**
+ * Registers receiver object of Exit Message events.
+ * @param exitMessageCallback Receiver object
+ */
+void WindowSystem::registerExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback)
+{
+	exitMsgCallbackReceivers.push_back(exitMessageCallback);
+}
+
+void WindowSystem::unregisterExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback)
+{
+	for (auto it = exitMsgCallbackReceivers.begin(); it != exitMsgCallbackReceivers.end(); ++it) {
+		if (*it == exitMessageCallback) {
+			exitMsgCallbackReceivers.erase(it);
+			return;
 		}
 	}
 
-	return APP_OK;
+	// TODO: rt_assert(false, "No such receiver");
+}
+
+/**
+ * Frames pass control to this method.
+ */
+void WindowSystem::run()
+{
+	registerJoyCallback();
+
+	// Draw all windows
+	windows.drawAllWindows();
 }
 
 WindowSystem::Windows::Windows(WindowSystem& system)
@@ -128,6 +158,21 @@ void WindowSystem::Windows::addStatic(IStaticWindow* window)
 
 	// Draw this static window.
 	staticWindows[staticWindows.size()-1]->draw();
+}
+
+
+/**
+ * @note Should be called just once.
+ */
+void WindowSystem::Windows::drawAllWindows()
+{
+	for (IStaticWindow *static_window : staticWindows) {
+		static_window->draw();
+	}
+
+	for (IControlWindow *ctrl_window : ctrlWindows) {
+		ctrl_window->draw();
+	}
 }
 
 /**
