@@ -8,7 +8,8 @@
 
 WindowSystem::WindowSystem()
 	: windows(*this),
-	  currWindow(nullptr)
+	  currWindow(nullptr),
+	  joyCallbackRegistered(false)
 { }
 
 
@@ -38,7 +39,10 @@ void WindowSystem::joyCallback(JOYState_TypeDef joyState)
 
 void WindowSystem::registerJoyCallback()
 {
-	IO::registerJoyCallback(this);
+	if (!joyCallbackRegistered) {
+		IO::registerJoyCallback(this);
+		joyCallbackRegistered = true;
+	}
 }
 
 /**

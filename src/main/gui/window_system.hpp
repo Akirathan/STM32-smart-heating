@@ -65,6 +65,7 @@ private:
 	Windows windows;
 	IControlWindow* currWindow;
 	std::vector<IExitMessageCallback *> exitMsgCallbackReceivers;
+	bool joyCallbackRegistered;
 };
 
 
