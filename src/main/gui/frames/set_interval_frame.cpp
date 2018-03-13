@@ -20,7 +20,7 @@ void SetIntervalFrame::exitMessageCallback()
 	IntervalFrameData curr_data(Time::serialize(time_f), Time::serialize(time_t), temp);
 	data.push_back(curr_data);
 
-	if (!endButton.isPushed()) {
+	if (nextButton.isPushed()) {
 		// Process next interval.
 		processInterval();
 	}
@@ -52,13 +52,6 @@ void SetIntervalFrame::processInterval()
 	nextButton.setPushed(false);
 	endButton.setPushed(false);
 
-	// Add all windows to the system.
-	windowSystem.addControl(&timeFromWindow);
-	windowSystem.addControl(&timeToWindow);
-	windowSystem.addControl(&tempWindow);
-	windowSystem.addControl(&nextButton);
-	windowSystem.addControl(&endButton);
-
 	if (!callbackRegistered) {
 		windowSystem.registerExitMessageCallbackReceiver(this);
 		callbackRegistered = true;
@@ -81,6 +74,16 @@ SetIntervalFrame::SetIntervalFrame()
 	timeFromWindow = TimeWindow(Coord(15, LINE(6)));
 	timeToWindow = TimeWindow(Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)));
 	tempWindow = TempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
+
+	nextButton.setPushed(false);
+	endButton.setPushed(false);
+
+	// Add all windows to the system.
+	windowSystem.addControl(&timeFromWindow);
+	windowSystem.addControl(&timeToWindow);
+	windowSystem.addControl(&tempWindow);
+	windowSystem.addControl(&nextButton);
+	windowSystem.addControl(&endButton);
 }
 
 /**
