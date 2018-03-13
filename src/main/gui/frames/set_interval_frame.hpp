@@ -33,7 +33,8 @@ private:
 	TimeWindow timeToWindow;
 	TempWindow tempWindow;
 	std::vector<IntervalFrameData> data;
-	IntervalFrameData processInterval();
+	bool callbackRegistered;
+	void processInterval();
 	void drawHeader();
 };
 

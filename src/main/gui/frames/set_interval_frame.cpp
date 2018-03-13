@@ -9,7 +9,7 @@
 /**
  * Processes one interval.
  */
-IntervalFrameData SetIntervalFrame::processInterval()
+void SetIntervalFrame::processInterval()
 {
 	// Reset windows' inner values.
 	Time::Time last_time;
@@ -35,16 +35,32 @@ IntervalFrameData SetIntervalFrame::processInterval()
 	system.addControl(&nextButton);
 	system.addControl(&endButton);
 
-	system.passControl();
+	if (!callbackRegistered) {
+		system.registerExitMessageCallback(this);
+		callbackRegistered = true;
+	}
+	system.run();
+}
 
+/**
+ * Registered callback method for exit message ie. one of windows emits exit
+ * message.
+ */
+void SetIntervalFrame::intervalProcessedCallback()
+{
 	// Investigate windows members.
 	Time::Time time_f(timeFromWindow.getHours(), timeFromWindow.getMinutes());
 	Time::Time time_t(timeToWindow.getHours(), timeToWindow.getMinutes());
 	uint32_t temp = tempWindow.getTemp();
 
-	// Return data.
-	IntervalFrameData data(Time::serialize(time_f), Time::serialize(time_t), temp);
-	return data;
+	// Store current interval data.
+	IntervalFrameData curr_data(Time::serialize(time_f), Time::serialize(time_t), temp);
+	data.push_back(curr_data);
+
+	if (!endButton.isPushed()) {
+		// Process next interval.
+		processInterval();
+	}
 }
 
 void SetIntervalFrame::drawHeader()
@@ -56,6 +72,7 @@ void SetIntervalFrame::drawHeader()
 }
 
 SetIntervalFrame::SetIntervalFrame()
+	: callbackRegistered(false)
 {
 	timeFromWindow = TimeWindow(Coord(15, LINE(6)));
 	timeToWindow = TimeWindow(Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)));
@@ -76,10 +93,7 @@ void SetIntervalFrame::passControl()
 {
 	drawHeader();
 
-	while (!endButton.isPushed()) {
-		// Process next interval and save data from it
-		data.push_back(processInterval());
-	}
+	processInterval();
 }
 
 
