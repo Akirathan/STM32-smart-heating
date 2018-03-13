@@ -28,7 +28,7 @@ void SetIntervalFrame::exitMessageCallback()
 
 void SetIntervalFrame::registerExitMessageCallback()
 {
-	system.registerExitMessageCallbackReceiver(this);
+	windowSystem.registerExitMessageCallbackReceiver(this);
 }
 
 /**
@@ -53,17 +53,17 @@ void SetIntervalFrame::processInterval()
 	endButton.setPushed(false);
 
 	// Add all windows to the system.
-	system.addControl(&timeFromWindow);
-	system.addControl(&timeToWindow);
-	system.addControl(&tempWindow);
-	system.addControl(&nextButton);
-	system.addControl(&endButton);
+	windowSystem.addControl(&timeFromWindow);
+	windowSystem.addControl(&timeToWindow);
+	windowSystem.addControl(&tempWindow);
+	windowSystem.addControl(&nextButton);
+	windowSystem.addControl(&endButton);
 
 	if (!callbackRegistered) {
-		system.registerExitMessageCallbackReceiver(this);
+		windowSystem.registerExitMessageCallbackReceiver(this);
 		callbackRegistered = true;
 	}
-	system.run();
+	windowSystem.run();
 }
 
 
