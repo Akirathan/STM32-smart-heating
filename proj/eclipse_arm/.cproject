@@ -39,9 +39,13 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/lwip&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/FatFs/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/FatFs/src/drivers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/impl}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/STM32F1xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/BSP/STM3210C_EVAL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/frames}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/windows}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/main}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1807332257" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -69,9 +73,13 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/system&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/FatFs/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/FatFs/src/drivers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/impl}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/STM32F1xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/BSP/STM3210C_EVAL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/frames}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/windows}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/main}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1612094670" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1704184938" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="-std=c++14" valueType="string"/>
@@ -107,16 +115,21 @@
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/LwIP/src/include/lwip&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/FatFs/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${STM32Cube}/Middlewares/Third_Party/FatFs/src/drivers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/impl}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/STM32F1xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/BSP/STM3210C_EVAL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/frames}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/windows}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/main}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.73959962" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="fatfs_drivers|fatfs_src|lwip_ipv4|lwip_core|hardware|doc|tests|BSP-STM3210C_EVAL|HAL_Driver-Src|ili9325|ili9320|STM3210C_EVAL|STM32F1xx_HAL_Driver Src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/cube/Middlewares/Third_Party/LwIP|doc|tests|BSP-STM3210C_EVAL|HAL_Driver-Src|ili9325|ili9320|STM3210C_EVAL|STM32F1xx_HAL_Driver Src" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/cube/Middlewares/Third_Party/LwIP"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="tests"/>
 					</sourceEntries>
 				</configuration>
@@ -161,6 +174,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/impl}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/STM32F1xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/BSP/STM3210C_EVAL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/frames}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/windows}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/main}&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.902171133" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -190,6 +208,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/impl}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/STM32F1xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/BSP/STM3210C_EVAL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/frames}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/windows}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/main}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1608690170" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="USE_STM3210C_EVAL"/>
@@ -225,6 +248,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/impl}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/STM32F1xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/cube/BSP/STM3210C_EVAL}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/frames}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/gui/windows}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/hardware}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/generic_eval/src/main/main}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.336087120" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>

@@ -225,9 +225,9 @@ int main()
 {
 	cube_main();
 
-	fat_try(false, "file.txt");
-	net_try();
-	//main_test();
+	//fat_try(false, "file.txt");
+	//net_try();
+	main_test();
 
 	volatile int a = 0;
 	while (1) {

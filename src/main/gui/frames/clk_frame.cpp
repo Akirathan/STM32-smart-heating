@@ -40,7 +40,7 @@ void ClkFrame::passControl()
 	WindowSystem system;
 	system.addControl(&time);
 	system.addControl(&ok_button);
-	system.passControl();
+	system.run();
 }
 
 

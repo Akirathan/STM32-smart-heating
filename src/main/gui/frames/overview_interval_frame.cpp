@@ -35,7 +35,7 @@ void OverviewIntervalFrame::printData(const IntervalFrameData& data)
 	system.addControl(&nextButton);
 	system.addControl(&endButton);
 
-	system.passControl();
+	system.run();
 }
 
 void OverviewIntervalFrame::drawHeader()

@@ -8,6 +8,8 @@
 #ifndef INC_CALLBACKS_HPP_
 #define INC_CALLBACKS_HPP_
 
+#include "stm3210c_eval.h"
+
 /**
  * @brief Interface for second callback.
  *
@@ -44,6 +46,22 @@ public:
 	 * would cause circular dependency on RTCController.
 	 */
 	virtual void registerMinCallback() = 0;
+};
+
+
+class IJoystickCallback {
+public:
+	virtual ~IJoystickCallback() = default;
+	virtual void joyCallback(JOYState_TypeDef joyState) = 0;
+	virtual void registerJoyCallback() = 0;
+};
+
+
+class IExitMessageCallback {
+public:
+	virtual ~IExitMessageCallback() = default;
+	virtual void exitMessageCallback() = 0;
+	virtual void registerExitMessageCallback() = 0;
 };
 
 

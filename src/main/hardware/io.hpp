@@ -8,14 +8,17 @@
 #ifndef INC_INPUT_HPP_
 #define INC_INPUT_HPP_
 
-#include <unistd.h>
+#include <vector>
+#include <unistd.h> //TODO: ?
 #include "stm3210c_eval.h"
+#include "callbacks.hpp"
 
-namespace IO {
-
-JOYState_TypeDef read_joy();
-void print(char *ptr);
-
-} // namespace IO
+class IO {
+public:
+	static void print(char *ptr);
+	static void registerJoyCallback(IJoystickCallback *joyCallback);
+private:
+	std::vector<IJoystickCallback *> joyCallbacks;
+};
 
 #endif /* INC_INPUT_HPP_ */

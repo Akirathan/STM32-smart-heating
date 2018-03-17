@@ -230,3 +230,22 @@ Web server:
 	- CubeMX poskytuje ETH inicializaci zakladni, ethernetif.c poskytuje inicializaci
 	  DMA deskriptor retezcu (tj. pokrocilou inicializaci).
 
+12.3.2018 (zprovoznovani ETH, ...)
+- Zprovoznil jsem TCP Echo server example, nastavil jsem Ubuntu aby komunikovalo s STM.
+	- Fungovalo pingovani, ARP ...
+- Refaktoroval jsem adresarovou strukturu v main.
+- Zacal jsem na Githubu pouzivat Issues.
+- Zjistil jsem, ze je potreba cele joystick IO udelat pomoci interrupt modu (protoze v main
+  loopu je potreba zpracovavat ETH).
+- Zjistil jsem, ze CPU time nekterych ISR (RTC handler) trva potencialne dost dlouho kvuli
+  tomu, ze se z nich vola prekreslovani LCD.
+- TODO: zprovoznit DHCP
+
+13.3.2018
+...
+
+14.3.2018
+- Poznavani webovych technologii: django, AngularJS, Bootstrap, AJAX, ...
+- Letme procteni prace od Petra a vesmirne hry
+- Skoro-rozchozeni TeXove sablony
+
