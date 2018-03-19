@@ -50,6 +50,12 @@ if(USE_CUBE_MX)
 		"${CUBEMX_PATH}/Src/stm32f1xx_hal_msp.c"
 		"${CUBEMX_PATH}/Src/main.c"
 	)
+	
+	set_source_files_properties(
+		"${CUBEMX_PATH}/Src/main.c"
+		PROPERTIES COMPILE_FLAGS
+		"-Wno-return-type"
+	)
 else()
 	set(HW_SOURCES
 		"${HW_PATH}/startup_stm32f107xc.s"
@@ -86,6 +92,16 @@ set(LWIP_SOURCES
 	"${LWIP_PATH}/src/core/ipv4/ip_addr.c"
 	"${LWIP_PATH}/src/core/ipv4/ip_frag.c"
 	"${LWIP_PATH}/src/core/ipv6/inet6.c"
+)
+
+set_source_files_properties(
+	"${LWIP_PATH}/src/core/tcp.c"
+	"${LWIP_PATH}/src/core/tcp_in.c"
+	"${LWIP_PATH}/src/core/tcp_out.c"
+	"${LWIP_PATH}/src/core/ipv4/icmp.c"
+	"${LWIP_PATH}/src/core/ipv4/ip.c"
+	PROPERTIES COMPILE_FLAGS
+	"-Wno-format"
 )
 
 set(SOURCES

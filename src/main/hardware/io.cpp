@@ -30,7 +30,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 }
 
-static void IO::print(char *ptr)
+void IO::print(char *ptr)
 {
 	// Find out size
 	char *ptr_cnt = ptr;
@@ -42,7 +42,7 @@ static void IO::print(char *ptr)
 	write(0, ptr, size);
 }
 
-static void IO::registerJoyCallback(IJoystickCallback *joyCallback)
+void IO::registerJoyCallback(IJoystickCallback *joyCallback)
 {
 
 }
