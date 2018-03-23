@@ -249,3 +249,14 @@ Web server:
 - Letme procteni prace od Petra a vesmirne hry
 - Skoro-rozchozeni TeXove sablony
 
+23.3.2018
+==========
+Konzultace
+==========
+- Nepouzivat FreeRTOS a misto toho pouzivat timery
+- Necekat aktivne na to, nez se zmeri teplota:
+  - V 1:00 dat merit teplotu
+  - V 1:01 precist co se namerilo
+- Pouzivat Django a Bootstrap (nema smysl na klientovi delat neco vic interaktivniho)
+- Neboj se ze budes mit malo textu, pis o tom zajimavym
+
