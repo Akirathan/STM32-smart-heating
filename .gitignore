@@ -10,3 +10,4 @@ proj/cmake/build
 build
 proj/cmake/CMakeFiles
 proj/cmake/CMakeCache.txt
+*.bat

@@ -10,14 +10,7 @@
 #define RELAY_H_
 
 #include "stm32f1xx_hal.h"
-
-// PD12
-#define RELAY_DATA_GPIOPIN		GPIO_PIN_12
-#define RELAY_DATA_GPIOPORT 	GPIOD
-
-// PD15
-#define RELAY_POWER_GPIOPIN		GPIO_PIN_15
-#define RELAY_POWER_GPIOPORT	GPIOD
+#include "main.h" // cube main
 
 /**
  * @brief Class for controlling relay module.
@@ -31,7 +24,7 @@ public:
 	void switchOn();
 	void switchOff();
 private:
-	Relay();
+	Relay() = default;
 };
 
 #endif /* RELAY_H_ */
