@@ -31,7 +31,7 @@
  *
  * @note Note that the order is especially important for control windows.
  */
-class WindowSystem : public IJoystickCallback {
+class WindowSystem {
 private:
 	class Windows {
 	public:
@@ -52,8 +52,6 @@ private:
 		void ctrlWindowIdxDec();
 	};
 public:
-	virtual void joyCallback(JOYState_TypeDef joyState) override;
-	virtual void registerJoyCallback() override;
 	void registerExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void unregisterExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void run();

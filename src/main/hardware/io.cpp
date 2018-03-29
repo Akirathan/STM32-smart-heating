@@ -42,11 +42,6 @@ void IO::print(char *ptr)
 	write(0, ptr, size);
 }
 
-void IO::registerJoyCallback(IJoystickCallback *joyCallback)
-{
-
-}
-
 
 void IO::registerInputCallback(IInputCallback *inputCallback)
 {

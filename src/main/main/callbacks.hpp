@@ -59,14 +59,6 @@ public:
 	virtual void registerInputCallback() = 0;
 };
 
-class IJoystickCallback {
-public:
-	virtual ~IJoystickCallback() = default;
-	virtual void joyCallback(JOYState_TypeDef joyState) = 0;
-	virtual void registerJoyCallback() = 0;
-};
-
-
 class IExitMessageCallback {
 public:
 	virtual ~IExitMessageCallback() = default;

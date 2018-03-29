@@ -12,39 +12,6 @@ WindowSystem::WindowSystem()
 	  joyCallbackRegistered(false)
 { }
 
-
-void WindowSystem::joyCallback(JOYState_TypeDef joyState)
-{
-	Message msg = currWindow->eventHandler(joyState);
-	switch (msg) {
-	case Message::NONE:
-		break;
-	case Message::FOCUS_LEFT:
-		windows.previous();
-		break;
-	case Message::FOCUS_RIGHT:
-		windows.next();
-		break;
-	case Message::ERROR:
-		// TODO ...
-		break;
-	case Message::EXIT:
-		// Call all registered callback receivers.
-		for (IExitMessageCallback *receiver : exitMsgCallbackReceivers) {
-			receiver->exitMessageCallback();
-		}
-		break;
-	}
-}
-
-void WindowSystem::registerJoyCallback()
-{
-	if (!joyCallbackRegistered) {
-		IO::registerJoyCallback(this);
-		joyCallbackRegistered = true;
-	}
-}
-
 /**
  * Registers receiver object of Exit Message events.
  * @param exitMessageCallback Receiver object
@@ -71,7 +38,7 @@ void WindowSystem::unregisterExitMessageCallbackReceiver(IExitMessageCallback *e
  */
 void WindowSystem::run()
 {
-	registerJoyCallback();
+	// registerJoyCallback();
 
 	// Draw all windows
 	windows.drawAllWindows();
