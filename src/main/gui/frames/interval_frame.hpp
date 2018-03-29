@@ -32,6 +32,7 @@ protected:
 	Button nextButton;
 	Button endButton;
 	void drawHeader();
+	void callTerminateCallbackReceivers();
 };
 
 
