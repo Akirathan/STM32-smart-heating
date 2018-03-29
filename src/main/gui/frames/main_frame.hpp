@@ -53,7 +53,6 @@ private:
 	StaticPresetTempWindow presetTempWindow;
 	Button overviewButton;
 	Button resetButton;
-	WindowSystem windowSystem;
 	SetIntervalFrame setIntervalFrame;
 	OverviewIntervalFrame overviewIntervalFrame;
 	void drawHeader();

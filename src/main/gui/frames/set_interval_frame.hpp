@@ -32,7 +32,6 @@ public:
 	std::vector<IntervalFrameData>& getData();
 	virtual void passControl() override;
 private:
-	WindowSystem windowSystem;
 	TimeWindow timeFromWindow;
 	TimeWindow timeToWindow;
 	TempWindow tempWindow;

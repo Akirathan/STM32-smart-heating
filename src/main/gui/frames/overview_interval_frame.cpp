@@ -12,7 +12,6 @@ OverviewIntervalFrame::OverviewIntervalFrame()
 }
 
 OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData>& data) :
-	windowSystem(),
 	data(data),
 	dataIdx(0)
 {

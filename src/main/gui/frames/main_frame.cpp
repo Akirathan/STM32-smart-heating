@@ -25,7 +25,6 @@ void MainFrame::drawHeader()
  */
 MainFrame::MainFrame() :
 	currFrameType(NONE),
-	windowSystem(),
 	setIntervalFrame(),
 	overviewIntervalFrame()
 {
