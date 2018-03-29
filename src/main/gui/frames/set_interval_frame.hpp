@@ -37,7 +37,6 @@ private:
 	TimeWindow timeToWindow;
 	TempWindow tempWindow;
 	std::vector<IntervalFrameData> data;
-	bool callbackRegistered;
 	void processInterval();
 	void drawHeader();
 };

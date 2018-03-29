@@ -11,6 +11,8 @@
  */
 void SetIntervalFrame::exitMessageCallback()
 {
+	windowSystem.unregisterExitMessageCallbackReceiver(this);
+
 	// Investigate windows members.
 	Time::Time time_f(timeFromWindow.getHours(), timeFromWindow.getMinutes());
 	Time::Time time_t(timeToWindow.getHours(), timeToWindow.getMinutes());
@@ -20,12 +22,19 @@ void SetIntervalFrame::exitMessageCallback()
 	IntervalFrameData curr_data(Time::serialize(time_f), Time::serialize(time_t), temp);
 	data.push_back(curr_data);
 
-	if (nextButton.isPushed()) {
-		// Process next interval.
+	if (endButton.isPushed()) {
+		windowSystem.clear();
+		callTerminateCallbackReceivers();
+	}
+	else if (nextButton.isPushed()){
 		processInterval();
 	}
 }
 
+/**
+ * Registers for callback when some window emits ExitMessage.
+ * Note that this message can be emitted just by next or end button.
+ */
 void SetIntervalFrame::registerExitMessageCallback()
 {
 	windowSystem.registerExitMessageCallbackReceiver(this);
@@ -52,10 +61,7 @@ void SetIntervalFrame::processInterval()
 	nextButton.setPushed(false);
 	endButton.setPushed(false);
 
-	if (!callbackRegistered) {
-		windowSystem.registerExitMessageCallbackReceiver(this);
-		callbackRegistered = true;
-	}
+	registerExitMessageCallback();
 	windowSystem.run();
 }
 
@@ -69,7 +75,6 @@ void SetIntervalFrame::drawHeader()
 }
 
 SetIntervalFrame::SetIntervalFrame()
-	: callbackRegistered(false)
 {
 	timeFromWindow = TimeWindow(Coord(15, LINE(6)));
 	timeToWindow = TimeWindow(Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)));
