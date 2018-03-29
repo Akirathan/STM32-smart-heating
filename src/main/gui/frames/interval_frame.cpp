@@ -31,3 +31,7 @@ void IntervalFrame::registerFrameTerminateCallbackReceiver(IFrameTerminateCallba
 
 }
 
+void IntervalFrame::callTerminateCallbackReceivers()
+{
+
+}
