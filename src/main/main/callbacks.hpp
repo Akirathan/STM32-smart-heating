@@ -9,6 +9,7 @@
 #define INC_CALLBACKS_HPP_
 
 #include "stm3210c_eval.h"
+#include "input.hpp"
 
 /**
  * @brief Interface for second callback.
@@ -48,6 +49,15 @@ public:
 	virtual void registerMinCallback() = 0;
 };
 
+/**
+ * @brief Receiver for arbitrary input callback.
+ */
+class IInputCallback {
+public:
+	virtual ~IInputCallback() = default;
+	virtual void inputCallback(Input input) = 0;
+	virtual void registerInputCallback() = 0;
+};
 
 class IJoystickCallback {
 public:
