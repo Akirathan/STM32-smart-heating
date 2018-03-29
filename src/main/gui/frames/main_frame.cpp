@@ -23,7 +23,11 @@ void MainFrame::drawHeader()
  * Initializes JOY and LCD peripheral and places the windows on display.
  *
  */
-MainFrame::MainFrame()
+MainFrame::MainFrame() :
+	currFrameType(NONE),
+	windowSystem(),
+	setIntervalFrame(),
+	overviewIntervalFrame()
 {
 	LCD::init();
 
@@ -40,75 +44,108 @@ MainFrame::MainFrame()
  * When overview button is pressed, then current time and current temperature
  * windows are hidden and @ref OverviewIntervalFrame is displayed. The same is
  * done when reset button is pressed, except @ref SetIntervalFrame is displayed.
- *
- * @note This method contains an non-ending cycle.
  */
 void MainFrame::passControl()
 {
 	// Initialize temperature controlling.
 	TempController::getInstance().controlTemperature();
 
-	// Register time and temperature windows for
-	// minute or second callbacks.
+	// Draw all windows.
+	windowSystem.addStatic(&timeWindow);
+	windowSystem.addStatic(&actualTempWindow);
+	windowSystem.addStatic(&presetTempWindow);
+	windowSystem.addControl(&overviewButton);
+	windowSystem.addControl(&resetButton);
+
+	// Register time and temperature windows for minute or second callbacks.
 	timeWindow.runClock();
 	actualTempWindow.measure();
 	presetTempWindow.showPresetTemp();
 
-	while (true) {
-		drawHeader();
+	windowSystem.registerExitMessageCallbackReceiver(this);
+	windowSystem.run();
+}
 
-		// Show time and actual temp window if they were
-		// hidden from last frame.
-		timeWindow.show();
-		actualTempWindow.show();
-		presetTempWindow.show();
+/**
+ * Called when overviewButton or resetButton is pushed.
+ * All windows of MainFrame will be overdrawed with windows from SetIntervalFrame
+ * or OverviewIntervalFrame.
+ */
+void MainFrame::exitMessageCallback()
+{
+	windowSystem.unregisterExitMessageCallbackReceiver(this);
 
-		// Reset button state
-		overviewButton.setPushed(false);
-		resetButton.setPushed(false);
+	// Hide windows registered for callbacks.
+	//timeWindow.hide();
+	//actualTempWindow.hide();
+	//presetTempWindow.hide();
+	windowSystem.hideAllWindows();
 
-		// Add window into window_system and draw them
-		// immediately.
-		WindowSystem system;
-		system.addStatic(&timeWindow);
-		system.addStatic(&actualTempWindow);
-		system.addStatic(&presetTempWindow);
-		system.addControl(&overviewButton);
-		system.addControl(&resetButton);
+	if (overviewButton.isPushed()) {
+		currFrameType = OVERVIEW_INTERVAL_FRAME;
 
-		// Control from this function is returned when overview or reset button
-		// is pressed.
-		//system.passControl();
-
+		// Load interval data from EEPROM.
+		// Suppose eeprom is not empty.
 		std::vector<IntervalFrameData> data_vec;
+		EEPROM::getInstance().load(data_vec);
 
-		// Hide windows registered for callbacks.
-		timeWindow.hide();
-		actualTempWindow.hide();
-		presetTempWindow.hide();
+		overviewIntervalFrame.setData(data);
+		overviewIntervalFrame.registerFrameTerminateCallbackReceiver(this);
+		overviewIntervalFrame.passControl();
+	}
+	else if (resetButton.isPushed()) {
+		currFrameType = SET_INTERVAL_FRAME;
 
-		// Find out which button was pressed.
-		if (overviewButton.isPushed()) {
-			// Load interval data from EEPROM.
-			// Suppose eeprom is not empty.
-			EEPROM::getInstance().load(data_vec);
-
-			OverviewIntervalFrame frame{data_vec};
-
-			frame.passControl();
-		}
-		else if (resetButton.isPushed()) {
-			SetIntervalFrame frame;
-
-			// Set intervals.
-			frame.passControl();
-			data_vec = frame.getData();
-
-			// Reload data into TempController
-			TempController::getInstance().reloadIntervalData(data_vec);
-
-			// Save intervals into EEPROM.
-			EEPROM::getInstance().save(data_vec);
-		}
+		setIntervalFrame.registerFrameTerminateCallbackReceiver(this);
+		setIntervalFrame.passControl();
 	}
 }
+
+/**
+ * Note that this method is currently not used. Use this->windowSystem.register...
+ * for registration exit message callback.
+ */
+void MainFrame::registerExitMessageCallback()
+{
+	// Intentionally left empty.
+}
+
+/**
+ * This callback is called from setIntervalFrame or overviewIntervalFrame in case
+ * when one of them is terminating.
+ */
+void MainFrame::frameTerminateCallback()
+{
+	if (currFrameType == SET_INTERVAL_FRAME) {
+		// Reload data into TempController.
+		std::vector<IntervalFrameData> data_vec = setIntervalFrame.getData();
+		TempController::getInstance().reloadIntervalData(data_vec);
+
+		// Save intervals into EEPROM.
+		EEPROM::getInstance().save(data_vec);
+	}
+
+	setIntervalFrame.clear();
+	overviewIntervalFrame.clear();
+
+	/* Display MainFrame again. */
+	drawHeader();
+
+	timeWindow.show();
+	actualTempWindow.show();
+	presetTempWindow.show();
+
+	overviewButton.setPushed(false);
+	resetButton.setPushed(false);
+
+	windowSystem.drawAllWindows();
+
+	windowSystem.registerExitMessageCallbackReceiver(this);
+	windowSystem.run();
+}
+
+void MainFrame::registerFrameTerminateCallback()
+{
+	// Intentionally left empty: method not used.
+}
+
