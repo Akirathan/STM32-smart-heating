@@ -159,3 +159,11 @@ void WindowSystem::addStatic(IStaticWindow* window)
 {
 	return windows.addStatic(window);
 }
+
+/**
+ * Disposes all windows.
+ */
+void WindowSystem::clear()
+{
+
+}

@@ -57,6 +57,7 @@ public:
 	void run();
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
+	void clear();
 	WindowSystem();
 private:
 	friend class Windows;
