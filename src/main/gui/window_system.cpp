@@ -175,3 +175,9 @@ void WindowSystem::hideAllWindows()
 {
 
 }
+
+void WindowSystem::drawAllWindows()
+{
+	windows.drawAllWindows();
+}
+

@@ -59,6 +59,7 @@ public:
 	void addStatic(IStaticWindow* window);
 	void clear();
 	void hideAllWindows();
+	void drawAllWindows();
 	WindowSystem();
 private:
 	friend class Windows;
