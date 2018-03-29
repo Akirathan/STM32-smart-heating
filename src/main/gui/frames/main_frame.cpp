@@ -75,10 +75,9 @@ void MainFrame::exitMessageCallback()
 	windowSystem.unregisterExitMessageCallbackReceiver(this);
 
 	// Hide windows registered for callbacks.
-	//timeWindow.hide();
-	//actualTempWindow.hide();
-	//presetTempWindow.hide();
-	windowSystem.hideAllWindows();
+	timeWindow.hide();
+	actualTempWindow.hide();
+	presetTempWindow.hide();
 
 	if (overviewButton.isPushed()) {
 		currFrameType = OVERVIEW_INTERVAL_FRAME;

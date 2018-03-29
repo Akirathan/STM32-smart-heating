@@ -58,7 +58,6 @@ public:
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
 	void clear();
-	void hideAllWindows();
 	void drawAllWindows();
 	WindowSystem();
 private:
