@@ -58,6 +58,7 @@ public:
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
 	void clear();
+	void hideAllWindows();
 	WindowSystem();
 private:
 	friend class Windows;

@@ -167,3 +167,11 @@ void WindowSystem::clear()
 {
 
 }
+
+/**
+ * Hides all windows. Now it just hides hideable (IHideable) windows.
+ */
+void WindowSystem::hideAllWindows()
+{
+
+}
