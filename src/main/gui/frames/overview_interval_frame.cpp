@@ -6,6 +6,39 @@
 
 #include "overview_interval_frame.hpp"
 
+OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData>& data)
+	: data(data)
+{
+	timeFromWindow = StaticTimeWindow(Coord(15, LINE(6)), false);
+	timeToWindow = StaticTimeWindow(
+			Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)), false);
+	tempWindow = StaticTempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
+}
+
+void OverviewIntervalFrame::exitMessageCallback()
+{
+
+}
+
+void OverviewIntervalFrame::registerExitMessageCallback()
+{
+
+}
+
+/**
+ * @note Supposes that eeprom is not empty.
+ */
+void OverviewIntervalFrame::passControl()
+{
+	drawHeader();
+
+	auto it = data.begin();
+	while (!endButton.isPushed() && it != data.end()) {
+		printData(*it);
+		++it;
+	}
+}
+
 /**
  * @brief Prints the data to the display and waits until user presses NEXT or END
  * 		  button.
@@ -45,38 +78,3 @@ void OverviewIntervalFrame::drawHeader()
 	sFONT *font = LCD::get_font();
 	LCD::print_char(timeFromWindow.getX() + (font->Width)*5, LINE(6), '-');
 }
-
-OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData>& data)
-	: data(data)
-{
-	timeFromWindow = StaticTimeWindow(Coord(15, LINE(6)), false);
-	timeToWindow = StaticTimeWindow(
-			Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)), false);
-	tempWindow = StaticTempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
-}
-
-void OverviewIntervalFrame::exitMessageCallback()
-{
-
-}
-
-void OverviewIntervalFrame::registerExitMessageCallback()
-{
-
-}
-
-/**
- * @note Supposes that eeprom is not empty.
- */
-void OverviewIntervalFrame::passControl()
-{
-	drawHeader();
-
-	auto it = data.begin();
-	while (!endButton.isPushed() && it != data.end()) {
-		printData(*it);
-		++it;
-	}
-}
-
-
