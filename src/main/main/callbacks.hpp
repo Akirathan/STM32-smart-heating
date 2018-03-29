@@ -59,6 +59,13 @@ public:
 	virtual void registerInputCallback() = 0;
 };
 
+class IFrameTerminateCallback {
+public:
+	virtual ~IFrameTerminateCallback() = default;
+	virtual void frameTerminateCallback() = 0;
+	virtual void registerFrameTerminateCallback() = 0;
+};
+
 class IExitMessageCallback {
 public:
 	virtual ~IExitMessageCallback() = default;
