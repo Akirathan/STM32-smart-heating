@@ -6,8 +6,10 @@
 
 #include "overview_interval_frame.hpp"
 
-OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData>& data)
-	: data(data)
+OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData>& data) :
+	windowSystem(),
+	data(data),
+	dataIdx(0)
 {
 	timeFromWindow = StaticTimeWindow(Coord(15, LINE(6)), false);
 	timeToWindow = StaticTimeWindow(
@@ -15,14 +17,28 @@ OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData
 	tempWindow = StaticTempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
 }
 
+/**
+ * Note: this method is called when next or end button is pushed.
+ */
 void OverviewIntervalFrame::exitMessageCallback()
 {
+	windowSystem.unregisterExitMessageCallbackReceiver(this);
+
+	// Check if end button is pushed or last interval was displayed.
+	if (endButton.isPushed() || dataIdx >= data.size()) {
+		callTerminateCallbackReceivers();
+		return;
+	}
+
+	// Draw next interval
+	dataIdx++;
+	printData(data[dataIdx]);
 
 }
 
 void OverviewIntervalFrame::registerExitMessageCallback()
 {
-
+	windowSystem.registerExitMessageCallbackReceiver(this);
 }
 
 /**
@@ -32,11 +48,7 @@ void OverviewIntervalFrame::passControl()
 {
 	drawHeader();
 
-	auto it = data.begin();
-	while (!endButton.isPushed() && it != data.end()) {
-		printData(*it);
-		++it;
-	}
+	printData(data[dataIdx]);
 }
 
 /**
@@ -59,16 +71,16 @@ void OverviewIntervalFrame::printData(const IntervalFrameData& data)
 	nextButton.setPushed(false);
 	endButton.setPushed(false);
 
+	// Add all windows to windowSystem.
+	windowSystem.clear();
+	windowSystem.addStatic(&timeFromWindow);
+	windowSystem.addStatic(&timeToWindow);
+	windowSystem.addStatic(&tempWindow);
+	windowSystem.addControl(&nextButton);
+	windowSystem.addControl(&endButton);
 
-	// Add all windows to system.
-	WindowSystem system;
-	system.addStatic(&timeFromWindow);
-	system.addStatic(&timeToWindow);
-	system.addStatic(&tempWindow);
-	system.addControl(&nextButton);
-	system.addControl(&endButton);
-
-	system.run();
+	registerExitMessageCallback();
+	windowSystem.run();
 }
 
 void OverviewIntervalFrame::drawHeader()

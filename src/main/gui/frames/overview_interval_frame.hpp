@@ -33,7 +33,9 @@ private:
 	StaticTimeWindow timeFromWindow;
 	StaticTimeWindow timeToWindow;
 	StaticTempWindow tempWindow;
+	WindowSystem windowSystem;
 	const std::vector<IntervalFrameData>& data;
+	size_t dataIdx;
 	void printData(const IntervalFrameData& data);
 	void drawHeader();
 };
