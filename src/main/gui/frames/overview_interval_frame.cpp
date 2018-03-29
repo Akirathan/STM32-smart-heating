@@ -55,6 +55,16 @@ OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData
 	tempWindow = StaticTempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
 }
 
+void OverviewIntervalFrame::exitMessageCallback()
+{
+
+}
+
+void OverviewIntervalFrame::registerExitMessageCallback()
+{
+
+}
+
 /**
  * @note Supposes that eeprom is not empty.
  */

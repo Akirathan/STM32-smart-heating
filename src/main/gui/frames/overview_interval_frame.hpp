@@ -14,6 +14,7 @@
 #include "static_temp_window.hpp"
 #include "time.hpp"
 #include "window_system.hpp"
+#include "callbacks.hpp"
 
 /**
  * @brief Used for overview of intervals.
@@ -22,9 +23,11 @@
  * and is used just for displaying interval data eg. those data stored in
  * EEPROM. Note that all window members are static.
  */
-class OverviewIntervalFrame : public IntervalFrame {
+class OverviewIntervalFrame : public IntervalFrame, IExitMessageCallback {
 public:
 	OverviewIntervalFrame(const std::vector<IntervalFrameData>& data);
+	virtual void exitMessageCallback() override;
+	virtual void registerExitMessageCallback() override;
 	virtual void passControl() override;
 private:
 	StaticTimeWindow timeFromWindow;
