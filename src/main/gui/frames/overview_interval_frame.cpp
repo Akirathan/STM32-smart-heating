@@ -6,6 +6,11 @@
 
 #include "overview_interval_frame.hpp"
 
+OverviewIntervalFrame::OverviewIntervalFrame()
+{
+
+}
+
 OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData>& data) :
 	windowSystem(),
 	data(data),
@@ -15,6 +20,11 @@ OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData
 	timeToWindow = StaticTimeWindow(
 			Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)), false);
 	tempWindow = StaticTempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
+}
+
+void OverviewIntervalFrame::setData(const std::vector<IntervalFrameData> &data)
+{
+	this->data = data;
 }
 
 /**
@@ -46,6 +56,7 @@ void OverviewIntervalFrame::registerExitMessageCallback()
  */
 void OverviewIntervalFrame::passControl()
 {
+	//rt_assert(data != nullptr, "Data must be initialized first");
 	drawHeader();
 
 	printData(data[dataIdx]);

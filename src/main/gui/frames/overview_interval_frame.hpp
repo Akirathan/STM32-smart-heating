@@ -25,7 +25,9 @@
  */
 class OverviewIntervalFrame : public IntervalFrame, IExitMessageCallback {
 public:
+	OverviewIntervalFrame();
 	OverviewIntervalFrame(const std::vector<IntervalFrameData>& data);
+	void setData(const std::vector<IntervalFrameData> &data);
 	virtual void exitMessageCallback() override;
 	virtual void registerExitMessageCallback() override;
 	virtual void passControl() override;
