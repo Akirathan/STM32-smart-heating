@@ -12,6 +12,16 @@ WindowSystem::WindowSystem()
 	  joyCallbackRegistered(false)
 { }
 
+void WindowSystem::inputCallback(Input input)
+{
+
+}
+
+void WindowSystem::registerInputCallback()
+{
+	IO::registerInputCallback(this);
+}
+
 /**
  * Registers receiver object of Exit Message events.
  * @param exitMessageCallback Receiver object
@@ -38,7 +48,7 @@ void WindowSystem::unregisterExitMessageCallbackReceiver(IExitMessageCallback *e
  */
 void WindowSystem::run()
 {
-	// registerJoyCallback();
+	registerInputCallback();
 
 	// Draw all windows
 	windows.drawAllWindows();

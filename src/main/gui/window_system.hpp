@@ -12,6 +12,7 @@
 #include "control_window.hpp"
 #include "callbacks.hpp"
 #include "static_window.hpp"
+#include "input.hpp"
 
 /**
  * @brief Window controller for frames.
@@ -31,7 +32,7 @@
  *
  * @note Note that the order is especially important for control windows.
  */
-class WindowSystem {
+class WindowSystem : public IInputCallback {
 private:
 	class Windows {
 	public:
@@ -52,6 +53,8 @@ private:
 		void ctrlWindowIdxDec();
 	};
 public:
+	virtual void inputCallback(Input input) override;
+	virtual void registerInputCallback() override;
 	void registerExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void unregisterExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void run();
