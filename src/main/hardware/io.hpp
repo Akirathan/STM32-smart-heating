@@ -17,6 +17,7 @@ class IO {
 public:
 	static void print(char *ptr);
 	static void registerJoyCallback(IJoystickCallback *joyCallback);
+	static void registerInputCallback(IInputCallback *inputCallback);
 private:
 	std::vector<IJoystickCallback *> joyCallbacks;
 };

@@ -46,3 +46,9 @@ void IO::registerJoyCallback(IJoystickCallback *joyCallback)
 {
 
 }
+
+
+void IO::registerInputCallback(IInputCallback *inputCallback)
+{
+
+}
