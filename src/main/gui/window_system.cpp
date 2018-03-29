@@ -14,7 +14,30 @@ WindowSystem::WindowSystem()
 
 void WindowSystem::inputCallback(Input input)
 {
+	if (input.type != InputType::JOYSTICK) {
+		return;
+	}
 
+	Message msg = currWindow->eventHandler(input.joyState);
+	switch (msg) {
+	case Message::NONE:
+		break;
+	case Message::FOCUS_LEFT:
+		windows.previous();
+		break;
+	case Message::FOCUS_RIGHT:
+		windows.next();
+		break;
+	case Message::ERROR:
+		// TODO ...
+		break;
+	case Message::EXIT:
+		// Call all registered callback receivers.
+		for (IExitMessageCallback *receiver : exitMsgCallbackReceivers) {
+		  receiver->exitMessageCallback();
+		}
+		break;
+	}
 }
 
 void WindowSystem::registerInputCallback()
