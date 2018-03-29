@@ -6,6 +6,14 @@
 
 #include "interval_frame.hpp"
 
+IntervalFrame::IntervalFrame()
+{
+	LCD::init();
+
+	nextButton = Button(Coord(25, LINE(12)), "NEXT");
+	endButton = Button(Coord(230, LINE(12)), "END");
+}
+
 void IntervalFrame::drawHeader()
 {
 	LCD::draw_header((uint8_t *)"Interval setting");
@@ -18,12 +26,8 @@ void IntervalFrame::drawHeader()
 			LEFT_MODE, LCD::NORMAL_FONT);
 }
 
-IntervalFrame::IntervalFrame()
+void IntervalFrame::registerFrameTerminateCallbackReceiver(IFrameTerminateCallback *receiver)
 {
-	LCD::init();
 
-	nextButton = Button(Coord(25, LINE(12)), "NEXT");
-	endButton = Button(Coord(230, LINE(12)), "END");
 }
-
 

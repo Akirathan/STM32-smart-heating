@@ -11,6 +11,7 @@
 #include "stm3210c_eval.h"
 #include "lcd.hpp"
 #include "frame.hpp"
+#include "callbacks.hpp"
 
 /**
  * @brief Base class for @ref SetIntervalFrame and @ref OverviewIntervalFrame
@@ -26,6 +27,7 @@ class IntervalFrame : public IFrame {
 public:
 	IntervalFrame();
 	virtual ~IntervalFrame() = default;
+	void registerFrameTerminateCallbackReceiver(IFrameTerminateCallback *receiver);
 protected:
 	Button nextButton;
 	Button endButton;
