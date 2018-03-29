@@ -89,7 +89,7 @@ void MainFrame::exitMessageCallback()
 		std::vector<IntervalFrameData> data_vec;
 		EEPROM::getInstance().load(data_vec);
 
-		overviewIntervalFrame.setData(data);
+		overviewIntervalFrame.setData(data_vec);
 		overviewIntervalFrame.registerFrameTerminateCallbackReceiver(this);
 		overviewIntervalFrame.passControl();
 	}
