@@ -42,7 +42,7 @@ void WindowSystem::inputCallback(Input input)
 
 void WindowSystem::registerInputCallback()
 {
-	IO::registerInputCallback(this);
+	IO::getInstance().registerInputCallback(this);
 }
 
 /**

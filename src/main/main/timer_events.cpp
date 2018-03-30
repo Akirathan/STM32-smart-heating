@@ -19,6 +19,6 @@ void timer_event_rtc()
  */
 void timer_event_user_input()
 {
-	IO::task();
+	IO::getInstance().task();
 }
 

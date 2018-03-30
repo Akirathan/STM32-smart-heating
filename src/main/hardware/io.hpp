@@ -16,12 +16,17 @@
 
 class IO {
 public:
-	static void print(char *ptr);
-	static void registerInputCallback(IInputCallback *inputCallback);
-	static void task();
+	static IO& getInstance();
+	void operator=(const IO&) = delete;
+	IO(const IO&) = delete;
+	void print(char *ptr);
+	void registerInputCallback(IInputCallback *inputCallback);
+	void task();
 private:
-	static IInputCallback * callbackReceivers[CALLBACK_RECEIVERS_NUM_INPUT];
-	static size_t idx;
+	IO();
+	IInputCallback * callbackReceivers[CALLBACK_RECEIVERS_NUM_INPUT];
+	size_t idx;
+	bool joystickInitialized;
 };
 
 #endif /* INC_INPUT_HPP_ */

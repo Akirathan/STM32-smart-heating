@@ -5,6 +5,8 @@
  */
 
 #include "io.hpp"
+#include "rt_assert.h"
+#include "input.hpp"
 
 extern "C" {
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -30,6 +32,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 }
 
+IO& IO::getInstance()
+{
+	static IO instance;
+	return instance;
+}
+
 void IO::print(char *ptr)
 {
 	// Find out size
@@ -45,14 +53,44 @@ void IO::print(char *ptr)
 
 void IO::registerInputCallback(IInputCallback *inputCallback)
 {
-
+	rt_assert(idx < CALLBACK_RECEIVERS_NUM_INPUT, "too many callback receivers");
+	callbackReceivers[idx] = inputCallback;
+	idx++;
 }
 
 void IO::task()
 {
+	if (!joystickInitialized) {
+		uint8_t ret = BSP_JOY_Init(JOY_MODE_GPIO);
+		rt_assert(ret == IO_OK, "Failed joystick initialization");
+
+		joystickInitialized = true;
+	}
+
 	JOYState_TypeDef joy_state = BSP_JOY_GetState();
 
 	if (joy_state == JOY_NONE) {
+		return;
+	}
 
+	// Call all registered callback receivers.
+	Input input;
+	input.type = InputType::JOYSTICK;
+	input.joyState = joy_state;
+	for (size_t i = 0; i < CALLBACK_RECEIVERS_NUM_INPUT; ++i) {
+		if (callbackReceivers[i] == nullptr) {
+			break;
+		}
+
+		callbackReceivers[i]->inputCallback(input);
+	}
+}
+
+IO::IO() :
+	idx(0),
+	joystickInitialized(false)
+{
+	for (size_t i = 0; i < CALLBACK_RECEIVERS_NUM_INPUT; ++i) {
+		callbackReceivers[i] = nullptr;
 	}
 }

@@ -102,8 +102,8 @@ uint8_t memory_try()
 
 void write_try()
 {
-	IO::print("ab\n");
-	IO::print("cd");
+	IO::getInstance().print("ab\n");
+	IO::getInstance().print("cd");
 }
 
 void eeprom_try()
