@@ -15,6 +15,31 @@ ClkFrame::ClkFrame()
 	ok_button = Button(Coord(LCD::get_x_size()/2 - 15, LINE(8)), "OK");
 }
 
+void ClkFrame::passControl()
+{
+	drawHeader();
+
+	windowSystem.addControl(&time);
+	windowSystem.addControl(&ok_button);
+	windowSystem.registerExitMessageCallbackReceiver(this);
+	windowSystem.run();
+}
+
+/**
+ * Called when okButton pressed.
+ */
+void ClkFrame::exitMessageCallback()
+{
+	windowSystem.unregisterExitMessageCallbackReceiver(this);
+
+	// TODO: windowSystem.clear(); ?
+}
+
+void ClkFrame::registerExitMessageCallback()
+{
+	// Intentionally left empty.
+}
+
 void ClkFrame::drawHeader() const
 {
 	LCD::draw_header((uint8_t *)"Time setting");
@@ -31,16 +56,6 @@ RTC_TimeTypeDef ClkFrame::getTime() const
 	rtc_time.Minutes = time.getMinutes();
 
 	return rtc_time;
-}
-
-void ClkFrame::passControl()
-{
-	drawHeader();
-
-	WindowSystem system;
-	system.addControl(&time);
-	system.addControl(&ok_button);
-	system.run();
 }
 
 

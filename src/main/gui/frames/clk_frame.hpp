@@ -13,6 +13,7 @@
 #include "window_system.hpp"
 #include "lcd.hpp"
 #include "frame.hpp"
+#include "callbacks.hpp"
 
 /**
  * @brief Represents class for user time selection.
@@ -20,10 +21,12 @@
  * The user time selection consists of two windows - clock (hours : minutes)
  * and ok button. This frame ends when ok button is pressed.
  */
-class ClkFrame : public IFrame {
+class ClkFrame : public IFrame, IExitMessageCallback {
 public:
 	ClkFrame();
 	virtual void passControl() override;
+	virtual void exitMessageCallback() override;
+	virtual void registerExitMessageCallback() override;
 	RTC_TimeTypeDef getTime() const;
 private:
 	void drawHeader() const;
