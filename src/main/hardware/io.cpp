@@ -47,3 +47,12 @@ void IO::registerInputCallback(IInputCallback *inputCallback)
 {
 
 }
+
+void IO::task()
+{
+	JOYState_TypeDef joy_state = BSP_JOY_GetState();
+
+	if (joy_state == JOY_NONE) {
+
+	}
+}

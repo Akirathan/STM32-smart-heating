@@ -17,8 +17,10 @@ class IO {
 public:
 	static void print(char *ptr);
 	static void registerInputCallback(IInputCallback *inputCallback);
+	static void task();
 private:
-
+	static IInputCallback callbackReceivers[CALLBACK_RECEIVERS_NUM_INPUT];
+	static size_t idx;
 };
 
 #endif /* INC_INPUT_HPP_ */
