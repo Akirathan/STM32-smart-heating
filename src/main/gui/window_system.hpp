@@ -11,6 +11,7 @@
 #include "io.hpp"
 #include "control_window.hpp"
 #include "callbacks.hpp"
+#include "callback_receivers.hpp"
 #include "static_window.hpp"
 #include "input.hpp"
 
@@ -70,8 +71,8 @@ private:
 	friend class Windows;
 	Windows windows;
 	IControlWindow* currWindow;
-	std::vector<IExitMessageCallback *> exitMsgCallbackReceivers;
 	bool joyCallbackRegistered;
+	CallbackReceivers<CALLBACK_RECEIVERS_NUM_EXIT_MSG, IExitMessageCallback> callbackReceivers;
 };
 
 

@@ -73,7 +73,7 @@ protected:
 
 	inline void callTerminateCallbackReceivers()
 	{
-		callbackReceivers.callAllReceivers();
+		callbackReceivers.callAllReceivers(nullptr);
 	}
 
 private:

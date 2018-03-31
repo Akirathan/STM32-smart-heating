@@ -53,9 +53,7 @@ void IO::print(char *ptr)
 
 void IO::registerInputCallback(IInputCallback *inputCallback)
 {
-	rt_assert(idx < CALLBACK_RECEIVERS_NUM_INPUT, "too many callback receivers");
-	callbackReceivers[idx] = inputCallback;
-	idx++;
+	callbackReceivers.insertBack(inputCallback);
 }
 
 void IO::task()
@@ -77,20 +75,10 @@ void IO::task()
 	Input input;
 	input.type = InputType::JOYSTICK;
 	input.joyState = joy_state;
-	for (size_t i = 0; i < CALLBACK_RECEIVERS_NUM_INPUT; ++i) {
-		if (callbackReceivers[i] == nullptr) {
-			break;
-		}
-
-		callbackReceivers[i]->inputCallback(input);
-	}
+	callbackReceivers.callAllReceivers((void *) &input);
 }
 
 IO::IO() :
-	idx(0),
 	joystickInitialized(false)
 {
-	for (size_t i = 0; i < CALLBACK_RECEIVERS_NUM_INPUT; ++i) {
-		callbackReceivers[i] = nullptr;
-	}
 }

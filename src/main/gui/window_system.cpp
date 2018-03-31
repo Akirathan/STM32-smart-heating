@@ -32,10 +32,8 @@ void WindowSystem::inputCallback(Input input)
 		// TODO ...
 		break;
 	case Message::EXIT:
-		// Call all registered callback receivers.
-		for (IExitMessageCallback *receiver : exitMsgCallbackReceivers) {
-		  receiver->exitMessageCallback();
-		}
+		// Call all exit message callback receivers.
+		callbackReceivers.callAllReceivers(nullptr);
 		break;
 	}
 }
@@ -51,19 +49,12 @@ void WindowSystem::registerInputCallback()
  */
 void WindowSystem::registerExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback)
 {
-	exitMsgCallbackReceivers.push_back(exitMessageCallback);
+	callbackReceivers.insertBack(exitMessageCallback);
 }
 
 void WindowSystem::unregisterExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback)
 {
-	for (auto it = exitMsgCallbackReceivers.begin(); it != exitMsgCallbackReceivers.end(); ++it) {
-		if (*it == exitMessageCallback) {
-			exitMsgCallbackReceivers.erase(it);
-			return;
-		}
-	}
-
-	// TODO: rt_assert(false, "No such receiver");
+	callbackReceivers.remove(exitMessageCallback);
 }
 
 /**
