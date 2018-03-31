@@ -9,6 +9,7 @@ set(LWIP_CONF_PATH "${CMAKE_CURRENT_SOURCES_DIR}/lwip_conf")
 
 
 set(FRAMES_SOURCES
+	"${FRAMES_PATH}/frame.cpp"
 	"${FRAMES_PATH}/clk_frame.cpp"
 	"${FRAMES_PATH}/interval_frame.cpp"
 	"${FRAMES_PATH}/main_frame.cpp"

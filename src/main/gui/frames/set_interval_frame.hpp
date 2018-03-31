@@ -37,7 +37,7 @@ private:
 	TempWindow tempWindow;
 	std::vector<IntervalFrameData> data;
 	void processInterval();
-	void drawHeader();
+	void drawHeader() override;
 };
 
 

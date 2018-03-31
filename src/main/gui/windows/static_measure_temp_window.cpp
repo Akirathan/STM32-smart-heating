@@ -43,7 +43,7 @@ void StaticMeasureTempWindow::minCallback()
 	// TempSensor is initialized just once.
 	TempSensor::init();
 	temp = TempSensor::measure_temperature();
-	draw();
+	redrawFlag = true;
 }
 
 void StaticMeasureTempWindow::registerMinCallback()

@@ -38,7 +38,7 @@ private:
 	const std::vector<IntervalFrameData>& data;
 	size_t dataIdx;
 	void printData(const IntervalFrameData& data);
-	void drawHeader();
+	void drawHeader() override;
 };
 
 

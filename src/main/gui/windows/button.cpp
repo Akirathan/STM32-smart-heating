@@ -29,7 +29,7 @@ void Button::draw() const
 	LCD::print_string(coord.x, coord.y, (uint8_t *)name.c_str(), LEFT_MODE, font);
 }
 
-Message Button::eventHandler(JOYState_TypeDef joy_state)
+Message Button::_eventHandler(JOYState_TypeDef joy_state)
 {
 	switch (joy_state) {
 	case JOY_UP:
@@ -54,13 +54,13 @@ Message Button::eventHandler(JOYState_TypeDef joy_state)
 void Button::unsetFocus()
 {
 	focused = false;
-	draw();
+	redrawFlag = true;
 }
 
 void Button::setFocus(Message msg)
 {
 	focused = true;
-	draw();
+	redrawFlag = true;
 }
 
 void Button::setPushed(bool b)

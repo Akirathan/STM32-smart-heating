@@ -42,6 +42,8 @@ private:
 		void addControl(IControlWindow* window);
 		void addStatic(IStaticWindow* window);
 		void drawAllWindows();
+		void setAllForRedraw();
+		void resetFocus();
 	private:
 		friend class WindowSystem;
 		WindowSystem& system;
@@ -62,6 +64,7 @@ public:
 	void addStatic(IStaticWindow* window);
 	void clear();
 	void drawAllWindows();
+	void setForRedraw();
 	WindowSystem();
 private:
 	friend class Windows;

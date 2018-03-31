@@ -18,7 +18,6 @@
 class TempWindow : public IControlWindow {
 public:
 	TempWindow(const Coord& coord = Coord(0,0));
-	Message eventHandler(JOYState_TypeDef joy_state) override;
 	void draw()const override;
 	void setFocus(Message msg) override;
 	uint32_t getTemp() const;
@@ -29,6 +28,7 @@ private:
 	// Temperature lower boundary
 	static const uint32_t lowBond = 8;
 	bool focused = false;
+	Message _eventHandler(JOYState_TypeDef joy_state) override;
 	void unsetFocus();
 };
 

@@ -27,12 +27,10 @@ class IntervalFrame : public IFrame {
 public:
 	IntervalFrame();
 	virtual ~IntervalFrame() = default;
-	void registerFrameTerminateCallbackReceiver(IFrameTerminateCallback *receiver);
 protected:
 	Button nextButton;
 	Button endButton;
-	void drawHeader();
-	void callTerminateCallbackReceivers();
+	void drawIntervalHeader();
 };
 
 

@@ -12,6 +12,7 @@
 void SetIntervalFrame::exitMessageCallback()
 {
 	windowSystem.unregisterExitMessageCallbackReceiver(this);
+	windowSystem.stop();
 
 	// Investigate windows members.
 	Time::Time time_f(timeFromWindow.getHours(), timeFromWindow.getMinutes());
@@ -23,7 +24,6 @@ void SetIntervalFrame::exitMessageCallback()
 	data.push_back(curr_data);
 
 	if (endButton.isPushed()) {
-		windowSystem.clear();
 		callTerminateCallbackReceivers();
 	}
 	else if (nextButton.isPushed()){
@@ -37,7 +37,7 @@ void SetIntervalFrame::exitMessageCallback()
  */
 void SetIntervalFrame::registerExitMessageCallback()
 {
-	windowSystem.registerExitMessageCallbackReceiver(this);
+	// Intentionally left empty.
 }
 
 /**
@@ -45,6 +45,9 @@ void SetIntervalFrame::registerExitMessageCallback()
  */
 void SetIntervalFrame::processInterval()
 {
+	nextButton.setPushed(false);
+	endButton.setPushed(false);
+
 	// Reset windows' inner values.
 	Time::Time last_time;
 	if (data.size() >= 1) {
@@ -58,17 +61,15 @@ void SetIntervalFrame::processInterval()
 	timeFromWindow.setMinutes(last_time.minutes);
 	timeToWindow.setHours(last_time.hours);
 	timeToWindow.setMinutes(last_time.minutes);
-	nextButton.setPushed(false);
-	endButton.setPushed(false);
 
-	registerExitMessageCallback();
+	windowSystem.registerExitMessageCallbackReceiver(this);
 	windowSystem.run();
 }
 
 
 void SetIntervalFrame::drawHeader()
 {
-	IntervalFrame::drawHeader();
+	IntervalFrame::drawIntervalHeader();
 
 	sFONT *font = LCD::get_font();
 	LCD::print_char(timeFromWindow.getX() + (font->Width)*5, LINE(6), '-');
@@ -79,9 +80,6 @@ SetIntervalFrame::SetIntervalFrame()
 	timeFromWindow = TimeWindow(Coord(15, LINE(6)));
 	timeToWindow = TimeWindow(Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)));
 	tempWindow = TempWindow(Coord(3*LCD::get_x_size()/4, LINE(6)));
-
-	nextButton.setPushed(false);
-	endButton.setPushed(false);
 
 	// Add all windows to the system.
 	windowSystem.addControl(&timeFromWindow);
@@ -103,8 +101,6 @@ std::vector<IntervalFrameData>& SetIntervalFrame::getData()
 
 void SetIntervalFrame::passControl()
 {
-	drawHeader();
-
 	processInterval();
 }
 

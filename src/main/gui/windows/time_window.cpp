@@ -82,10 +82,10 @@ void TimeWindow::setFocus(Message msg)
 		break;
 	}
 
-	draw();
+	redrawFlag = true;
 }
 
-Message TimeWindow::eventHandler(JOYState_TypeDef joy_state)
+Message TimeWindow::_eventHandler(JOYState_TypeDef joy_state)
 {
 	Message msg = Message::NONE;
 
@@ -164,7 +164,7 @@ Message TimeWindow::eventHandler(JOYState_TypeDef joy_state)
 		return Message::NONE;
 	}
 
-	draw(); // Redraw this window
+	redrawFlag = true;
 	return msg;
 }
 

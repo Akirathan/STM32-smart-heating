@@ -72,9 +72,7 @@ void WindowSystem::unregisterExitMessageCallbackReceiver(IExitMessageCallback *e
 void WindowSystem::run()
 {
 	registerInputCallback();
-
-	// Draw all windows
-	windows.drawAllWindows();
+	windows.resetFocus();
 }
 
 WindowSystem::Windows::Windows(WindowSystem& system)
@@ -136,7 +134,7 @@ void WindowSystem::Windows::next()
 }
 
 /**
- * Adds control window to the internal data representation and draws it.
+ * Adds control window to the internal data representation.
  */
 void WindowSystem::Windows::addControl(IControlWindow* window)
 {
@@ -149,19 +147,14 @@ void WindowSystem::Windows::addControl(IControlWindow* window)
 		system.currWindow->setFocus(Message::FOCUS_LEFT);
 	}
 
-	// Draw this control window.
-	ctrlWindows[ctrlWindows.size()-1]->draw();
 }
 
 /**
- * Adds static window to the internal data representation and draws it.
+ * Adds static window to the internal data representation.
  */
 void WindowSystem::Windows::addStatic(IStaticWindow* window)
 {
 	staticWindows.push_back(window);
-
-	// Draw this static window.
-	staticWindows[staticWindows.size()-1]->draw();
 }
 
 
@@ -171,12 +164,32 @@ void WindowSystem::Windows::addStatic(IStaticWindow* window)
 void WindowSystem::Windows::drawAllWindows()
 {
 	for (IStaticWindow *static_window : staticWindows) {
-		static_window->draw();
+		static_window->redraw();
 	}
 
 	for (IControlWindow *ctrl_window : ctrlWindows) {
-		ctrl_window->draw();
+		ctrl_window->redraw();
 	}
+}
+
+void WindowSystem::Windows::setAllForRedraw()
+{
+	for (size_t i = 0; i < staticWindowsCount; ++i) {
+		staticWindows[i]->setRedrawFlag();
+	}
+
+	for (size_t i = 0; i < ctrlWindowsCount; ++i) {
+		ctrlWindows[i]->setRedrawFlag();
+	}
+}
+
+/**
+ * Resets focus to the first control window.
+ */
+void WindowSystem::Windows::resetFocus()
+{
+	system.currWindow = ctrlWindows[0];
+	system.currWindow->setFocus(Message::FOCUS_LEFT);
 }
 
 /**
@@ -204,4 +217,9 @@ void WindowSystem::clear()
 void WindowSystem::drawAllWindows()
 {
 	windows.drawAllWindows();
+}
+
+void WindowSystem::setForRedraw()
+{
+	windows.setAllForRedraw();
 }

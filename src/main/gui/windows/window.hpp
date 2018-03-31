@@ -40,14 +40,19 @@ class Window {
 public:
 	Window(const Coord &coord);
 	virtual ~Window() = default;
-	virtual void draw() const = 0;
 	const Coord& getCoord() const;
 	uint32_t getX() const;
 	uint32_t getY() const;
+	void redraw();
+	void setRedrawFlag();
 protected:
 	Coord coord;
+	bool redrawFlag;
+	bool lock;
 	void saveFont() const;
 	void loadFont() const;
+private:
+	virtual void draw() const = 0;
 };
 
 

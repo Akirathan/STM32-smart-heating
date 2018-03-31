@@ -13,6 +13,7 @@
 struct IntervalFrameData {
 	IntervalFrameData();
 	IntervalFrameData(uint32_t from, uint32_t to, uint32_t temp);
+	bool isSet() const;
 	uint32_t from;
 	uint32_t to;
 	uint32_t temp;

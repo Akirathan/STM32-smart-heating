@@ -110,5 +110,5 @@ uint32_t TempController::currentIntervalTemperature()
  */
 void TempController::reloadIntervalData(std::vector<IntervalFrameData>& data_vec)
 {
-	dataVec = data_vec;
+	rt_assert(count <= INTERVALS_NUM, "Attempting to set too much intervals");
 }
