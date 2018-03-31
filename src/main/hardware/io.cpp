@@ -56,6 +56,11 @@ void IO::registerInputCallback(IInputCallback *inputCallback)
 	callbackReceivers.insertBack(inputCallback);
 }
 
+void IO::unregisterInputCallback(IInputCallback* inputCallback)
+{
+	callbackReceivers.remove(inputCallback);
+}
+
 void IO::task()
 {
 	if (!joystickInitialized) {
@@ -82,3 +87,4 @@ IO::IO() :
 	joystickInitialized(false)
 {
 }
+

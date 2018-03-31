@@ -61,6 +61,7 @@ public:
 	void registerExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void unregisterExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void run();
+	void stop();
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
 	void clear();

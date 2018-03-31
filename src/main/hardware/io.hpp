@@ -21,6 +21,7 @@ public:
 	IO(const IO&) = delete;
 	void print(char *ptr);
 	void registerInputCallback(IInputCallback *inputCallback);
+	void unregisterInputCallback(IInputCallback *inputCallback);
 	void task();
 private:
 	IO();

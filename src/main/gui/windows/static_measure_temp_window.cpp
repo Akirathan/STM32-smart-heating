@@ -5,6 +5,7 @@
  */
 
 #include "static_measure_temp_window.hpp"
+#include "rt_assert.h"
 
 StaticMeasureTempWindow::StaticMeasureTempWindow(const Coord& c)
 	: StaticTempWindow(c)
@@ -27,9 +28,7 @@ void StaticMeasureTempWindow::measure()
 {
 	RTCController& rtc = RTCController::getInstance();
 
-	if (!rtc.isTimeSet()) {
-		Error_Handler();
-	}
+	rt_assert(rtc.isTimeSet(), "Time needs to be set in RTC");
 
 	registerMinCallback();
 	registeredCallback = true;

@@ -5,6 +5,7 @@
  */
 
 #include "static_time_window.hpp"
+#include "rt_assert.h"
 
 /**
  *
@@ -130,9 +131,8 @@ void StaticTimeWindow::show()
  */
 void StaticTimeWindow::runClock()
 {
-	if (!RTCController::getInstance().isTimeSet()) {
-		Error_Handler();
-	}
+	bool is_time_set = RTCController::getInstance().isTimeSet();
+	rt_assert(is_time_set, "Time must be set in RTCController");
 
 	// Set time.
 	RTC_TimeTypeDef rtc_time;

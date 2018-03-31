@@ -56,12 +56,9 @@ void TempController::registerMinCallback()
  */
 TempController::TempController()
 {
-	// Load data from EEPROM
 	EEPROM& eeprom = EEPROM::getInstance();
-	if (eeprom.isEmpty()) {
-		// Error: EEPROM supposed to contain data.
-		Error_Handler();
-	}
+
+	rt_assert(!eeprom.isEmpty(), "EEPROM must contain data");
 	eeprom.load(dataVec);
 }
 
@@ -82,10 +79,8 @@ uint32_t TempController::currentIntervalTemperature()
 	// Get time from RTC
 	RTC_TimeTypeDef curr_time {0,0,0};
 	RTCController& rtc = RTCController::getInstance();
-	if (!rtc.isTimeSet()) {
-		// Error: RTC time supposed to be set.
-		Error_Handler();
-	}
+
+	rt_assert(rtc.isTimeSet(), "RTC time must be set");
 	rtc.getTime(&curr_time);
 
 	// Serialize current time.

@@ -5,6 +5,7 @@
  */
 
 #include "time_window.hpp"
+#include "lcd.hpp"
 
 TimeWindow::TimeWindow(const Coord& coord)
 	: IControlWindow(coord)
@@ -18,8 +19,7 @@ void TimeWindow::noFontDraw() const
 	char text[5];
 	sprintf(text, "%02lu:%02lu", hours, minutes);
 
-	// Print the string
-	BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *) text, LEFT_MODE);
+	LCD::print_string(coord.x, coord.y, reinterpret_cast<uint8_t *>(text), LEFT_MODE, LCD::NORMAL_FONT);
 }
 
 /**
@@ -30,7 +30,7 @@ void TimeWindow::draw() const
 	noFontDraw();
 
 	char text[2];
-	sFONT *font = BSP_LCD_GetFont();
+	sFONT *font = LCD::get_font();
 
 	switch (selected) {
 	// Do nothing. Everything was done in noFontDraw.
@@ -41,13 +41,9 @@ void TimeWindow::draw() const
 	case MINUTES:
 		sprintf(text, "%02lu", minutes);
 
-		saveFont();
-
 		// Print just minutes.
-		BSP_LCD_SetTextColor(SEL_COLOR);
-		BSP_LCD_DisplayStringAt(coord.x + (font->Width) * 3, coord.y, (uint8_t *)text, LEFT_MODE);
-
-		loadFont();
+		LCD::print_string(coord.x + (font->Width) * 3, coord.y, reinterpret_cast<uint8_t *>(text),
+				LEFT_MODE, LCD::SEL_FONT);
 		break;
 
 	// Redraw just hours.
@@ -55,13 +51,8 @@ void TimeWindow::draw() const
 		// Convert hours to string.
 		sprintf(text, "%02lu", hours);
 
-		saveFont();
-
 		// Print just hours.
-		BSP_LCD_SetTextColor(SEL_COLOR);
-		BSP_LCD_DisplayStringAt(coord.x, coord.y, (uint8_t *)text, LEFT_MODE);
-
-		loadFont();
+		LCD::print_string(coord.x, coord.y, reinterpret_cast<uint8_t *>(text), LEFT_MODE, LCD::SEL_FONT);
 		break;
 	default:
 		break;

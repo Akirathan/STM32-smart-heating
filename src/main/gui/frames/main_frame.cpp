@@ -10,7 +10,7 @@
 void MainFrame::drawHeader()
 {
 	// Clear display.
-	LCD::init();
+	LCD::clear();
 
 	// Draw headers.
 	LCD::print_string(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE, LCD::NORMAL_FONT);
@@ -30,8 +30,6 @@ MainFrame::MainFrame() :
 	overviewIntervalFrame(),
 	callbackRegistered(false)
 {
-	LCD::init();
-
 	timeWindow = StaticTimeWindow(Coord(LCD::get_x_size()/2 - 30, LINE(1)), true);
 	actualTempWindow = StaticMeasureTempWindow(Coord(70, LINE(4)));
 	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));

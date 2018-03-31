@@ -29,6 +29,7 @@ enum Font {
 };
 
 void init();
+void clear();
 bool is_initialized();
 sFONT* get_font();
 uint32_t get_x_size();

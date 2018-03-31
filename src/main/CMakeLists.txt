@@ -48,6 +48,7 @@ set(HARDWARE_SOURCES
 set(MAIN_SOURCES
 	"${MAIN_PATH}/interval_frame_data.cpp"
 	"${MAIN_PATH}/main.cpp"
+	"${MAIN_PATH}/application.cpp"
 	"${MAIN_PATH}/rtc_controller.cpp"
 	"${MAIN_PATH}/temp_controller.cpp"
 	"${MAIN_PATH}/temp_sensor.cpp"

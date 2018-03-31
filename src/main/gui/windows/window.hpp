@@ -49,8 +49,6 @@ protected:
 	Coord coord;
 	bool redrawFlag;
 	bool lock;
-	void saveFont() const;
-	void loadFont() const;
 private:
 	virtual void draw() const = 0;
 };

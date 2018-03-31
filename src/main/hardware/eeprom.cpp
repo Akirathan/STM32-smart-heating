@@ -16,9 +16,8 @@ EEPROM::EEPROM()
 {
 	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
 
-	if (BSP_EEPROM_Init() != EEPROM_OK) {
-		Error_Handler();
-	}
+	uint32_t ret = BSP_EEPROM_Init();
+	rt_assert(ret == EEPROM_OK, "BSP EEPROM initialization failed");
 }
 
 void EEPROM::save(const IntervalFrameData& data, uint16_t addr)
@@ -48,21 +47,18 @@ void EEPROM::writePage(uint32_t page, uint16_t addr)
 		if (i != 0) page >>= 8;
 	}
 
-	if (BSP_EEPROM_WriteBuffer(buff, addr, 4) != EEPROM_OK) {
-		Error_Handler();
-	}
+	uint32_t error_code = BSP_EEPROM_WriteBuffer(buff, addr, 4);
+	rt_assert(error_code == EEPROM_OK, "BSP EEPROM Write buffer failed");
 }
 
-// TODO: error handling
 uint32_t EEPROM::readPage(uint16_t addr)
 {
 	uint8_t buff[4];
 	uint32_t num_bytes = 4;
 	uint32_t word = 0;
 
-	if (BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes) != EEPROM_OK) {
-		Error_Handler();
-	}
+	uint32_t error_code = BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes);
+	rt_assert(error_code == EEPROM_OK, "BSP EEPROM read buffer failed");
 
 	for (int i = 0; i < 4; ++i){
 		word |= buff[i];

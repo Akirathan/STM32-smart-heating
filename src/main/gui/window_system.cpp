@@ -66,6 +66,11 @@ void WindowSystem::run()
 	windows.resetFocus();
 }
 
+void WindowSystem::stop()
+{
+	IO::getInstance().unregisterInputCallback(this);
+}
+
 WindowSystem::Windows::Windows(WindowSystem& system)
 	: system(system),
 	  ctrlWindowIdx(0)
