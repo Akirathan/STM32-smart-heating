@@ -89,10 +89,11 @@ void MainFrame::exitMessageCallback()
 
 		// Load interval data from EEPROM.
 		// Suppose eeprom is not empty.
-		std::vector<IntervalFrameData> data_vec;
-		EEPROM::getInstance().load(data_vec);
+		IntervalFrameData data[INTERVALS_NUM];
+		size_t count = 0;
+		EEPROM::getInstance().load(data, &count);
 
-		overviewIntervalFrame.setData(data_vec);
+		overviewIntervalFrame.setData(data, count);
 		overviewIntervalFrame.registerFrameTerminateCallbackReceiver(this);
 		Application::setCurrFrame(&overviewIntervalFrame);
 	}
@@ -127,11 +128,13 @@ void MainFrame::frameTerminateCallback()
 
 	if (currFrameType == SET_INTERVAL_FRAME) {
 		// Reload data into TempController.
-		std::vector<IntervalFrameData> data_vec = setIntervalFrame.getData();
-		TempController::getInstance().reloadIntervalData(data_vec);
+		IntervalFrameData data[INTERVALS_NUM];
+		size_t count = 0;
+		setIntervalFrame.getData(data, &count);
+		TempController::getInstance().reloadIntervalData(data, count);
 
 		// Save intervals into EEPROM.
-		EEPROM::getInstance().save(data_vec);
+		EEPROM::getInstance().save(data, count);
 	}
 
 	Application::setCurrFrame(this);

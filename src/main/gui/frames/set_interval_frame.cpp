@@ -21,9 +21,10 @@ void SetIntervalFrame::exitMessageCallback()
 
 	// Store current interval data.
 	IntervalFrameData curr_data(Time::serialize(time_f), Time::serialize(time_t), temp);
-	data.push_back(curr_data);
+	data[dataCount] = curr_data;
+	dataCount++;
 
-	if (endButton.isPushed()) {
+	if (endButton.isPushed() || dataCount >= INTERVALS_NUM) {
 		callTerminateCallbackReceivers();
 	}
 	else if (nextButton.isPushed()){
@@ -50,9 +51,9 @@ void SetIntervalFrame::processInterval()
 
 	// Reset windows' inner values.
 	Time::Time last_time;
-	if (data.size() >= 1) {
+	if (dataCount >= 1) {
 		// Deserialize last saved intervals's "to time"
-		last_time = Time::deserialize(data[data.size()-1].to);
+		last_time = Time::deserialize(data[dataCount - 1].to);
 	}
 	else {
 		last_time = Time::Time(0,0);
@@ -75,7 +76,8 @@ void SetIntervalFrame::drawHeader()
 	LCD::print_char(timeFromWindow.getX() + (font->Width)*5, LINE(6), '-');
 }
 
-SetIntervalFrame::SetIntervalFrame()
+SetIntervalFrame::SetIntervalFrame() :
+	dataCount(0)
 {
 	timeFromWindow = TimeWindow(Coord(15, LINE(6)));
 	timeToWindow = TimeWindow(Coord(timeFromWindow.getX() + (LCD::get_font()->Width)*6, LINE(6)));
@@ -90,13 +92,15 @@ SetIntervalFrame::SetIntervalFrame()
 }
 
 /**
- * @brief Returns data from one interval.
- *
- * Must be called after @ref passControl function.
+ * @brief Copies intervals data into data parameter.
+ * @param data must be at least INTERVALS_NUM long
  */
-std::vector<IntervalFrameData>& SetIntervalFrame::getData()
+void SetIntervalFrame::getData(IntervalFrameData data[], size_t* count)
 {
-	return data;
+	for (size_t i = 0; i < dataCount; ++i) {
+		data[i] = this->data[i];
+	}
+	*count = dataCount;
 }
 
 void SetIntervalFrame::passControl()

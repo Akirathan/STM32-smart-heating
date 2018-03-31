@@ -7,10 +7,10 @@
 #ifndef SET_INTERVAL_FRAME_HPP_
 #define SET_INTERVAL_FRAME_HPP_
 
-#include <vector>
 #include "callbacks.hpp"
 #include "interval_frame.hpp"
 #include "interval_frame_data.hpp"
+#include "settings.h"
 #include "time_window.hpp"
 #include "temp_window.hpp"
 #include "time.hpp"
@@ -29,13 +29,14 @@ public:
 	SetIntervalFrame();
 	virtual void exitMessageCallback() override;
 	virtual void registerExitMessageCallback() override;
-	std::vector<IntervalFrameData>& getData();
+	void getData(IntervalFrameData data[], size_t* count);
 	virtual void passControl() override;
 private:
 	TimeWindow timeFromWindow;
 	TimeWindow timeToWindow;
 	TempWindow tempWindow;
-	std::vector<IntervalFrameData> data;
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t dataCount;
 	void processInterval();
 	void drawHeader() override;
 };

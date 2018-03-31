@@ -73,8 +73,18 @@ void WindowSystem::stop()
 
 WindowSystem::Windows::Windows(WindowSystem& system)
 	: system(system),
-	  ctrlWindowIdx(0)
-{ }
+	  ctrlWindowIdx(0),
+	  ctrlWindowsCount(0),
+	  staticWindowsCount(0)
+{
+	for (size_t i = 0; i < WINDOW_SYSTEM_CTRL_WINDOWS; ++i) {
+		ctrlWindows[i] = nullptr;
+	}
+
+	for (size_t i = 0; i < WINDOW_SYSTEM_STATIC_WINDOWS; ++i) {
+		staticWindows[i] = nullptr;
+	}
+}
 
 /**
  * Returns control window indexer.
@@ -89,7 +99,7 @@ size_t WindowSystem::Windows::ctrlWindowIdxGet() const
  */
 void WindowSystem::Windows::ctrlWindowIdxInc()
 {
-	if (ctrlWindowIdx == ctrlWindows.size() - 1) {
+	if (ctrlWindowIdx == ctrlWindowsCount - 1) {
 		ctrlWindowIdx = 0;
 	}
 	else {
@@ -103,7 +113,7 @@ void WindowSystem::Windows::ctrlWindowIdxInc()
 void WindowSystem::Windows::ctrlWindowIdxDec()
 {
 	if (ctrlWindowIdx == 0) {
-		ctrlWindowIdx = ctrlWindows.size() - 1;
+		ctrlWindowIdx = ctrlWindowsCount - 1;
 	}
 	else {
 		ctrlWindowIdx--;
@@ -134,15 +144,18 @@ void WindowSystem::Windows::next()
  */
 void WindowSystem::Windows::addControl(IControlWindow* window)
 {
-	ctrlWindows.push_back(window);
+	rt_assert(ctrlWindowsCount < WINDOW_SYSTEM_CTRL_WINDOWS,
+			"Attempting to add too much control windows");
+
+	ctrlWindows[ctrlWindowsCount] = window;
+	ctrlWindowsCount++;
 
 	// If this is the first added ControlWindow.
-	if (ctrlWindows.size() == 1) {
+	if (ctrlWindowsCount == 1) {
 		// Add it to ctrlWindows and set focus to it.
 		system.currWindow = ctrlWindows[0];
 		system.currWindow->setFocus(Message::FOCUS_LEFT);
 	}
-
 }
 
 /**
@@ -150,21 +163,24 @@ void WindowSystem::Windows::addControl(IControlWindow* window)
  */
 void WindowSystem::Windows::addStatic(IStaticWindow* window)
 {
-	staticWindows.push_back(window);
+	rt_assert(staticWindowsCount < WINDOW_SYSTEM_STATIC_WINDOWS,
+			"Attempting to add too much static windows");
+	staticWindows[staticWindowsCount] = window;
+	staticWindowsCount++;
 }
 
 
 /**
- * @note Should be called just once.
+ * @brief Redraw all windows.
  */
 void WindowSystem::Windows::drawAllWindows()
 {
-	for (IStaticWindow *static_window : staticWindows) {
-		static_window->redraw();
+	for (size_t i = 0; i < staticWindowsCount; ++i) {
+		staticWindows[i]->redraw();
 	}
 
-	for (IControlWindow *ctrl_window : ctrlWindows) {
-		ctrl_window->redraw();
+	for (size_t i = 0; i < ctrlWindowsCount; ++i) {
+		ctrlWindows[i]->redraw();
 	}
 }
 

@@ -14,7 +14,6 @@ bool Application::clearDisplayFlag = false;
 
 Application::Application() :
 	clkFrame(),
-	currFrame(nullptr),
 	mainFrame()
 {
 

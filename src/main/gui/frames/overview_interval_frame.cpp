@@ -7,7 +7,9 @@
 #include "overview_interval_frame.hpp"
 #include "rt_assert.h"
 
-OverviewIntervalFrame::OverviewIntervalFrame()
+OverviewIntervalFrame::OverviewIntervalFrame() :
+	dataIdx(0),
+	dataCount(0)
 {
 	timeFromWindow = StaticTimeWindow(Coord(15, LINE(6)), false);
 	timeToWindow = StaticTimeWindow(
@@ -19,18 +21,26 @@ OverviewIntervalFrame::OverviewIntervalFrame()
 	windowSystem.addStatic(&tempWindow);
 	windowSystem.addControl(&nextButton);
 	windowSystem.addControl(&endButton);
-
 }
+
+OverviewIntervalFrame::OverviewIntervalFrame(const IntervalFrameData data[], size_t count) :
+	OverviewIntervalFrame()
+{
+	for (size_t i = 0; i < count; ++i) {
+		this->data[i] = data[i];
+	}
 	dataCount = count;
-OverviewIntervalFrame::OverviewIntervalFrame(const std::vector<IntervalFrameData>& data) :
-	data(data),
-	dataIdx(0)
-{
 }
 
-void OverviewIntervalFrame::setData(const std::vector<IntervalFrameData> &data)
+/**
+ * Copies given IntervalFrameData array into this data.
+ */
+void OverviewIntervalFrame::setData(const IntervalFrameData data[], size_t count)
 {
-	this->data = data;
+	for (size_t i = 0; i < count; ++i) {
+		this->data[i] = data[i];
+	}
+	dataCount = count;
 }
 
 /**
@@ -66,7 +76,9 @@ void OverviewIntervalFrame::registerExitMessageCallback()
 void OverviewIntervalFrame::passControl()
 {
 	rt_assert(data[0].isSet(), "Data must be initialized first");
-	printData(data[dataIdx]);
+
+	dataIdx = 0;
+	printData(data[0]);
 }
 
 /**
