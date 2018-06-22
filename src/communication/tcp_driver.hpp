@@ -7,10 +7,25 @@
 #ifndef TCP_DRIVER_HPP_
 #define TCP_DRIVER_HPP_
 
+#include <cstdint>
+#include <cstddef>
+#include "lwip/err.h"
+#include "lwip/tcp.h"
+#include "lwip/pbuf.h"
+#include "lwip/netif.h"
 
 class TcpDriver {
 public:
-	static void init();
+	static void init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8_t ip_addr3, uint16_t port);
+	static bool queueForSend(uint8_t buff[], const size_t buff_size);
+private:
+	static struct ip_addr destIpAddress;
+	static uint16_t destPort;
+	static struct netif netInterface;
+	static struct pbuf *writePacketBuffer;
+	static bool initialized;
+
+	static void connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err);
 };
 
 
