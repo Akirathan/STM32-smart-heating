@@ -68,7 +68,7 @@ bool TcpDriver::queueForSend(uint8_t buff[], const size_t buff_size)
 
 	struct tcp_pcb * pcb;
 	pcb = tcp_new();
-	err = tcp_connect(pcb, &destIpAddress, destPort, TcpDriver::connectedCb);
+	err = tcp_connect(pcb, &destIpAddress, destPort, connectedCb);
 	if (err != ERR_OK) {
 		return false;
 	}
