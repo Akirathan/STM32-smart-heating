@@ -76,8 +76,25 @@ bool TcpDriver::queueForSend(uint8_t buff[], const size_t buff_size)
 /**
  * This function is called when TCP connection is established.
  */
-void TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
+err_t TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
 {
+	tcp_recv(tpcb, receivedCb);
+	tcp_sent(tpcb, sentCb);
+
+	while (writePacketBuffer != nullptr && writePacketBuffer->len <= tcp_sndbuf(tpcb)) {
+		err_t err = tcp_write(tpcb, writePacketBuffer->payload, writePacketBuffer->len, TCP_WRITE_FLAG_COPY);
+		if (err != ERR_OK) {
+			return err;
+		}
+
+		struct pbuf *old_pbuff = writePacketBuffer;
+		writePacketBuffer = writePacketBuffer->next;
+		if (writePacketBuffer != nullptr) {
+			pbuf_ref(writePacketBuffer);
+		}
+		pbuf_free(old_pbuff);
+	}
+	return ERR_OK;
 }
 
 
