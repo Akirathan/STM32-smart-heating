@@ -21,7 +21,6 @@ public:
 	Button(const Coord& coord, const std::string& name);
 	Button();
 	virtual void draw() const override;
-	virtual Message eventHandler(JOYState_TypeDef joy_state) override;
 	virtual void setFocus(Message msg) override;
 	bool isPushed() const;
 	void setPushed(bool b);
@@ -29,6 +28,7 @@ private:
 	std::string name;
 	bool pushed = false;
 	bool focused = false;
+	virtual Message _eventHandler(JOYState_TypeDef joy_state) override;
 	void unsetFocus();
 };
 

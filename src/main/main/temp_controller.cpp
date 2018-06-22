@@ -5,6 +5,7 @@
  */
 
 #include "temp_controller.hpp"
+#include "rt_assert.h"
 
 TempController& TempController::getInstance()
 {
@@ -54,15 +55,13 @@ void TempController::registerMinCallback()
 /**
  * @brief Loads data from @ref EEPROM.
  */
-TempController::TempController()
+TempController::TempController() :
+	dataCount(0)
 {
-	// Load data from EEPROM
 	EEPROM& eeprom = EEPROM::getInstance();
-	if (eeprom.isEmpty()) {
-		// Error: EEPROM supposed to contain data.
-		Error_Handler();
-	}
-	eeprom.load(dataVec);
+
+	rt_assert(!eeprom.isEmpty(), "EEPROM must contain data");
+	eeprom.load(data, &dataCount);
 }
 
 /**
@@ -82,20 +81,17 @@ uint32_t TempController::currentIntervalTemperature()
 	// Get time from RTC
 	RTC_TimeTypeDef curr_time {0,0,0};
 	RTCController& rtc = RTCController::getInstance();
-	if (!rtc.isTimeSet()) {
-		// Error: RTC time supposed to be set.
-		Error_Handler();
-	}
+
+	rt_assert(rtc.isTimeSet(), "RTC time must be set");
 	rtc.getTime(&curr_time);
 
 	// Serialize current time.
 	uint32_t curr_time_serialized = Time::serialize(Time::Time{curr_time.Hours, curr_time.Minutes});
 
 	// Find current interval.
-	for (auto it = dataVec.begin(); it != dataVec.end(); ++it) {
-		if (it->from <= curr_time_serialized && curr_time_serialized <= it->to) {
-			// Return temperature from current interval.
-			return it->temp;
+	for (size_t i = 0; i < dataCount; ++i) {
+		if (data[i].from <= curr_time_serialized && curr_time_serialized <= data[i].to) {
+			return data[i].temp;
 		}
 	}
 
@@ -108,7 +104,12 @@ uint32_t TempController::currentIntervalTemperature()
  *
  * Called from @ref MainFrame to signal change in EEPROM data.
  */
-void TempController::reloadIntervalData(std::vector<IntervalFrameData>& data_vec)
+void TempController::reloadIntervalData(const IntervalFrameData data[], size_t count)
 {
-	dataVec = data_vec;
+	rt_assert(count <= INTERVALS_NUM, "Attempting to set too much intervals");
+
+	for (size_t i = 0; i < count; ++i) {
+		this->data[i] = data[i];
+	}
+	dataCount = count;
 }

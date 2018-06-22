@@ -29,7 +29,7 @@ public:
 	virtual void registerExitMessageCallback() override;
 	RTC_TimeTypeDef getTime() const;
 private:
-	void drawHeader() const;
+	void drawHeader() override;
 	TimeWindow time;
 	Button ok_button;
 };

@@ -7,10 +7,11 @@
 #ifndef RTC_CONTROLLER_HPP_
 #define RTC_CONTROLLER_HPP_
 
-#include <vector>
 #include "stm32f1xx_hal.h"
 #include "stm3210c_eval.h"
 #include "callbacks.hpp"
+#include "callback_receivers.hpp"
+#include "settings.h"
 
 /**
  * @brief Class for controlling the RTC component.
@@ -35,8 +36,8 @@ public:
 	void update();
 private:
 	RTCController();
-	std::vector<IMinCallback *> minuteCallbackVec;
-	std::vector<ISecCallback *> secondCallbackVec;
+	CallbackReceivers<CALLBACK_RECEIVERS_NUM_MINUTE_IT, IMinCallback> minuteCallbackReceivers;
+	CallbackReceivers<CALLBACK_RECEIVERS_NUM_SECOND_IT, ISecCallback> secCallbackReceivers;
 	bool timeSet = false;
 };
 

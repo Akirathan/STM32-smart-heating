@@ -5,6 +5,8 @@
  */
 
 #include "eeprom.hpp"
+#include "settings.h"
+#include "rt_assert.h"
 
 EEPROM& EEPROM::getInstance()
 {
@@ -16,9 +18,8 @@ EEPROM::EEPROM()
 {
 	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
 
-	if (BSP_EEPROM_Init() != EEPROM_OK) {
-		Error_Handler();
-	}
+	uint32_t ret = BSP_EEPROM_Init();
+	rt_assert(ret == EEPROM_OK, "BSP EEPROM initialization failed");
 }
 
 void EEPROM::save(const IntervalFrameData& data, uint16_t addr)
@@ -48,21 +49,18 @@ void EEPROM::writePage(uint32_t page, uint16_t addr)
 		if (i != 0) page >>= 8;
 	}
 
-	if (BSP_EEPROM_WriteBuffer(buff, addr, 4) != EEPROM_OK) {
-		Error_Handler();
-	}
+	uint32_t error_code = BSP_EEPROM_WriteBuffer(buff, addr, 4);
+	rt_assert(error_code == EEPROM_OK, "BSP EEPROM Write buffer failed");
 }
 
-// TODO: error handling
 uint32_t EEPROM::readPage(uint16_t addr)
 {
 	uint8_t buff[4];
 	uint32_t num_bytes = 4;
 	uint32_t word = 0;
 
-	if (BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes) != EEPROM_OK) {
-		Error_Handler();
-	}
+	uint32_t error_code = BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes);
+	rt_assert(error_code == EEPROM_OK, "BSP EEPROM read buffer failed");
 
 	for (int i = 0; i < 4; ++i){
 		word |= buff[i];
@@ -73,17 +71,24 @@ uint32_t EEPROM::readPage(uint16_t addr)
 	return word;
 }
 
-void EEPROM::save(const std::vector<IntervalFrameData>& data_vec)
+/**
+ * @brief Saves array of data into EEPROM.
+ * @param data Array of data with INTERVALS_NUM length, may contain nullptr.
+ * @param count Number of data to save
+ */
+void EEPROM::save(const IntervalFrameData data[], const size_t count)
 {
+	rt_assert(count <= INTERVALS_NUM, "Attempting to save too much data into EEPROM");
+
 	uint16_t addr = 0;
 
 	// Write starting delimiter.
 	writePage(FRAME_DELIM, addr);
 	addr += 4;
 
-	for (const IntervalFrameData& data : data_vec) {
-		save(data, addr);
-		addr += sizeof(data);
+	for (size_t i = 0; i < count; ++i) {
+		save(data[i], addr);
+		addr += sizeof(data[i]);
 	}
 
 	// Write ending delimiter
@@ -101,11 +106,12 @@ bool EEPROM::isEmpty()
 }
 
 /**
- * @brief Loads data stored in EEPROM into @p data_vec.
+ * @brief Loads data stored in EEPROM into @p data.
+ * @param data Array of data max INTERVAL_NUMS length.
+ * @param count Actual number of interval data contained in EEPROM
  *
- * If EEPROM is empty, no data is pushed to @p data_vec.
  */
-void EEPROM::load(std::vector<IntervalFrameData>& data_vec)
+void EEPROM::load(IntervalFrameData data_array[], size_t* count)
 {
 	uint16_t addr = 0;
 
@@ -113,12 +119,18 @@ void EEPROM::load(std::vector<IntervalFrameData>& data_vec)
 		return;
 	}
 
+	size_t data_idx = 0;
 	addr += 4;
 	while (readPage(addr) != FRAME_DELIM) {
+		rt_assert(data_idx < INTERVALS_NUM, "There is too much intervals data in EEPROM");
 		IntervalFrameData data;
 
 		load(data, addr);
-		data_vec.push_back(data);
+		data_array[data_idx] = data;
+
+		data_idx++;
 		addr += sizeof(data);
 	}
+
+	*count = data_idx;
 }

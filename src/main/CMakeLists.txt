@@ -9,6 +9,7 @@ set(LWIP_CONF_PATH "${CMAKE_CURRENT_SOURCES_DIR}/lwip_conf")
 
 
 set(FRAMES_SOURCES
+	"${FRAMES_PATH}/frame.cpp"
 	"${FRAMES_PATH}/clk_frame.cpp"
 	"${FRAMES_PATH}/interval_frame.cpp"
 	"${FRAMES_PATH}/main_frame.cpp"
@@ -47,10 +48,12 @@ set(HARDWARE_SOURCES
 set(MAIN_SOURCES
 	"${MAIN_PATH}/interval_frame_data.cpp"
 	"${MAIN_PATH}/main.cpp"
+	"${MAIN_PATH}/application.cpp"
 	"${MAIN_PATH}/rtc_controller.cpp"
 	"${MAIN_PATH}/temp_controller.cpp"
 	"${MAIN_PATH}/temp_sensor.cpp"
 	"${MAIN_PATH}/time.cpp"
+	"${MAIN_PATH}/timer_events.cpp"
 )
 
 set(SOURCES

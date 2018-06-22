@@ -8,19 +8,15 @@
 
 ClkFrame::ClkFrame()
 {
-	// Clear the display and init LCD peripheral.
-	LCD::init();
-
 	time = TimeWindow(Coord(LCD::get_x_size()/2 - 35, LCD::get_y_size()/2 + 10));
 	ok_button = Button(Coord(LCD::get_x_size()/2 - 15, LINE(8)), "OK");
+
+	windowSystem.addControl(&time);
+	windowSystem.addControl(&ok_button);
 }
 
 void ClkFrame::passControl()
 {
-	drawHeader();
-
-	windowSystem.addControl(&time);
-	windowSystem.addControl(&ok_button);
 	windowSystem.registerExitMessageCallbackReceiver(this);
 	windowSystem.run();
 }
@@ -32,7 +28,8 @@ void ClkFrame::exitMessageCallback()
 {
 	windowSystem.unregisterExitMessageCallbackReceiver(this);
 
-	// TODO: windowSystem.clear(); ?
+	windowSystem.stop();
+	callTerminateCallbackReceivers();
 }
 
 void ClkFrame::registerExitMessageCallback()
@@ -40,7 +37,7 @@ void ClkFrame::registerExitMessageCallback()
 	// Intentionally left empty.
 }
 
-void ClkFrame::drawHeader() const
+void ClkFrame::drawHeader()
 {
 	LCD::draw_header((uint8_t *)"Time setting");
 }

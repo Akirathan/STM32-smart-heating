@@ -10,8 +10,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
-#include <vector>
 #include "control_window.hpp"
 
 /**
@@ -30,7 +28,6 @@ private:
 	} selected = NONE;
 public:
 	TimeWindow(const Coord& coord = Coord{0,0});
-	Message eventHandler(JOYState_TypeDef joy_state) override;
 	void draw()const override;
 	void setFocus(Message msg) override;
 	void setHours(uint32_t hrs); //
@@ -41,6 +38,7 @@ private:
 	uint32_t hours = 0;
 	uint32_t minutes = 0;
 	static const uint32_t minuteJump = 5;
+	Message _eventHandler(JOYState_TypeDef joy_state) override;
 	void setSelected(selected_t sel);
 	void noFontDraw() const;
 };

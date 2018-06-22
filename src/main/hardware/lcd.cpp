@@ -5,6 +5,7 @@
  */
 
 #include "lcd.hpp"
+#include "rt_assert.h"
 
 namespace LCD {
 
@@ -44,11 +45,15 @@ static void update()
 void init()
 {
 	if (!init_) {
-		if (BSP_LCD_Init() != LCD_OK) {
-			Error_Handler();
-		}
+		uint8_t retval = BSP_LCD_Init();
+		rt_assert(retval == LCD_OK, "BSP LCD initialization failed")
 		init_ = true;
 	}
+	BSP_LCD_Clear(LCD_COLOR_BLACK);
+}
+
+void clear()
+{
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 }
 

@@ -7,12 +7,13 @@
 #ifndef INC_WINDOW_SYSTEM_HPP_
 #define INC_WINDOW_SYSTEM_HPP_
 
-#include <vector>
 #include "io.hpp"
 #include "control_window.hpp"
 #include "callbacks.hpp"
+#include "callback_receivers.hpp"
 #include "static_window.hpp"
 #include "input.hpp"
+#include "settings.h"
 
 /**
  * @brief Window controller for frames.
@@ -42,12 +43,19 @@ private:
 		void addControl(IControlWindow* window);
 		void addStatic(IStaticWindow* window);
 		void drawAllWindows();
+		void setAllForRedraw();
+		void resetFocus();
 	private:
 		friend class WindowSystem;
 		WindowSystem& system;
 		size_t ctrlWindowIdx;
-		std::vector<IControlWindow *> ctrlWindows;
-		std::vector<IStaticWindow *> staticWindows;
+		/**
+		 * This index increases every time control window is added.
+		 */
+		size_t ctrlWindowsCount;
+		size_t staticWindowsCount;
+		IControlWindow * ctrlWindows[WINDOW_SYSTEM_CTRL_WINDOWS];
+		IStaticWindow * staticWindows[WINDOW_SYSTEM_STATIC_WINDOWS];
 		size_t ctrlWindowIdxGet() const;
 		void ctrlWindowIdxInc();
 		void ctrlWindowIdxDec();
@@ -58,17 +66,19 @@ public:
 	void registerExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void unregisterExitMessageCallbackReceiver(IExitMessageCallback *exitMessageCallback);
 	void run();
+	void stop();
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
 	void clear();
 	void drawAllWindows();
+	void setForRedraw();
 	WindowSystem();
 private:
 	friend class Windows;
 	Windows windows;
 	IControlWindow* currWindow;
-	std::vector<IExitMessageCallback *> exitMsgCallbackReceivers;
 	bool joyCallbackRegistered;
+	CallbackReceivers<CALLBACK_RECEIVERS_NUM_EXIT_MSG, IExitMessageCallback> callbackReceivers;
 };
 
 

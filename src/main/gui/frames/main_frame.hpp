@@ -55,7 +55,8 @@ private:
 	Button resetButton;
 	SetIntervalFrame setIntervalFrame;
 	OverviewIntervalFrame overviewIntervalFrame;
-	void drawHeader();
+	bool callbackRegistered;
+	void drawHeader() override;
 };
 
 

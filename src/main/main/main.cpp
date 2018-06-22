@@ -7,41 +7,16 @@
  */
 
 #include "main.hpp"
+#include "application.hpp"
 
 void SystemClock_Config();
+static void board_init();
 
 void error_handler() {
 	BSP_LED_Init(LED_RED);
 	BSP_LED_On(LED_RED);
 
 	while (true) ;
-}
-
-void intervalframe_test()
-{
-	SetIntervalFrame intv_fr;
-
-	intv_fr.passControl();
-	std::vector<IntervalFrameData> data_vec = intv_fr.getData();
-
-	// Process data
-	EEPROM& eeprom = EEPROM::getInstance();
-	eeprom.save(data_vec);
-
-	std::vector<IntervalFrameData> data_vec_copy;
-	eeprom.load(data_vec_copy);
-}
-
-void mainframe_test()
-{
-	RTC_TimeTypeDef rtc_time = {0, 0, 0};
-
-	// Init rtc
-	RTCController& rtc = RTCController::getInstance();
-	rtc.setTime(&rtc_time);
-
-	MainFrame mainframe;
-	mainframe.passControl();
 }
 
 void static_time_window_test()
@@ -62,48 +37,6 @@ void static_time_window_test()
 	// rtc keeps calling back time_window, and time_window
 	// keeps updating seconds value.
 	while (true) ;
-}
-
-void main_test()
-{
-	// Clock setting.
-	ClkFrame clk_frame;
-	clk_frame.passControl();
-	RTC_TimeTypeDef rtc_time = clk_frame.getTime();
-	// Save time into rtc.
-	RTCController::getInstance().setTime(&rtc_time);
-
-	// Interval setting.
-	std::vector<IntervalFrameData> interval_vec;
-	EEPROM& eeprom = EEPROM::getInstance();
-
-	if (eeprom.isEmpty()) {
-		SetIntervalFrame intv_fr;
-		intv_fr.passControl();
-		interval_vec = intv_fr.getData();
-
-		eeprom.save(interval_vec);
-	}
-	else {
-		eeprom.load(interval_vec);
-	}
-
-	// Main frame.
-	MainFrame mainframe;
-	mainframe.passControl();
-}
-
-uint8_t memory_try()
-{
-	uint8_t* heap_byte = (uint8_t *)malloc(1);
-	uint8_t stack_byte = 32;
-	return stack_byte;
-}
-
-void write_try()
-{
-	IO::print("ab\n");
-	IO::print("cd");
 }
 
 void eeprom_try()
@@ -224,15 +157,24 @@ extern "C" {
 int main()
 {
 	cube_main();
+	board_init();
 
 	//fat_try(false, "file.txt");
 	//net_try();
-	main_test();
+	//main_test();
+
+	Application app;
+	app.run();
 
 	volatile int a = 0;
 	while (1) {
 		a++;
 	}
+}
+
+static void board_init()
+{
+	LCD::init();
 }
 
 /**

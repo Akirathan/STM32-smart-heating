@@ -8,13 +8,11 @@
 
 IntervalFrame::IntervalFrame()
 {
-	LCD::init();
-
-	nextButton = Button(Coord(25, LINE(12)), "NEXT");
-	endButton = Button(Coord(230, LINE(12)), "END");
+	nextButton = Button(Coord(25, LINE(8)), "NEXT");
+	endButton = Button(Coord(230, LINE(8)), "END");
 }
 
-void IntervalFrame::drawHeader()
+void IntervalFrame::drawIntervalHeader()
 {
 	LCD::draw_header((uint8_t *)"Interval setting");
 
@@ -24,14 +22,4 @@ void IntervalFrame::drawHeader()
 	// Temperature header.
 	LCD::print_string(LCD::get_x_size()/2 + 10, LINE(4), (uint8_t *)"temperature",
 			LEFT_MODE, LCD::NORMAL_FONT);
-}
-
-void IntervalFrame::registerFrameTerminateCallbackReceiver(IFrameTerminateCallback *receiver)
-{
-
-}
-
-void IntervalFrame::callTerminateCallbackReceivers()
-{
-
 }

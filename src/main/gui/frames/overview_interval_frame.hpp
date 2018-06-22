@@ -7,7 +7,6 @@
 #ifndef OVERVIEW_INTERVAL_FRAME_HPP_
 #define OVERVIEW_INTERVAL_FRAME_HPP_
 
-#include <vector>
 #include "interval_frame.hpp"
 #include "interval_frame_data.hpp"
 #include "static_time_window.hpp"
@@ -15,6 +14,7 @@
 #include "time.hpp"
 #include "window_system.hpp"
 #include "callbacks.hpp"
+#include "settings.h"
 
 /**
  * @brief Used for overview of intervals.
@@ -26,8 +26,8 @@
 class OverviewIntervalFrame : public IntervalFrame, IExitMessageCallback {
 public:
 	OverviewIntervalFrame();
-	OverviewIntervalFrame(const std::vector<IntervalFrameData>& data);
-	void setData(const std::vector<IntervalFrameData> &data);
+	OverviewIntervalFrame(const IntervalFrameData data[], size_t count);
+	void setData(const IntervalFrameData data[], size_t count);
 	virtual void exitMessageCallback() override;
 	virtual void registerExitMessageCallback() override;
 	virtual void passControl() override;
@@ -35,10 +35,11 @@ private:
 	StaticTimeWindow timeFromWindow;
 	StaticTimeWindow timeToWindow;
 	StaticTempWindow tempWindow;
-	const std::vector<IntervalFrameData>& data;
+	IntervalFrameData data[INTERVALS_NUM];
 	size_t dataIdx;
+	size_t dataCount;
 	void printData(const IntervalFrameData& data);
-	void drawHeader();
+	void drawHeader() override;
 };
 
 

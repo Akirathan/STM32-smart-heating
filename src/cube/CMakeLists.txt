@@ -121,7 +121,7 @@ add_library(${PROJECT_NAME} OBJECT
 )
 
 # TODO: fix this include (neccessary for ISR)
-include_directories("${MAIN_DIR}/impl")
+include_directories("${MAIN_DIR}/main") # For timer_events.h
 include_directories("${MAIN_DIR}/lwip_conf") # For LwIP options and ethernetif.h
 
 target_include_directories(${PROJECT_NAME} PUBLIC

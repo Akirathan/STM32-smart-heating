@@ -18,3 +18,8 @@ IntervalFrameData::IntervalFrameData(uint32_t from, uint32_t to, uint32_t temp)
 	  to(to),
 	  temp(temp)
 { }
+
+bool IntervalFrameData::isSet() const
+{
+	return (from != 0) || (to != 0) || (temp != 0);
+}

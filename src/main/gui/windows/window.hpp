@@ -10,8 +10,6 @@
 #include "stm3210c_eval_lcd.h"
 #include "stats.hpp"
 
-const uint16_t SEL_COLOR = LCD_COLOR_RED;
-
 /**
  * @brief Enum representing messeges between Window and WindowSystem.
  *
@@ -40,14 +38,17 @@ class Window {
 public:
 	Window(const Coord &coord);
 	virtual ~Window() = default;
-	virtual void draw() const = 0;
 	const Coord& getCoord() const;
-	uint32_t getX() const;
-	uint32_t getY() const;
+	uint16_t getX() const;
+	uint16_t getY() const;
+	void redraw();
+	void setRedrawFlag();
 protected:
 	Coord coord;
-	void saveFont() const;
-	void loadFont() const;
+	bool redrawFlag;
+	bool lock;
+private:
+	virtual void draw() const = 0;
 };
 
 

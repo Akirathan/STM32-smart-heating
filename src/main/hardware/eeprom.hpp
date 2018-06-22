@@ -7,7 +7,6 @@
 #ifndef INC_EEPROM_HPP_
 #define INC_EEPROM_HPP_
 
-#include <vector>
 #include "interval_frame_data.hpp"
 #include "stm3210c_eval_eeprom.h"
 
@@ -25,8 +24,8 @@ public:
 	void operator=(const EEPROM&) = delete;
 	EEPROM(const EEPROM&) = delete;
 	bool isEmpty();
-	void save(const std::vector<IntervalFrameData>& data_vec);
-	void load(std::vector<IntervalFrameData>& data_vec);
+	void save(const IntervalFrameData data[], const size_t count);
+	void load(IntervalFrameData data[], size_t* count);
 private:
 	EEPROM();
 	const uint32_t FRAME_DELIM = 0x1234;

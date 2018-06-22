@@ -27,6 +27,7 @@ void StaticTempWindow::show()
 void StaticTempWindow::setTemp(double temp)
 {
 	this->temp = temp;
+	redrawFlag = true;
 }
 
 

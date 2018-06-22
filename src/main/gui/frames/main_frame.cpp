@@ -5,11 +5,12 @@
  */
 
 #include "main_frame.hpp"
+#include "application.hpp"
 
 void MainFrame::drawHeader()
 {
 	// Clear display.
-	LCD::init();
+	LCD::clear();
 
 	// Draw headers.
 	LCD::print_string(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE, LCD::NORMAL_FONT);
@@ -26,15 +27,20 @@ void MainFrame::drawHeader()
 MainFrame::MainFrame() :
 	currFrameType(NONE),
 	setIntervalFrame(),
-	overviewIntervalFrame()
+	overviewIntervalFrame(),
+	callbackRegistered(false)
 {
-	LCD::init();
-
 	timeWindow = StaticTimeWindow(Coord(LCD::get_x_size()/2 - 30, LINE(1)), true);
 	actualTempWindow = StaticMeasureTempWindow(Coord(70, LINE(4)));
 	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));
 	overviewButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 40), "overview");
 	resetButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 20), "reset");
+
+	windowSystem.addStatic(&timeWindow);
+	windowSystem.addStatic(&actualTempWindow);
+	windowSystem.addStatic(&presetTempWindow);
+	windowSystem.addControl(&overviewButton);
+	windowSystem.addControl(&resetButton);
 }
 
 /**
@@ -46,20 +52,18 @@ MainFrame::MainFrame() :
  */
 void MainFrame::passControl()
 {
-	// Initialize temperature controlling.
-	TempController::getInstance().controlTemperature();
-
-	// Draw all windows.
-	windowSystem.addStatic(&timeWindow);
-	windowSystem.addStatic(&actualTempWindow);
-	windowSystem.addStatic(&presetTempWindow);
-	windowSystem.addControl(&overviewButton);
-	windowSystem.addControl(&resetButton);
-
 	// Register time and temperature windows for minute or second callbacks.
-	timeWindow.runClock();
-	actualTempWindow.measure();
-	presetTempWindow.showPresetTemp();
+	if (!callbackRegistered) {
+		timeWindow.runClock();
+		actualTempWindow.measure();
+		presetTempWindow.showPresetTemp();
+
+		callbackRegistered = true;
+	}
+
+	timeWindow.show();
+	actualTempWindow.show();
+	presetTempWindow.show();
 
 	windowSystem.registerExitMessageCallbackReceiver(this);
 	windowSystem.run();
@@ -73,6 +77,7 @@ void MainFrame::passControl()
 void MainFrame::exitMessageCallback()
 {
 	windowSystem.unregisterExitMessageCallbackReceiver(this);
+	windowSystem.stop();
 
 	// Hide windows registered for callbacks.
 	timeWindow.hide();
@@ -84,19 +89,23 @@ void MainFrame::exitMessageCallback()
 
 		// Load interval data from EEPROM.
 		// Suppose eeprom is not empty.
-		std::vector<IntervalFrameData> data_vec;
-		EEPROM::getInstance().load(data_vec);
+		IntervalFrameData data[INTERVALS_NUM];
+		size_t count = 0;
+		EEPROM::getInstance().load(data, &count);
 
-		overviewIntervalFrame.setData(data_vec);
+		overviewIntervalFrame.setData(data, count);
 		overviewIntervalFrame.registerFrameTerminateCallbackReceiver(this);
-		overviewIntervalFrame.passControl();
+		Application::setCurrFrame(&overviewIntervalFrame);
 	}
 	else if (resetButton.isPushed()) {
 		currFrameType = SET_INTERVAL_FRAME;
 
 		setIntervalFrame.registerFrameTerminateCallbackReceiver(this);
-		setIntervalFrame.passControl();
+		Application::setCurrFrame(&setIntervalFrame);
 	}
+
+	overviewButton.setPushed(false);
+	resetButton.setPushed(false);
 }
 
 /**
@@ -114,32 +123,21 @@ void MainFrame::registerExitMessageCallback()
  */
 void MainFrame::frameTerminateCallback()
 {
+	overviewIntervalFrame.unregisterFrameTerminateCallbackReceiver(this);
+	setIntervalFrame.unregisterFrameTerminateCallbackReceiver(this);
+
 	if (currFrameType == SET_INTERVAL_FRAME) {
 		// Reload data into TempController.
-		std::vector<IntervalFrameData> data_vec = setIntervalFrame.getData();
-		TempController::getInstance().reloadIntervalData(data_vec);
+		IntervalFrameData data[INTERVALS_NUM];
+		size_t count = 0;
+		setIntervalFrame.getData(data, &count);
+		TempController::getInstance().reloadIntervalData(data, count);
 
 		// Save intervals into EEPROM.
-		EEPROM::getInstance().save(data_vec);
+		EEPROM::getInstance().save(data, count);
 	}
 
-	setIntervalFrame.clear();
-	overviewIntervalFrame.clear();
-
-	/* Display MainFrame again. */
-	drawHeader();
-
-	timeWindow.show();
-	actualTempWindow.show();
-	presetTempWindow.show();
-
-	overviewButton.setPushed(false);
-	resetButton.setPushed(false);
-
-	windowSystem.drawAllWindows();
-
-	windowSystem.registerExitMessageCallbackReceiver(this);
-	windowSystem.run();
+	Application::setCurrFrame(this);
 }
 
 void MainFrame::registerFrameTerminateCallback()

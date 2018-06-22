@@ -8,17 +8,25 @@
 #ifndef INC_INPUT_HPP_
 #define INC_INPUT_HPP_
 
-#include <vector>
 #include <unistd.h> //TODO: ?
 #include "stm3210c_eval.h"
 #include "callbacks.hpp"
+#include "callback_receivers.hpp"
+#include "settings.h"
 
 class IO {
 public:
-	static void print(char *ptr);
-	static void registerInputCallback(IInputCallback *inputCallback);
+	static IO& getInstance();
+	void operator=(const IO&) = delete;
+	IO(const IO&) = delete;
+	void print(char *ptr);
+	void registerInputCallback(IInputCallback *inputCallback);
+	void unregisterInputCallback(IInputCallback *inputCallback);
+	void task();
 private:
-
+	IO();
+	CallbackReceivers<CALLBACK_RECEIVERS_NUM_INPUT, IInputCallback> callbackReceivers;
+	bool joystickInitialized;
 };
 
 #endif /* INC_INPUT_HPP_ */

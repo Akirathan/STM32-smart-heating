@@ -7,13 +7,13 @@
 #ifndef TEMP_CONTROLLER_HPP_
 #define TEMP_CONTROLLER_HPP_
 
-#include <vector>
 #include "callbacks.hpp"
 #include "rtc_controller.hpp"
 #include "eeprom.hpp"
 #include "relay.hpp"
 #include "time.hpp"
 #include "temp_sensor.hpp"
+#include "settings.h"
 
 /**
  * @brief This class controls heating.
@@ -38,11 +38,12 @@ public:
 	virtual void minCallback() override;
 	virtual void registerMinCallback() override;
 	void controlTemperature();
-	void reloadIntervalData(std::vector<IntervalFrameData>& data_vec);
+	void reloadIntervalData(const IntervalFrameData data[], size_t count);
 	uint32_t currentIntervalTemperature();
 private:
 	const double tempBoundary = 0.5;
-	std::vector<IntervalFrameData> dataVec;
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t dataCount;
 	TempController();
 };
 

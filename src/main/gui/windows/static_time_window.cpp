@@ -5,6 +5,7 @@
  */
 
 #include "static_time_window.hpp"
+#include "rt_assert.h"
 
 /**
  *
@@ -99,11 +100,13 @@ void StaticTimeWindow::draw() const
 void StaticTimeWindow::setHours(uint8_t hrs)
 {
 	hours = hrs;
+	redrawFlag = true;
 }
 
 void StaticTimeWindow::setMinutes(uint8_t mins)
 {
 	minutes = mins;
+	redrawFlag = true;
 }
 
 /**
@@ -128,9 +131,8 @@ void StaticTimeWindow::show()
  */
 void StaticTimeWindow::runClock()
 {
-	if (!RTCController::getInstance().isTimeSet()) {
-		Error_Handler();
-	}
+	bool is_time_set = RTCController::getInstance().isTimeSet();
+	rt_assert(is_time_set, "Time must be set in RTCController");
 
 	// Set time.
 	RTC_TimeTypeDef rtc_time;
@@ -152,7 +154,7 @@ void StaticTimeWindow::secCallback()
 {
 	// Increase seconds and redraw window
 	incSec();
-	draw();
+	redrawFlag = true;
 }
 
 void StaticTimeWindow::registerSecCallback()
@@ -166,7 +168,7 @@ void StaticTimeWindow::registerSecCallback()
 void StaticTimeWindow::minCallback()
 {
 	incMin();
-	draw();
+	redrawFlag = true;
 }
 
 void StaticTimeWindow::registerMinCallback()

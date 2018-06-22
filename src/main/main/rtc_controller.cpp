@@ -83,16 +83,11 @@ void RTCController::update()
 	getTime(&rtc_time);
 
 	// Second overflow. Call all registered "functions".
-	for (ISecCallback* sec_callback: secondCallbackVec) {
-		sec_callback->secCallback();
-	}
+	secCallbackReceivers.callAllReceivers(nullptr);
 
 	// Minute overflow.
 	if (rtc_time.Seconds == 0) {
-		// Call all registered "functions"
-		for (IMinCallback* min_callback : minuteCallbackVec) {
-			min_callback->minCallback();
-		}
+		minuteCallbackReceivers.callAllReceivers(nullptr);
 	}
 
 	// Hour overflow
@@ -106,7 +101,7 @@ void RTCController::update()
  */
 void RTCController::registerMinuteCallback(IMinCallback* min_callback)
 {
-	minuteCallbackVec.push_back(min_callback);
+	minuteCallbackReceivers.insertBack(min_callback);
 }
 
 /**
@@ -114,7 +109,7 @@ void RTCController::registerMinuteCallback(IMinCallback* min_callback)
  */
 void RTCController::registerSecondCallback(ISecCallback* sec_callback)
 {
-	secondCallbackVec.push_back(sec_callback);
+	secCallbackReceivers.insertBack(sec_callback);
 }
 
 /**
@@ -122,12 +117,7 @@ void RTCController::registerSecondCallback(ISecCallback* sec_callback)
  */
 void RTCController::unregisterSecondCallback(ISecCallback* sec_callback)
 {
-	for (auto it = secondCallbackVec.begin(); it != secondCallbackVec.end(); ++it) {
-		if (*it == sec_callback) {
-			secondCallbackVec.erase(it);
-			break;
-		}
-	}
+	secCallbackReceivers.remove(sec_callback);
 }
 
 /**
@@ -135,10 +125,5 @@ void RTCController::unregisterSecondCallback(ISecCallback* sec_callback)
  */
 void RTCController::unregisterMinuteCallback(IMinCallback *min_callback)
 {
-	for (auto it = minuteCallbackVec.begin(); it != minuteCallbackVec.end(); ++it) {
-		if (*it == min_callback) {
-			minuteCallbackVec.erase(it);
-			break;
-		}
-	}
+	minuteCallbackReceivers.remove(min_callback);
 }
