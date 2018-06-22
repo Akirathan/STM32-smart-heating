@@ -8,8 +8,8 @@
 
 IntervalFrame::IntervalFrame()
 {
-	nextButton = Button(Coord(25, LINE(12)), "NEXT");
-	endButton = Button(Coord(230, LINE(12)), "END");
+	nextButton = Button(Coord(25, LINE(8)), "NEXT");
+	endButton = Button(Coord(230, LINE(8)), "END");
 }
 
 void IntervalFrame::drawIntervalHeader()
