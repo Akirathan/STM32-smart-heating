@@ -63,7 +63,7 @@ void TcpDriver::poll()
 }
 
 
-bool TcpDriver::queueForSend(uint8_t buff[], const size_t buff_size)
+bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 {
 	rt_assert(initialized, "TcpDriver must be initialized before sending");
 

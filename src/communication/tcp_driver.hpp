@@ -18,7 +18,7 @@ class TcpDriver {
 public:
 	static void init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8_t ip_addr3, uint16_t port);
 	static void poll();
-	static bool queueForSend(uint8_t buff[], const size_t buff_size);
+	static bool queueForSend(const uint8_t buff[], const size_t buff_size);
 private:
 	static struct ip_addr destIpAddress;
 	static uint16_t destPort;
