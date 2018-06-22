@@ -8,10 +8,10 @@
 
 #include "main.hpp"
 #include "application.hpp"
+#include "tcp_driver.hpp"
 
 void SystemClock_Config();
 static void board_init();
-static void netif_config();
 
 void error_handler() {
 	BSP_LED_Init(LED_RED);
@@ -173,35 +173,12 @@ int main()
 	}
 }
 
-/**
- * Configures network interface for LwIP.
- */
-static void netif_config()
-{
-	struct netif net;
-
-	// Init IP address.
-	struct ip_addr ip;
-	struct ip_addr netmask;
-	struct ip_addr gw;
-	IP4_ADDR(&ip, IP_ADDR0, IP_ADDR1, IP_ADDR2, IP_ADDR3);
-	IP4_ADDR(&netmask, NETMASK_ADDR0, NETMASK_ADDR1, NETMASK_ADDR2, NETMASK_ADDR3);
-	IP4_ADDR(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
-
-	// Config.
-	netif_add(&net, &ip, &netmask, &gw, NULL, &ethernetif_init,
-			(void (*) (netif *))&ethernetif_input);
-	netif_set_default(&net);
-	netif_set_up(&net);
-	netif_set_link_callback(&net, ethernetif_update_config);
-}
-
 static void board_init()
 {
 	LCD::init();
 
 	lwip_init();
-	netif_config();
+	TcpDriver::init(192, 168, 0, 1, 8000);
 }
 
 /**
