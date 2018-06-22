@@ -27,6 +27,8 @@ private:
 	ClkFrame clkFrame;
 	MainFrame mainFrame;
 	SetIntervalFrame setIntervalFrame;
+
+	void guiTask();
 };
 
 

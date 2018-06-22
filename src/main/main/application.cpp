@@ -8,6 +8,7 @@
 #include "application.hpp"
 #include "eeprom.hpp"
 #include "rt_assert.h"
+#include "tcp_driver.hpp"
 
 IFrame * Application::currFrame = nullptr;
 bool Application::clearDisplayFlag = false;
@@ -71,15 +72,24 @@ void Application::switchCurrFrameToMain()
 
 void Application::run()
 {
+	// Prepare first frame for displaying.
 	clkFrame.registerFrameTerminateCallbackReceiver(this);
 	setCurrFrame(&clkFrame);
 
+	TcpDriver::queueForSend(reinterpret_cast<const uint8_t *>("nazdar"), 7);
+
 	while (true) {
-		if (clearDisplayFlag) {
-			LCD::clear();
-			currFrame->setForRedraw();
-			clearDisplayFlag = false;
-		}
-		currFrame->redraw();
+		guiTask();
+		TcpDriver::poll();
 	}
+}
+
+void Application::guiTask()
+{
+	if (clearDisplayFlag) {
+		LCD::clear();
+		currFrame->setForRedraw();
+		clearDisplayFlag = false;
+	}
+	currFrame->redraw();
 }
