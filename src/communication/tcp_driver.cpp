@@ -5,11 +5,12 @@
  */
 
 #include "tcp_driver.hpp"
-#include <cstring>
+#include <cstring>   // For std::memcpy
 #include "settings.h"
 #include "rt_assert.h"
 #include "lwip/init.h"
 #include "lwip/tcp.h"
+#include "lwip/lwip_timers.h"  // For sys_check_timeouts
 #include "ethernetif.h"
 
 struct ip_addr TcpDriver::destIpAddress;
@@ -49,6 +50,16 @@ void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8
 	netif_set_link_callback(&netInterface, ethernetif_update_config);
 
 	initialized = true;
+}
+
+/**
+ * Processes input from ethernet layer.
+ * @note This function has to be called periodically from main loop.
+ */
+void TcpDriver::poll()
+{
+	ethernetif_input(&netInterface);
+	sys_check_timeouts();
 }
 
 
