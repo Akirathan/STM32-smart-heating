@@ -5,6 +5,7 @@
  */
 
 #include "tcp_driver.hpp"
+#include <cstring>
 #include "settings.h"
 #include "rt_assert.h"
 #include "lwip/init.h"
@@ -16,6 +17,7 @@ uint16_t       TcpDriver::destPort = 0;
 struct netif   TcpDriver::netInterface;
 struct pbuf   *TcpDriver::writePacketBuffer = nullptr;
 bool           TcpDriver::initialized = false;
+uint8_t        TcpDriver::dummyReceiveBuffer[512];
 
 /**
  * Configures the network interface for LwIP.
@@ -106,7 +108,8 @@ err_t TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
  */
 err_t TcpDriver::sentCb(void *arg, struct tcp_pcb *tpcb, uint16_t len)
 {
-
+	// TODO: remove this function?
+	return ERR_OK;
 }
 
 /**
@@ -115,6 +118,40 @@ err_t TcpDriver::sentCb(void *arg, struct tcp_pcb *tpcb, uint16_t len)
  */
 err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet_buff, err_t err)
 {
+	if (packet_buff == nullptr) {
+		disconnect(tpcb);
+		return ERR_OK;
+	}
 
+	// Received non-empty frame but there is some error.
+	if (err != ERR_OK) {
+		pbuf_free(packet_buff);
+		return err;
+	}
+
+	tcp_recved(tpcb, packet_buff->tot_len);
+
+	processReceivedData(packet_buff);
+
+	pbuf_free(packet_buff);
+	disconnect(tpcb);
+	return ERR_OK;
 }
 
+// Copies received data into dummyReceiveBuffer for now.
+void TcpDriver::processReceivedData(struct pbuf *packet_buff)
+{
+	size_t receive_buff_idx = 0;
+	while (packet_buff != nullptr && packet_buff->len + receive_buff_idx < 512) {
+		std::memcpy(dummyReceiveBuffer + receive_buff_idx, packet_buff->payload, packet_buff->len);
+		receive_buff_idx += packet_buff->len;
+		packet_buff = packet_buff->next;
+	}
+}
+
+void TcpDriver::disconnect(struct tcp_pcb *tpcb)
+{
+	tcp_recv(tpcb, nullptr);
+	tcp_sent(tpcb, nullptr);
+	tcp_close(tpcb);
+}
