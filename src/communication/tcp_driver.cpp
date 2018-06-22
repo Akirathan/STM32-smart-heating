@@ -97,4 +97,24 @@ err_t TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
 	return ERR_OK;
 }
 
+/**
+ * This function is called when some data were sent over TCP.
+ * @param arg
+ * @param tpcb
+ * @param len
+ * @return
+ */
+err_t TcpDriver::sentCb(void *arg, struct tcp_pcb *tpcb, uint16_t len)
+{
+
+}
+
+/**
+ * This function is called when some data were received from TCP.
+ * @param packet_buff ... received packet buffer
+ */
+err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet_buff, err_t err)
+{
+
+}
 
