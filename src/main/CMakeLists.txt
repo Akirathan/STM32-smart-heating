@@ -65,10 +65,15 @@ set(SOURCES
 )
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../cube" "${CMAKE_BINARY_DIR}/cube")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../communication" "${CMAKE_BINARY_DIR}/communication")
 
 add_executable(${PROJECT_NAME}
 	"${SOURCES}"
     $<TARGET_OBJECTS:cube>
+)
+
+target_link_libraries(${PROJECT_NAME}
+	"communication"  # static library
 )
 
 include_directories(
