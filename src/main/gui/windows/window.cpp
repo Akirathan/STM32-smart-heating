@@ -15,12 +15,12 @@ const Coord& Window::getCoord() const
 	return coord;
 }
 
-uint32_t Window::getX() const
+uint16_t Window::getX() const
 {
 	return coord.x;
 }
 
-uint32_t Window::getY() const
+uint16_t Window::getY() const
 {
 	return coord.y;
 }
