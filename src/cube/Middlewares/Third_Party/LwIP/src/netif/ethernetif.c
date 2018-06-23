@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright © 2015 STMicroelectronics International N.V. 
+  * <h2><center>&copy; Copyright ï¿½ 2015 STMicroelectronics International N.V. 
   * All rights reserved.</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -87,95 +87,6 @@ ETH_HandleTypeDef EthHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-/*******************************************************************************
-                       Ethernet MSP Routines
-*******************************************************************************/
-/**
-  * @brief  Initializes the ETH MSP.
-  * @param  heth: ETH handle
-  * @retval None
-  */
-void HAL_ETH_MspInit(ETH_HandleTypeDef *heth)
-{ 
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  /* Enable GPIOs clocks */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_AFIO_CLK_ENABLE();
-
-/* Ethernet pins configuration ************************************************/
-  /* AF Output Push Pull:
-  - ETH_MII_MDIO / ETH_RMII_MDIO: PA2
-  - ETH_MII_MDC / ETH_RMII_MDC: PC1
-  - ETH_MII_TXD2: PC2
-  - ETH_MII_TX_EN / ETH_RMII_TX_EN: PB11
-  - ETH_MII_TXD0 / ETH_RMII_TXD0: PB12
-  - ETH_MII_TXD1 / ETH_RMII_TXD1: PB13
-  - ETH_MII_PPS_OUT / ETH_RMII_PPS_OUT: PB5
-  - ETH_MII_TXD3: PB8 */
-  
-  /* Configure PA2 */
-  GPIO_InitStructure.Pin = GPIO_PIN_2;
-  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
-  GPIO_InitStructure.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStructure.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
-  
-  /* Configure PB5 and PB8 */
-  GPIO_InitStructure.Pin = GPIO_PIN_5 | GPIO_PIN_8 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
- 
-  /* Configure PC1, PC2 */
-  GPIO_InitStructure.Pin = GPIO_PIN_1 | GPIO_PIN_2;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-  /* For Remapped Ethernet pins */
-  /* Input (Reset Value):
-  - ETH_MII_CRS CRS: PA0
-  - ETH_MII_RX_CLK / ETH_RMII_REF_CLK: PA1
-  - ETH_MII_COL: PA3
-  - ETH_MII_RX_DV / ETH_RMII_CRS_DV: PD8
-  - ETH_MII_TX_CLK: PC3
-  - ETH_MII_RXD0 / ETH_RMII_RXD0: PD9
-  - ETH_MII_RXD1 / ETH_RMII_RXD1: PD10
-  - ETH_MII_RXD2: PD11
-  - ETH_MII_RXD3: PD12
-  - ETH_MII_RX_ER: PB10 */
- 
-  /* Enable the remapping of Ethernet MAC connections with the PHY. */
-  __HAL_AFIO_REMAP_ETH_ENABLE();
-  
-  /* Configure PA0, PA1, and PA3 */
-  GPIO_InitStructure.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_3;
-  GPIO_InitStructure.Mode = GPIO_MODE_INPUT;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
-  
-  /* Configure PB10 */
-  GPIO_InitStructure.Pin = GPIO_PIN_10;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-  /* Configure PC3 */
-  GPIO_InitStructure.Pin = GPIO_PIN_3;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStructure);
-  
-  /* Configure PD8, PD9, PD10, PD11 and PD12 as input */
-  GPIO_InitStructure.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStructure); /**/
-  
-  /* Enable ETHERNET clocks  */
-  __HAL_RCC_ETHMAC_CLK_ENABLE();
-  __HAL_RCC_ETHMACTX_CLK_ENABLE();
-  __HAL_RCC_ETHMACRX_CLK_ENABLE();
-  
-  if (heth->Init.MediaInterface == ETH_MEDIA_INTERFACE_MII)
-  {
-    /* Output HSE clock (25MHz) on MCO pin (PA8) to clock the PHY */
-    HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSE, RCC_MCODIV_1);
-  }
-}
 
 /*******************************************************************************
                        LL Driver Interface ( LwIP stack --> ETH) 
