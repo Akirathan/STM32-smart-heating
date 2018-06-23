@@ -11,6 +11,7 @@
 #include "lwip/init.h"
 #include "lwip/tcp.h"
 #include "lwip/lwip_timers.h"  // For sys_check_timeouts
+#include "netif/etharp.h" // For ethernet_input
 #include "ethernetif.h"
 
 struct ip_addr TcpDriver::destIpAddress;
@@ -43,8 +44,7 @@ void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8
 	IP4_ADDR(&gw, 192, 168, 0, 1);
 
 	// Config.
-	netif_add(&netInterface, &ip, &netmask, &gw, NULL, &ethernetif_init,
-			(void (*) (netif *))&ethernetif_input);
+	netif_add(&netInterface, &ip, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
 	netif_set_default(&netInterface);
 	netif_set_up(&netInterface);
 	netif_set_link_callback(&netInterface, ethernetif_update_config);
