@@ -54,6 +54,7 @@ set(MAIN_SOURCES
 	"${MAIN_PATH}/temp_sensor.cpp"
 	"${MAIN_PATH}/time.cpp"
 	"${MAIN_PATH}/timer_events.cpp"
+	"${MAIN_PATH}/intervals_changed_event.cpp"
 )
 
 set(SOURCES
