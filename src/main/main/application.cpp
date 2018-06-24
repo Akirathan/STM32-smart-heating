@@ -9,6 +9,7 @@
 #include "eeprom.hpp"
 #include "rt_assert.h"
 #include "tcp_driver.hpp"
+#include "settings.h" // For INTERVALS_NUM
 
 IFrame * Application::currFrame = nullptr;
 bool Application::clearDisplayFlag = false;
@@ -107,7 +108,12 @@ void Application::emitEvent(const MeasuredTempEvent &event)
  */
 void emitEvent(const IntervalsChangedEvent &event)
 {
+	size_t count = 0;
+	const IntervalFrameData data[INTERVALS_NUM] = event.getData(&count);
 
+	TempController::getInstance().reloadIntervalData(data, count);
+
+	EEPROM::getInstance().save(data, count);
 }
 
 void Application::guiTask()
