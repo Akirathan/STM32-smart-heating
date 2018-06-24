@@ -29,10 +29,6 @@ void EEPROM::save(const IntervalFrameData& data, uint16_t addr)
 	writePage(data.to, addr);
 	addr += 4;
 	writePage(data.temp, addr);
-	addr += 4;
-	writePage(data.timestamp, addr);
-	addr += 4;
-	writePage(static_cast<uint32_t>(data.timestampSynchronized), addr);
 }
 
 void EEPROM::load(IntervalFrameData& data, uint16_t addr)
@@ -42,10 +38,6 @@ void EEPROM::load(IntervalFrameData& data, uint16_t addr)
 	data.to = readPage(addr);
 	addr += 4;
 	data.temp = readPage(addr);
-	addr += 4;
-	data.timestamp = readPage(addr);
-	addr += 4;
-	data.timestampSynchronized = static_cast<bool>(readPage(addr));
 }
 
 void EEPROM::writePage(uint32_t page, uint16_t addr)
