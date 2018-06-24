@@ -86,6 +86,29 @@ void Application::run()
 }
 
 /**
+ * Returns current timestamp. It does not matter if time is synchronized with
+ * server or not.
+ * If you want to now whether time is synchronized with server, you should
+ * call @ref Application::isTimeSynced
+ * @return current (Unix) timestamp
+ */
+uint32_t Application::getCurrTimestamp()
+{
+	return 0;
+}
+
+/**
+ * Returns bool whether time (specificaly timestamp) is synchronized with server
+ * or not.
+ * Note that time synchronization is done during connecting to server.
+ * For more information about communication with server see @ref Client.
+ */
+bool Application::isTimeSynced()
+{
+	return false;
+}
+
+/**
  * Dispatches "measured temperature" event.
  * More specifically displays the temperature on display (@ref MainFrame) and
  * sends the temperature to server via @ref Client.

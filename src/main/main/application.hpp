@@ -30,6 +30,8 @@ public:
 	virtual void registerFrameTerminateCallback() override;
 	void switchCurrFrameToMain();
 	void run();
+	static uint32_t getCurrTimestamp();
+	static bool isTimeSynced();
 	static void emitEvent(const MeasuredTempEvent &event);
 	static void emitEvent(const IntervalsChangedEvent &event);
 private:
