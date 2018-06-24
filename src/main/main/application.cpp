@@ -84,6 +84,32 @@ void Application::run()
 	}
 }
 
+/**
+ * Dispatches "measured temperature" event.
+ * More specifically displays the temperature on display (@ref MainFrame) and
+ * sends the temperature to server via @ref Client.
+ * @param event
+ */
+void Application::emitEvent(const MeasuredTempEvent &event)
+{
+
+}
+
+/**
+ * Dispatches "intervals changed" event. The event is generated on STM, more
+ * specifically it was generated in @ref SetIntervalFrame.
+ * Note that the "intervals changed on server" event is handled by @ref Client
+ * via calling intervalsRecvCb callback.
+ *
+ * Intervals are saved into EEPROM and compared with intervals from server.
+ * This involves comparing timestamp of the intervals.
+ * @param event
+ */
+void emitEvent(const IntervalsChangedEvent &event)
+{
+
+}
+
 void Application::guiTask()
 {
 	if (clearDisplayFlag) {
