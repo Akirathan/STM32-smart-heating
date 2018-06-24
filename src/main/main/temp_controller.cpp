@@ -6,6 +6,8 @@
 
 #include "temp_controller.hpp"
 #include "rt_assert.h"
+#include "application.hpp" // For dispatching measured temp event
+#include "measured_temp_event.hpp"
 
 TempController& TempController::getInstance()
 {
@@ -21,6 +23,8 @@ TempController& TempController::getInstance()
  * switched on.
  *
  * @note Switches heating (relay module) off when no interval is active.
+ *
+ * @note Also generated @ref MeasuredTempEvent.
  */
 void TempController::minCallback()
 {
@@ -32,6 +36,9 @@ void TempController::minCallback()
 	TempSensor::init();
 	double temp = TempSensor::measure_temperature();
 	double expected_temp = currentIntervalTemperature();
+
+	MeasuredTempEvent event(temp);
+	Application::emitEvent(event);
 
 	// Compare them
 	if (temp - tempBoundary <= expected_temp && expected_temp <= temp + tempBoundary) {

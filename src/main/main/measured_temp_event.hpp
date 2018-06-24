@@ -16,6 +16,7 @@
  */
 class MeasuredTempEvent : public Event {
 public:
+	inline MeasuredTempEvent(double temp) : temp(temp) {}
 	double temp;
 };
 
