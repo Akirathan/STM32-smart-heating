@@ -21,7 +21,7 @@
 class IntervalsChangedEvent : public Event {
 public:
 	IntervalsChangedEvent(IntervalFrameData data[], const size_t count);
-	const IntervalFrameData * getData(size_t *count);
+	const IntervalFrameData * getData(size_t *count) const;
 private:
 	IntervalFrameData data[INTERVALS_NUM];
 	size_t count;

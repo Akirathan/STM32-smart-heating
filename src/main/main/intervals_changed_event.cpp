@@ -18,7 +18,7 @@ IntervalsChangedEvent::IntervalsChangedEvent(IntervalFrameData data[], const siz
 	this->count = count;
 }
 
-const IntervalFrameData * IntervalsChangedEvent::getData(size_t *count)
+const IntervalFrameData * IntervalsChangedEvent::getData(size_t *count) const
 {
 	rt_assert(count != nullptr, "Unexpected null pointer");
 
