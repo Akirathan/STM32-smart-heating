@@ -20,11 +20,16 @@
  */
 class IntervalsChangedEvent : public Event {
 public:
-	IntervalsChangedEvent(IntervalFrameData data[], const size_t count);
+	IntervalsChangedEvent(IntervalFrameData data[], const size_t count, const uint32_t timestamp,
+	         	          bool timestamp_synced);
 	const IntervalFrameData * getData(size_t *count) const;
+	uint32_t getTimestamp() const;
+	bool isTimestampSynced() const;
 private:
 	IntervalFrameData data[INTERVALS_NUM];
 	size_t count;
+	uint32_t timestamp;
+	bool timestampSynced;
 };
 
 
