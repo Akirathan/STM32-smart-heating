@@ -8,15 +8,19 @@
 #include "interval_frame_data.hpp"
 
 IntervalFrameData::IntervalFrameData()
-	: from(0),
-	  to(0),
-	  temp(0)
+	: IntervalFrameData(0, 0, 0, 0, false)
 { }
 
 IntervalFrameData::IntervalFrameData(uint32_t from, uint32_t to, uint32_t temp)
+	: IntervalFrameData(from, to, temp, 0, false)
+{ }
+
+IntervalFrameData::IntervalFrameData(uint32_t from, uint32_t to, uint32_t temp, uint32_t timestamp, bool timestampSynchronized)
 	: from(from),
 	  to(to),
-	  temp(temp)
+	  temp(temp),
+	  timestamp(timestamp),
+	  timestampSynchronized(timestampSynchronized)
 { }
 
 bool IntervalFrameData::isSet() const
