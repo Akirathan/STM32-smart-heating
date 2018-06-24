@@ -24,8 +24,8 @@ public:
 	void operator=(const EEPROM&) = delete;
 	EEPROM(const EEPROM&) = delete;
 	bool isEmpty();
-	void save(const IntervalFrameData data[], const size_t count);
-	void load(IntervalFrameData data[], size_t* count);
+	void save(const IntervalFrameData data[], const size_t count, uint32_t timestamp, bool time_synced);
+	void load(IntervalFrameData data[], size_t* count, uint32_t *timestamp, bool *time_synced);
 private:
 	EEPROM();
 	const uint32_t FRAME_DELIM = 0x1234;
