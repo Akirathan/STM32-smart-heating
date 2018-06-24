@@ -13,8 +13,12 @@
 #include "settings.h" // For INTERVALS_NUM
 
 /**
- * Represents intervals changed event.
- * Event arguments are immutable.
+ * Represents "intervals changed" event.
+ * This class contains also timestamp in which this event was generated and
+ * bool flag whether the time was synchronized with the server when this
+ * event was generated.
+ *
+ * @note All data members are immutable.
  *
  * See @ref Application::emitEvent for more details.
  */
