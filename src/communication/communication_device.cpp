@@ -5,14 +5,20 @@
 #include "communication_device.hpp"
 #include <cstring>
 #include "client.hpp"
+#include "rt_assert.h"
 
+/**
+ * Device ID is generated from UID.
+ */
 CommunicationDevice::CommunicationDevice() :
         temp(0.0),
         tempTimestamp(0),
         connected(false)
 {
-    std::strcpy(this->id, id);
-    std::strcpy(this->key, key);
+    std::strcpy(id, "stm1");
+    for (size_t i = 0; i < KEY_LEN; i++) {
+    	key[i] = '\0';
+    }
 }
 
 const char *CommunicationDevice::getKey() const
@@ -136,6 +142,9 @@ void CommunicationDevice::intervalsRecvCb(const IntervalList &interval_list)
  */
 bool CommunicationDevice::connect()
 {
+	rt_assert(std::strlen(key) != 0, "Key must be set");
+	rt_assert(std::strlen(id) != 0, "Id must be set");
+
     connected = true;
     return Client::sendConnectReq(id);
 }
