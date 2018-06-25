@@ -92,7 +92,7 @@ void MainFrame::exitMessageCallback()
 		// Suppose eeprom is not empty.
 		IntervalFrameData data[INTERVALS_NUM];
 		size_t count = 0;
-		EEPROM::getInstance().load(data, &count);
+		EEPROM::getInstance().load(data, &count, nullptr, nullptr);
 
 		overviewIntervalFrame.setData(data, count);
 		overviewIntervalFrame.registerFrameTerminateCallbackReceiver(this);
