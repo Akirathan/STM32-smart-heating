@@ -87,6 +87,16 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 }
 
 /**
+ * Called from @ref Client when whole HTTP message was received.
+ *
+ * This is good opportunity to shut down the connection for example.
+ */
+void TcpDriver::wholeMessageReceivedCb()
+{
+
+}
+
+/**
  * This function is called when TCP connection is established.
  */
 err_t TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
