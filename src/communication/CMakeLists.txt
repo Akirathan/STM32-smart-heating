@@ -4,6 +4,7 @@ set(COMMUNICATION_SOURCES
 	"tcp_driver.cpp"
 	"interval.cpp"
 	"interval_list.cpp"
+	"communication_device.cpp"
 )
 
 set(HTTP_SOURCES "")
