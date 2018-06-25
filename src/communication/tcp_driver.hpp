@@ -26,7 +26,7 @@ private:
 	static struct netif netInterface;
 	static struct pbuf *writePacketBuffer;
 	static bool initialized;
-	static uint8_t dummyReceiveBuffer[512];
+	static struct tcp_pcb *tmpTcpPcb;
 
 	static err_t connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err);
 	static err_t sentCb(void *arg, struct tcp_pcb *tpcb, uint16_t len);

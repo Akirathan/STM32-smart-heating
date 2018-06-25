@@ -13,13 +13,14 @@
 #include "lwip/lwip_timers.h"  // For sys_check_timeouts
 #include "netif/etharp.h" // For ethernet_input
 #include "ethernetif.h"
+#include "http/response_buffer.hpp"
 
-struct ip_addr TcpDriver::destIpAddress;
-uint16_t       TcpDriver::destPort = 0;
-struct netif   TcpDriver::netInterface;
-struct pbuf   *TcpDriver::writePacketBuffer = nullptr;
-bool           TcpDriver::initialized = false;
-uint8_t        TcpDriver::dummyReceiveBuffer[512];
+struct ip_addr  TcpDriver::destIpAddress;
+uint16_t        TcpDriver::destPort = 0;
+struct netif    TcpDriver::netInterface;
+struct pbuf    *TcpDriver::writePacketBuffer = nullptr;
+bool            TcpDriver::initialized = false;
+struct tcp_pcb *TcpDriver::tmpTcpPcb = nullptr;
 
 /**
  * Configures the network interface for LwIP.
@@ -93,7 +94,9 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
  */
 void TcpDriver::wholeMessageReceivedCb()
 {
+	rt_assert(tmpTcpPcb != nullptr, "tmpTcpPcb should be sent somewhen after receivedCb");
 
+	disconnect(tmpTcpPcb);
 }
 
 /**
@@ -152,22 +155,31 @@ err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet
 
 	tcp_recved(tpcb, packet_buff->tot_len);
 
+	tmpTcpPcb = tpcb;
 	processReceivedData(packet_buff);
 
 	pbuf_free(packet_buff);
-	disconnect(tpcb);
 	return ERR_OK;
 }
 
 // Copies received data into dummyReceiveBuffer for now.
 void TcpDriver::processReceivedData(struct pbuf *packet_buff)
 {
+	uint8_t receive_buff[1500];
 	size_t receive_buff_idx = 0;
-	while (packet_buff != nullptr && packet_buff->len + receive_buff_idx < 512) {
-		std::memcpy(dummyReceiveBuffer + receive_buff_idx, packet_buff->payload, packet_buff->len);
+
+	// Copy from packet_buff to receive_buff.
+	while (packet_buff != nullptr && packet_buff->len + receive_buff_idx < 1500) {
+		std::memcpy(receive_buff + receive_buff_idx, packet_buff->payload, packet_buff->len);
 		receive_buff_idx += packet_buff->len;
 		packet_buff = packet_buff->next;
 	}
+
+	http::ResponseBuffer::buff(receive_buff, receive_buff_idx);
+
+	// All data from packet_buff should be copied because LwIP does not support
+	// IP fragmentation and therefore cannot exceed 1500 bytes.
+	rt_assert(packet_buff == nullptr, "All data from packet_buff should be copied");
 }
 
 void TcpDriver::disconnect(struct tcp_pcb *tpcb)
