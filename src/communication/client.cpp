@@ -14,7 +14,6 @@
 
 bool                  Client::initialized = false;
 bool                  Client::connected = false;
-char                  Client::ipAddr[IP_ADDR_LEN];
 uint16_t              Client::port = 0;
 char                  Client::host[HOST_LEN];
 Client::await_state_t Client::state = AWAIT_NONE;
@@ -27,16 +26,15 @@ IClientCbRecver *     Client::clientCbRecver = nullptr;
 
 /**
  * @brief Initializes this Client class.
- * @param ip_addr
+ * @param host
  * @param port
  * @param client_cb_recver ... receiver of all client callbacks, may be NULL.
  */
-void Client::init(const char *ip_addr, uint16_t port, IClientCbRecver *client_cb_recver)
+void Client::init(const char *host, uint16_t port, IClientCbRecver *client_cb_recver)
 {
     if (!initialized) {
-        std::strcpy(ipAddr, ip_addr);
         Client::port = port;
-        initHost(ip_addr, port);
+        initHost(host, port);
         clientCbRecver = client_cb_recver;
         initialized = true;
     }
@@ -136,14 +134,14 @@ void Client::setIntervals(const IntervalList &intervals)
     intervalList = intervals;
 }
 
-void Client::initHost(const char *ip_addr, const uint16_t port)
+void Client::initHost(const char *host, const uint16_t port)
 {
     char port_str[7];
     std::sprintf(port_str, "%u", port);
 
-    char *host_ptr = host;
-    std::strcpy(host_ptr, ip_addr);
-    host_ptr += std::strlen(ip_addr);
+    char *host_ptr = Client::host;
+    std::strcpy(host_ptr, host);
+    host_ptr += std::strlen(host);
     *(host_ptr++) = ':';
     std::strcpy(host_ptr, port_str);
 }

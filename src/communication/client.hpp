@@ -52,7 +52,7 @@ private:
     };
 
 public:
-    static void init(const char *ip_addr, uint16_t port, IClientCbRecver *client_cb_recver);
+    static void init(const char *host, uint16_t port, IClientCbRecver *client_cb_recver);
     static void receiveCb(const http::Response &response);
     static bool sendConnectReq(const char *device_id);
     static void startCycle();
@@ -69,7 +69,6 @@ private:
 
     static bool initialized;
     static bool connected;
-    static char ipAddr[IP_ADDR_LEN];
     static uint16_t port;
     static char host[HOST_LEN];
     static await_state_t state;
@@ -85,7 +84,7 @@ private:
     static uint32_t tempIntervalsTimestamp;
     static IClientCbRecver *clientCbRecver;
 
-    static void initHost(const char *ip_addr, const uint16_t port);
+    static void initHost(const char *host, const uint16_t port);
     static bool send(const http::Request &request, bool await_body);
     static void readConnectResponse(const http::Response &response);
     static void readIntervalTimestampResp(const http::Response &response);
