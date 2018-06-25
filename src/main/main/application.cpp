@@ -54,7 +54,7 @@ void Application::frameTerminateCallback()
 		size_t count = 0;
 		setIntervalFrame.getData(data, &count);
 
-		EEPROM::getInstance().save(data, count);
+		EEPROM::getInstance().save(data, count, getCurrTimestamp(), isTimeSynced());
 
 		switchCurrFrameToMain();
 	}

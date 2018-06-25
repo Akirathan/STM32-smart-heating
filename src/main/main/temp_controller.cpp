@@ -68,7 +68,7 @@ TempController::TempController() :
 	EEPROM& eeprom = EEPROM::getInstance();
 
 	rt_assert(!eeprom.isEmpty(), "EEPROM must contain data");
-	eeprom.load(data, &dataCount);
+	eeprom.load(data, &dataCount, nullptr, nullptr);
 }
 
 /**
