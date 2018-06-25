@@ -79,7 +79,7 @@ void Application::run()
 	clkFrame.registerFrameTerminateCallbackReceiver(this);
 	setCurrFrame(&clkFrame);
 
-	Client::init("192.168.0.1", 8000, &communicationDevice);
+	Client::init("127.0.0.1", 8000, &communicationDevice);
 	communicationDevice.setKey("key");
 	communicationDevice.connect();
 
