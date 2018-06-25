@@ -61,54 +61,6 @@ void eeprom_try()
 	}
 }
 
-static err_t net_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
-{
-
-}
-
-static err_t net_tcp_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
-{
-
-}
-
-/**
- * Receives packets in while loop.
- */
-void net_try()
-{
-	struct netif net;
-
-	lwip_init();
-
-	// Init IP address.
-	struct ip_addr ip;
-	struct ip_addr netmask;
-	struct ip_addr gw;
-	IP4_ADDR(&ip, 198, 0, 0, 2);
-	IP4_ADDR(&netmask, 255, 255, 255, 0);
-	IP4_ADDR(&gw, 198, 0, 0, 1);
-
-	// Config.
-	netif_add(&net, &ip, &netmask, &gw, NULL, &ethernetif_init,
-			(void (*) (netif *))&ethernetif_input);
-	netif_set_default(&net);
-	netif_set_up(&net);
-	netif_set_link_callback(&net, ethernetif_update_config);
-
-	// Set TCP.
-	struct tcp_pcb * pcb;
-	pcb = tcp_new();
-	err_t err = tcp_bind(pcb, IP_ADDR_ANY, 4567);
-
-	if (err == ERR_OK) {
-		pcb = tcp_listen(pcb);
-	}
-
-	while (true) {
-		ethernetif_input(&net);
-	}
-}
-
 void fat_try(bool formatted, const std::string& fname)
 {
 	char path[5];
