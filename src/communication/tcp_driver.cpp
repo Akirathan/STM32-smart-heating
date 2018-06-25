@@ -106,6 +106,7 @@ err_t TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
 {
 	tcp_recv(tpcb, receivedCb);
 	tcp_sent(tpcb, sentCb);
+	tcp_err(tpcb, errorCb);
 
 	while (writePacketBuffer != nullptr && writePacketBuffer->len <= tcp_sndbuf(tpcb)) {
 		err_t err = tcp_write(tpcb, writePacketBuffer->payload, writePacketBuffer->len, TCP_WRITE_FLAG_COPY);
@@ -142,6 +143,7 @@ err_t TcpDriver::sentCb(void *arg, struct tcp_pcb *tpcb, uint16_t len)
  */
 err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet_buff, err_t err)
 {
+	// Check if connection was closed by the other end.
 	if (packet_buff == nullptr) {
 		disconnect(tpcb);
 		return ERR_OK;
@@ -160,6 +162,11 @@ err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet
 
 	pbuf_free(packet_buff);
 	return ERR_OK;
+}
+
+void TcpDriver::errorCb(void *arg, err_t err)
+{
+	rt_assert(false, "Should not be here");
 }
 
 // Copies received data into dummyReceiveBuffer for now.

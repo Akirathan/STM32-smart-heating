@@ -33,6 +33,7 @@ private:
 	static err_t connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err);
 	static err_t sentCb(void *arg, struct tcp_pcb *tpcb, uint16_t len);
 	static err_t receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet_buff, err_t err);
+	static void errorCb(void *arg, err_t err);
 	static void processReceivedData(struct pbuf *packet_buff);
 	static void disconnect(struct tcp_pcb *tpcb);
 };
