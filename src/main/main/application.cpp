@@ -10,6 +10,7 @@
 #include "rt_assert.h"
 #include "tcp_driver.hpp"
 #include "settings.h" // For INTERVALS_NUM
+#include "client.hpp"
 
 IFrame * Application::currFrame = nullptr;
 bool Application::clearDisplayFlag = false;
@@ -78,6 +79,7 @@ void Application::run()
 	clkFrame.registerFrameTerminateCallbackReceiver(this);
 	setCurrFrame(&clkFrame);
 
+	Client::init("192.168.0.1", 8000, &communicationDevice);
 	communicationDevice.setKey("key");
 	communicationDevice.connect();
 
