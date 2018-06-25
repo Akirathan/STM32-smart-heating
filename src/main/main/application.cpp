@@ -78,7 +78,7 @@ void Application::run()
 	clkFrame.registerFrameTerminateCallbackReceiver(this);
 	setCurrFrame(&clkFrame);
 
-	TcpDriver::queueForSend(reinterpret_cast<const uint8_t *>("nazdar"), 7);
+	communicationDevice.connect();
 
 	while (true) {
 		guiTask();
