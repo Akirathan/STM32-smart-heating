@@ -14,6 +14,7 @@
 #include "callbacks.hpp"
 #include "measured_temp_event.hpp"
 #include "intervals_changed_event.hpp"
+#include "communication_device.hpp"
 
 /**
  * This class contains main application logic in its @ref run method.
@@ -40,6 +41,7 @@ private:
 	ClkFrame clkFrame;
 	MainFrame mainFrame;
 	SetIntervalFrame setIntervalFrame;
+	CommunicationDevice communicationDevice;
 
 	void guiTask();
 };
