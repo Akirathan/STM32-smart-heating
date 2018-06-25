@@ -133,10 +133,10 @@ void Application::emitEvent(const MeasuredTempEvent &event)
 void Application::emitEvent(const IntervalsChangedEvent &event)
 {
 	size_t count = 0;
-	/*const IntervalFrameData data[INTERVALS_NUM] = event.getData(&count);
+	const IntervalFrameData *data = event.getData(&count);
 
+	EEPROM::getInstance().save(data, count, getCurrTimestamp(), isTimeSynced());
 	TempController::getInstance().reloadIntervalData(data, count);
-	EEPROM::getInstance().save(data, count);*/
 }
 
 void Application::guiTask()
