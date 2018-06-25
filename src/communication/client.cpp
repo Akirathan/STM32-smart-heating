@@ -6,9 +6,10 @@
 
 #include "rt_assert.h"
 #include "client.hpp"
+#include <cstring>
 #include "http/response_buffer.hpp"
 #include "tcp_driver.hpp"
-#include "client_timer.hpp"
+//#include "client_timer.hpp"
 
 bool                  Client::initialized = false;
 bool                  Client::connected = false;
@@ -266,7 +267,7 @@ void Client::readTempAckResp(const http::Response &response)
         return;
     }
 
-    ClientTimer::start(2);
+    //ClientTimer::start(2);
 }
 
 http::Request Client::createConnectReq(const char *device_id)
