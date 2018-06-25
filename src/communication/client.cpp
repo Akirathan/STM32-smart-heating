@@ -6,7 +6,8 @@
 
 #include "rt_assert.h"
 #include "client.hpp"
-#include <cstring>
+#include <cstdio> // For std::sprintf
+#include <cstdlib> // For std::atoi
 #include "http/response_buffer.hpp"
 #include "tcp_driver.hpp"
 //#include "client_timer.hpp"
@@ -158,7 +159,7 @@ bool Client::send(const http::Request &request, bool await_body)
         http::ResponseBuffer::awaitBody();
     }
 
-    return TcpDriver::send(reinterpret_cast<uint8_t *>(buffer), request.getSize());
+    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), request.getSize());
 }
 
 /**
@@ -290,7 +291,7 @@ http::Request Client::createGetIntervalsReq()
 http::Request Client::createPostIntervalsReq(const IntervalList &interval_list)
 {
     char timestamp_str[12];
-    std::sprintf(timestamp_str, "%u", interval_list.getTimestamp());
+    std::sprintf(timestamp_str, "%lu", interval_list.getTimestamp());
 
     uint8_t buffer[IntervalList::MAX_SIZE];
     size_t buff_len = 0;
@@ -320,7 +321,7 @@ http::Request Client::createPostTemperature(const double temp, const uint32_t ti
     char timestamp_str[12];
     char temp_str[10];
     std::sprintf(temp_str, "%f", temp);
-    std::sprintf(timestamp_str, "%u", time_stamp);
+    std::sprintf(timestamp_str, "%lu", time_stamp);
     size_t timestamp_len = std::strlen(timestamp_str);
 
     // concat timestamp and temp
@@ -351,7 +352,7 @@ http::Request Client::createPostReq(const char *url, const char *body, const siz
     using namespace http;
 
     char body_len_str[20];
-    std::sprintf(body_len_str, "%lu", body_len);
+    std::sprintf(body_len_str, "%u", body_len);
 
     Request request(Request::POST, url);
     HeaderOption hdr_option_host(HeaderOption::HOST, host);
