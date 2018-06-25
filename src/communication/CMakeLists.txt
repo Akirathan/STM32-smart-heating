@@ -2,6 +2,8 @@ project(communication CXX)
 
 set(COMMUNICATION_SOURCES
 	"tcp_driver.cpp"
+	"interval.cpp"
+	"interval_list.cpp"
 )
 
 set(HTTP_SOURCES "")

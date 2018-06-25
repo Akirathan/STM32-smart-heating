@@ -55,8 +55,6 @@ set(MAIN_SOURCES
 	"${MAIN_PATH}/time.cpp"
 	"${MAIN_PATH}/timer_events.cpp"
 	"${MAIN_PATH}/intervals_changed_event.cpp"
-	"${MAIN_PATH}/interval_list.cpp"
-	"${MAIN_PATH}/interval.cpp"
 )
 
 set(SOURCES
