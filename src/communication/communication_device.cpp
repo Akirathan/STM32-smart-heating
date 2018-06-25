@@ -89,7 +89,7 @@ const IntervalList & CommunicationDevice::getIntervals() const
 /**
  * @brief Callback frunction called from @ref Client when it connects to the server.
  */
-void CommunicationDevice::connectedCb()
+void CommunicationDevice::connectedCb(uint32_t server_real_time)
 {
 
 }
