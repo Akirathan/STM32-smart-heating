@@ -9,6 +9,7 @@
 #include <cctype> // For std::isspace
 #include "client.hpp"
 #include "tcp_driver.hpp"
+#include "rt_assert.h"
 
 namespace http {
 
@@ -32,6 +33,7 @@ void ResponseBuffer::buff(const uint8_t *part_buff, const size_t part_buff_size)
 {
     if (part_buff_size + bufferIdx >= BUFF_LEN) {
         // TODO: Error: reset connection (do some logging)
+    	rt_assert(false, "Should not happen");
         return;
     }
     std::memcpy(buffer + bufferIdx, part_buff, part_buff_size);
