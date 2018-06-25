@@ -26,6 +26,8 @@ private:
 	static struct netif netInterface;
 	static struct pbuf *writePacketBuffer;
 	static bool initialized;
+	/// Temporary storage for TCP PCB, needed when @ref Client calls
+	/// @ref wholeMessageReceivedCb and we want to disconnect.
 	static struct tcp_pcb *tmpTcpPcb;
 
 	static err_t connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err);
