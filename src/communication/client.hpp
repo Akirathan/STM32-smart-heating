@@ -100,7 +100,7 @@ private:
     static http::Request createGetReq(const char *url);
     static http::Request createPostReq(const char *url, const char *body, const size_t body_len,
                                        const char *content_type);
-    static void callConnectedCb();
+    static void callConnectedCb(uint32_t server_real_time);
     static void callTempSentCb();
     static void callIntervalsSentCb();
     static void callIntervalsRecvCb(const IntervalList &interval_list);

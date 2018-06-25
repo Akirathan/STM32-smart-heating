@@ -176,14 +176,16 @@ void Client::readConnectResponse(const http::Response &response)
         return;
     }
 
-    // TODO: parse server_real_time from body.
+    uint32_t server_real_time = static_cast<uint32_t>(std::atoi(
+            reinterpret_cast<const char *>(response.getBody())
+    ));
 
     http::Request interval_timestamp_req = createIntervalTimestampReq();
     send(interval_timestamp_req, true);
 
     state = AWAIT_INTERVAL_TIMESTAMP_RESPONSE;
 
-    callConnectedCb();
+    callConnectedCb(server_real_time);
 }
 
 void Client::readIntervalTimestampResp(const http::Response &response)
@@ -365,10 +367,10 @@ http::Request Client::createPostReq(const char *url, const char *body, const siz
     return request;
 }
 
-void Client::callConnectedCb()
+void Client::callConnectedCb(uint32_t server_real_time)
 {
     if (clientCbRecver != nullptr) {
-        clientCbRecver->connectedCb();
+        clientCbRecver->connectedCb(server_real_time);
     }
 }
 
