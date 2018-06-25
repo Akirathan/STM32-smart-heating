@@ -78,6 +78,7 @@ void Application::run()
 	clkFrame.registerFrameTerminateCallbackReceiver(this);
 	setCurrFrame(&clkFrame);
 
+	communicationDevice.setKey("key");
 	communicationDevice.connect();
 
 	while (true) {
