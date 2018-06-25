@@ -7,8 +7,8 @@
 #include "response_buffer.hpp"
 #include <cstdlib>
 #include <cctype> // For std::isspace
-#include "communication/client.hpp"
-#include "communication/tcp_driver.hpp"
+#include "client.hpp"
+#include "tcp_driver.hpp"
 
 namespace http {
 
@@ -31,8 +31,7 @@ void ResponseBuffer::init()
 void ResponseBuffer::buff(const uint8_t *part_buff, const size_t part_buff_size)
 {
     if (part_buff_size + bufferIdx >= BUFF_LEN) {
-        // TODO: Error: reset connection
-        std::fprintf(stderr, "ResponseBuffer: message too large");
+        // TODO: Error: reset connection (do some logging)
         return;
     }
     std::memcpy(buffer + bufferIdx, part_buff, part_buff_size);
@@ -41,8 +40,8 @@ void ResponseBuffer::buff(const uint8_t *part_buff, const size_t part_buff_size)
     Response response;
     if (parse(buffer, bufferIdx, &response)) {
         reset();
-        comm::TcpDriver::wholeMessageReceivedCb();
-        comm::Client::receiveCb(response);
+        TcpDriver::wholeMessageReceivedCb();
+        Client::receiveCb(response);
     }
 }
 
