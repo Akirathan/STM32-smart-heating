@@ -74,6 +74,8 @@ void Client::receiveCb(const http::Response &response)
  */
 bool Client::sendConnectReq(const char *device_id)
 {
+	rt_assert(initialized, "Client must be initialized first");
+
     std::strcpy(deviceId, device_id);
     connected = true;
     state = AWAIT_CONNECT_RESPONSE;
@@ -91,6 +93,8 @@ bool Client::sendConnectReq(const char *device_id)
  */
 void Client::startCycle()
 {
+	rt_assert(initialized, "Client must be initialized first");
+
     send(createIntervalTimestampReq(), true);
     state = AWAIT_INTERVAL_TIMESTAMP_RESPONSE;
     callTempSentCb();
