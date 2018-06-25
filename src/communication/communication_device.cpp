@@ -26,6 +26,11 @@ const char *CommunicationDevice::getKey() const
     return key;
 }
 
+void CommunicationDevice::setKey(const char *key)
+{
+	std::strcpy(this->key, key);
+}
+
 /**
  * Returns this Device ID.
  * Note that this ID is "generated" in constructor from STM's UID.
