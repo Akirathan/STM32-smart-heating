@@ -8,7 +8,10 @@ set(COMMUNICATION_SOURCES
 	"client.cpp"
 )
 
-set(HTTP_SOURCES "")
+set(HTTP_SOURCES 
+	"http/response.cpp"
+	"http/request.cpp"
+)
 
 set(SOURCES ${COMMUNICATION_SOURCES} ${HTTP_SOURCES})
 
