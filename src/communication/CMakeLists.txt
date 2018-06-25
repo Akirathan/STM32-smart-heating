@@ -11,6 +11,7 @@ set(COMMUNICATION_SOURCES
 set(HTTP_SOURCES 
 	"http/response.cpp"
 	"http/request.cpp"
+	"http/header.cpp"
 )
 
 set(SOURCES ${COMMUNICATION_SOURCES} ${HTTP_SOURCES})
