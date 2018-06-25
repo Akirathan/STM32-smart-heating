@@ -9,6 +9,7 @@ set(COMMUNICATION_SOURCES
 )
 
 set(HTTP_SOURCES 
+	"http/response_buffer.cpp"
 	"http/response.cpp"
 	"http/request.cpp"
 	"http/header.cpp"
