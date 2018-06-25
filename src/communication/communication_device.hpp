@@ -55,14 +55,13 @@ public:
     const IntervalList & getIntervals() const;
     /***********************************************************/
     /*************** Callbacks from client *********************/
-    void connectedCb() override;
+    void connectedCb(uint32_t server_real_time) override;
     void tempSentCb() override;
     void intervalsSentCb() override;
     void intervalsRecvCb(const IntervalList &interval_list) override;
     /***********************************************************/
     bool connect();
     void disconnect();
-    void synchronizeTime(uint32_t server_real_time);
     bool isTimeSynchronized() const;
     uint32_t getCurrentTimestamp() const;
 

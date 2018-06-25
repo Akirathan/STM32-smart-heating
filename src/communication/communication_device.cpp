@@ -153,15 +153,6 @@ void CommunicationDevice::disconnect()
 }
 
 /**
- *
- * @param server_real_time
- */
-void CommunicationDevice::synchronizeTime(uint32_t server_real_time)
-{
-
-}
-
-/**
  * @brief Gets current (Unix) timestamp.
  *
  *
