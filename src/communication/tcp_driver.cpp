@@ -160,9 +160,9 @@ err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet
 		return err;
 	}
 
-	tcp_recved(tpcb, packet_buff->tot_len);
-
 	processReceivedData(packet_buff);
+
+	tcp_recved(tpcb, packet_buff->tot_len);
 
 	pbuf_free(packet_buff);
 	return ERR_OK;
