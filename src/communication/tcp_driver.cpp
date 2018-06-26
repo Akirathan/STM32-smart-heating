@@ -68,6 +68,12 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 {
 	rt_assert(initialized, "TcpDriver must be initialized before sending");
 
+	// Close previous connection
+	if (tmpTcpPcb != nullptr) {
+		disconnect(tmpTcpPcb);
+		tmpTcpPcb = nullptr;
+	}
+
 	// Copy data into packet buffer (pbuf).
 	writePacketBuffer = pbuf_alloc(PBUF_TRANSPORT, static_cast<uint16_t>(buff_size), PBUF_POOL);
 	if (writePacketBuffer == nullptr) {
@@ -95,8 +101,6 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 void TcpDriver::wholeMessageReceivedCb()
 {
 	rt_assert(tmpTcpPcb != nullptr, "tmpTcpPcb should be sent somewhen after receivedCb");
-
-	disconnect(tmpTcpPcb);
 }
 
 /**
@@ -107,6 +111,7 @@ err_t TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
 	tcp_recv(tpcb, receivedCb);
 	tcp_sent(tpcb, sentCb);
 	tcp_err(tpcb, errorCb);
+	tmpTcpPcb = tpcb;
 
 	while (writePacketBuffer != nullptr && writePacketBuffer->len <= tcp_sndbuf(tpcb)) {
 		err_t err = tcp_write(tpcb, writePacketBuffer->payload, writePacketBuffer->len, TCP_WRITE_FLAG_COPY);
@@ -157,7 +162,6 @@ err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet
 
 	tcp_recved(tpcb, packet_buff->tot_len);
 
-	tmpTcpPcb = tpcb;
 	processReceivedData(packet_buff);
 
 	pbuf_free(packet_buff);
