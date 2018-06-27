@@ -17,6 +17,11 @@
 class MeasuredTempEvent : public Event {
 public:
 	inline MeasuredTempEvent(double temp) : temp(temp) {}
+
+	inline double getTemp() const {
+		return temp;
+	}
+private:
 	double temp;
 };
 
