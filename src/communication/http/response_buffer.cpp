@@ -82,7 +82,9 @@ bool ResponseBuffer::parse(const char *buffer, const size_t buffer_size, Respons
     response->setHeader(header);
 
     // Read empty line (divider after header).
-    char_stream.readWhiteSpaces();
+    if (!char_stream.readLineDelimiter()) {
+    	return false;
+    }
 
     const char *body = char_stream.getRestOfBuffer();
     const size_t body_len = char_stream.getBufferSize() - char_stream.getBufferIdx();

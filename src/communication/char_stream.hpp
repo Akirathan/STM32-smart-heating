@@ -24,6 +24,7 @@ public:
 	void readWord(char *word, size_t *word_len);
     void readUntilDelimiter(char *word, size_t *word_len, const char delimiter);
 	void readWhiteSpaces();
+	bool readLineDelimiter();
 
     /**
      * In case when there are more words on line than strings_len, fill whole

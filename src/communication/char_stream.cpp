@@ -95,6 +95,19 @@ void CharStream::readWhiteSpaces()
     }
 }
 
+/**
+ * Reads \r\n. If there is some unexpected data in buffer, returns false.
+ */
+bool CharStream::readLineDelimiter()
+{
+	char r = readChar();
+	char n = readChar();
+	if (r != '\r' || n != '\n') {
+		return false;
+	}
+	return true;
+}
+
 bool CharStream::atEnd() const
 {
     return bufferIdx >= bufferSize;
