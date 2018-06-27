@@ -98,7 +98,7 @@ void Application::run()
  */
 uint32_t Application::getCurrTimestamp()
 {
-	return 0;
+	return communicationDevice.getCurrentTimestamp();
 }
 
 /**
@@ -109,7 +109,7 @@ uint32_t Application::getCurrTimestamp()
  */
 bool Application::isTimeSynced()
 {
-	return false;
+	return communicationDevice.isTimeSynchronized();
 }
 
 /**
