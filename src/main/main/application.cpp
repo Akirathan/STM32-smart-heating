@@ -12,8 +12,9 @@
 #include "settings.h" // For INTERVALS_NUM
 #include "client.hpp"
 
-IFrame * Application::currFrame = nullptr;
-bool Application::clearDisplayFlag = false;
+IFrame            * Application::currFrame = nullptr;
+bool                Application::clearDisplayFlag = false;
+CommunicationDevice Application::communicationDevice;
 
 Application::Application() :
 	clkFrame(),
@@ -120,7 +121,7 @@ bool Application::isTimeSynced()
  */
 void Application::emitEvent(const MeasuredTempEvent &event)
 {
-
+	communicationDevice.setTemp(event.getTemp());
 }
 
 /**

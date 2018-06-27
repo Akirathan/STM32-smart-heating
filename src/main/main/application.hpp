@@ -38,10 +38,11 @@ public:
 private:
 	static IFrame* currFrame;
 	static bool clearDisplayFlag;
+	static CommunicationDevice communicationDevice;
+
 	ClkFrame clkFrame;
 	MainFrame mainFrame;
 	SetIntervalFrame setIntervalFrame;
-	CommunicationDevice communicationDevice;
 
 	void guiTask();
 };
