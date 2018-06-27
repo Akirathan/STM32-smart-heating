@@ -10,6 +10,7 @@
 #include <cstdlib> // For std::atoi
 #include "http/response_buffer.hpp"
 #include "tcp_driver.hpp"
+#include "sprintf_double.hpp"
 //#include "client_timer.hpp"
 
 bool                  Client::initialized = false;
@@ -322,7 +323,7 @@ http::Request Client::createPostTemperature(const double temp, const uint32_t ti
 {
     char timestamp_str[12];
     char temp_str[10];
-    std::sprintf(temp_str, "%f", temp);
+    sprintf_double(temp_str, temp);
     std::sprintf(timestamp_str, "%lu", time_stamp);
     size_t timestamp_len = std::strlen(timestamp_str);
 
