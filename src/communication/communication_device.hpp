@@ -72,6 +72,7 @@ private:
     uint32_t tempTimestamp;
     IntervalList intervalList;
     bool connected;
+    bool timeSynced;
 };
 
 

@@ -13,7 +13,8 @@
 CommunicationDevice::CommunicationDevice() :
         temp(0.0),
         tempTimestamp(0),
-        connected(false)
+        connected(false),
+		timeSynced(false)
 {
     std::strcpy(id, "stm1");
     for (size_t i = 0; i < KEY_LEN; i++) {
@@ -164,6 +165,16 @@ void CommunicationDevice::disconnect()
 {
     connected = false;
     Client::disconnect();
+}
+
+/**
+ * @brief Returns true if time was synchronized with server.
+ *
+ * @note Time synchronization takes place during connecting to the server.
+ */
+bool CommunicationDevice::isTimeSynchronized() const
+{
+	return timeSynced;
 }
 
 /**
