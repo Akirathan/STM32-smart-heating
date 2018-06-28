@@ -57,6 +57,11 @@ size_t IntervalList::getIntervalsCount() const
     return intervalsIdx;
 }
 
+bool IntervalList::isEmpty() const
+{
+	return intervalsIdx == 0;
+}
+
 /**
  * Serializes this IntervalList into given buffer.
  *
