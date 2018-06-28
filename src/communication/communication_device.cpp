@@ -6,6 +6,7 @@
 #include <cstring>
 #include "client.hpp"
 #include "rt_assert.h"
+#include "rtc_controller.hpp"
 
 /**
  * Device ID is generated from UID.
@@ -100,10 +101,13 @@ const IntervalList & CommunicationDevice::getIntervals() const
 
 /**
  * @brief Callback frunction called from @ref Client when it connects to the server.
+ *
+ * @param server_real_time ... timestamp sent from server for synchronization.
  */
 void CommunicationDevice::connectedCb(uint32_t server_real_time)
 {
-
+	RTCController::getInstance().setTimestamp(server_real_time);
+	timeSynced = true;
 }
 
 /**
@@ -185,7 +189,7 @@ bool CommunicationDevice::isTimeSynchronized() const
  */
 uint32_t CommunicationDevice::getCurrentTimestamp() const
 {
-
+	return RTCController::getInstance().getTimestamp();
 }
 
 
