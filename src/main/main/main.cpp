@@ -40,25 +40,18 @@ void static_time_window_test()
 	while (true) ;
 }
 
-void eeprom_try()
+/**
+ * Reads whole contents of EEPROM - debugging.
+ */
+void read_eeprom()
 {
-	uint8_t buff[8] = {2,2,2,2,2,2,2,2};
-	uint8_t rx_buff[8];
-	uint32_t read_bytes = 8;
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t data_size = 0;
+	uint32_t timestamp = 0;
+	bool time_synced = false;
+	EEPROM &eeprom = EEPROM::getInstance();
 
-	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
-
-	if (BSP_EEPROM_Init() != EEPROM_OK) {
-		error_handler();
-	}
-
-	if (BSP_EEPROM_WriteBuffer(buff, 0, 8) != EEPROM_OK) {
-		error_handler();
-	}
-
-	if (BSP_EEPROM_ReadBuffer(rx_buff, 0, &read_bytes) != EEPROM_OK) {
-		error_handler();
-	}
+	eeprom.load(data, &data_size, &timestamp, &time_synced);
 }
 
 void fat_try(bool formatted, const std::string& fname)
