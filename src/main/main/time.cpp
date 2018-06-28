@@ -8,6 +8,10 @@
 
 namespace Time {
 
+Time::Time(uint32_t hours, uint32_t minutes)
+	: Time(hours, minutes, 0)
+{ }
+
 Time::Time(uint32_t hours, uint32_t minutes, uint32_t seconds)
 	: hours(hours),
 	  minutes(minutes),
