@@ -48,7 +48,9 @@ void RTCController::setTime(const Time::Time &time)
 }
 
 /**
- * @brief Gets current time from RTC.
+ * @brief Gets current time from RTC in UTC+2.
+ *
+ * @note Timezones are not supported yet.
  */
 Time::Time RTCController::getTime()
 {
@@ -60,7 +62,7 @@ Time::Time RTCController::getTime()
 	uint32_t minutes_today = (minutes % (24 * 60)) - (hours_today * 60);
 	uint32_t seconds_today = time_counter % 60;
 
-	return Time::Time(hours_today, minutes_today, seconds_today);
+	return Time::Time(hours_today + 2, minutes_today, seconds_today);
 }
 
 bool RTCController::isTimeSet() const
