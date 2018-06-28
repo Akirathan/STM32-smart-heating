@@ -7,6 +7,8 @@
 #include "client.hpp"
 #include "rt_assert.h"
 #include "rtc_controller.hpp"
+#include "connected_event.hpp"
+#include "application.hpp"
 
 /**
  * Device ID is generated from UID.
@@ -113,7 +115,9 @@ const IntervalList & CommunicationDevice::getIntervals() const
  */
 void CommunicationDevice::connectedCb(uint32_t server_real_time)
 {
-	RTCController::getInstance().setTimestamp(server_real_time);
+	ConnectedEvent connectedEvent(getCurrentTimestamp(), server_real_time);
+	Application::emitEvent(connectedEvent);
+
 	timeSynced = true;
 }
 

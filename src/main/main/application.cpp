@@ -125,7 +125,10 @@ bool Application::isTimeSynced()
  */
 void Application::emitEvent(const ConnectedEvent &event)
 {
+	RTCController::getInstance().setTimestamp(event.getServerTime());
+
 	updateIntervalsMetadataInEEPROM(event);
+
 	if (!pendingIntervals.isEmpty()) {
 		uint32_t curr_timestamp = pendingIntervals.getTimestamp();
 		pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
