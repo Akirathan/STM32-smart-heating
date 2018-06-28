@@ -30,6 +30,8 @@ public:
 	void setTime(const Time::Time &time);
 	Time::Time getTime();
 	bool isTimeSet() const;
+	void setTimestamp(uint32_t timestamp);
+	uint32_t getTimestamp() const;
 	void registerMinuteCallback(IMinCallback* min_callback);
 	void registerSecondCallback(ISecCallback* sec_callback);
 	void unregisterSecondCallback(ISecCallback* sec_callback);

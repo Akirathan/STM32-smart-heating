@@ -70,6 +70,16 @@ bool RTCController::isTimeSet() const
 	return timeSet;
 }
 
+void RTCController::setTimestamp(uint32_t timestamp)
+{
+	HAL_StatusTypeDef status = RTC_WriteTimeCounter(&hrtc, timestamp);
+	rt_assert(status == HAL_OK, "RTC cannot set counter");
+}
+
+uint32_t RTCController::getTimestamp() const
+{
+	return RTC_ReadTimeCounter(&hrtc);
+}
 
 /**
  * @brief Called every second by interrupt handler.
