@@ -15,6 +15,7 @@
 IFrame            * Application::currFrame = nullptr;
 bool                Application::clearDisplayFlag = false;
 CommunicationDevice Application::communicationDevice;
+IntervalList        Application::pendingIntervals;
 
 Application::Application() :
 	clkFrame(),
@@ -114,6 +115,25 @@ bool Application::isTimeSynced()
 }
 
 /**
+ * Dispatches "connected to the server" event.
+ *
+ * Reloads intervals metadata (timestamp and time_synced flag) in EEPROM if
+ * necessary.
+ * If there are some pendingIntervals - fix their timestamp and dispatch them
+ * to communicationDevice.
+ * @param event
+ */
+void Application::emitEvent(const ConnectedEvent &event)
+{
+	updateIntervalsMetadataInEEPROM(event);
+	if (!pendingIntervals.isEmpty()) {
+		uint32_t curr_timestamp = pendingIntervals.getTimestamp();
+		pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
+		communicationDevice.setIntervals(pendingIntervals);
+	}
+}
+
+/**
  * Dispatches "measured temperature" event.
  * More specifically displays the temperature on display (@ref MainFrame) and
  * sends the temperature to server via @ref Client.
@@ -141,6 +161,42 @@ void Application::emitEvent(const IntervalsChangedEvent &event)
 
 	EEPROM::getInstance().save(data, count, getCurrTimestamp(), isTimeSynced());
 	TempController::getInstance().reloadIntervalData(data, count);
+
+	IntervalList interval_list = convertIntervalEventDataToList(event);
+	if (isTimeSynced()) {
+		communicationDevice.setIntervals(interval_list);
+	}
+	else {
+		pendingIntervals = interval_list;
+	}
+}
+
+void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
+{
+	uint32_t timestamp = 0;
+	bool time_synced = false;
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	eeprom.loadIntervalsMetadata(&timestamp, &time_synced);
+	if (time_synced == false) {
+		eeprom.saveIntervalsMetadata(timestamp + event.getTimeShift(), true);
+	}
+}
+
+IntervalList Application::convertIntervalEventDataToList(const IntervalsChangedEvent &event)
+{
+	IntervalList interval_list;
+	const IntervalFrameData event_data[INTERVALS_NUM];
+	size_t event_data_count = 0;
+	event_data = event.getData(&event_data_count);
+
+	interval_list.setTimestamp(event.getTimestamp());
+
+	for (size_t i = 0; i < event_data_count; i++) {
+		Interval interval(event_data[i].from, event_data[i].to, event_data[i].temp);
+		interval_list.addInterval(interval);
+	}
+	return interval_list;
 }
 
 void Application::guiTask()
