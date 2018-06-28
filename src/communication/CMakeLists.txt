@@ -21,6 +21,12 @@ set(SOURCES ${COMMUNICATION_SOURCES} ${HTTP_SOURCES})
 
 include_directories(
 	"${MAIN_DIR}/main"  # For settings.h
+	# These directories are needed to include application.hpp and its dependencies
+	"${MAIN_DIR}/gui"
+	"${MAIN_DIR}/gui/frames"
+	"${MAIN_DIR}/gui/windows"
+	"${MAIN_DIR}/hardware"
+
 	$<TARGET_PROPERTY:cube,INCLUDE_DIRECTORIES>  # For LwIP includes
 )
 
