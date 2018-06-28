@@ -90,10 +90,12 @@ void CommunicationDevice::setTemp(double temp)
  */
 void CommunicationDevice::setIntervals(const IntervalList &interval_list)
 {
-    intervalList = interval_list;
-    intervalList.setTimestamp(getCurrentTimestamp());
+	if (timeSynced) {
+		intervalList = interval_list;
+		intervalList.setTimestamp(getCurrentTimestamp());
 
-    Client::setIntervals(intervalList);
+		Client::setIntervals(intervalList);
+	}
 }
 
 /**
