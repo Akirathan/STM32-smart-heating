@@ -51,8 +51,8 @@ private:
 	MainFrame mainFrame;
 	SetIntervalFrame setIntervalFrame;
 
-	void updateIntervalsMetadataInEEPROM(const ConnectedEvent &event);
-	IntervalList convertIntervalEventDataToList(const IntervalsChangedEvent &event);
+	static void updateIntervalsMetadataInEEPROM(const ConnectedEvent &event);
+	static IntervalList convertIntervalEventDataToList(const IntervalsChangedEvent &event);
 
 	void guiTask();
 };
