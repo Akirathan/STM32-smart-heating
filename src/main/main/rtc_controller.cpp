@@ -41,7 +41,7 @@ RTCController::RTCController()
  */
 void RTCController::setTime(const Time::Time &time)
 {
-	HAL_StatusTypeDef status = RTC_WriteTimeCounter(&hrtc, time.hours * 3600 + time.minutes * 60);
+	HAL_StatusTypeDef status = RTC_WriteTimeCounter(&hrtc, time.hours * 3600 + time.minutes * 60 + time.seconds);
 	rt_assert(status == HAL_OK, "RTC cannot set counter");
 
 	timeSet = true;
@@ -58,8 +58,9 @@ Time::Time RTCController::getTime()
 	uint32_t minutes = time_counter / 60;
 	uint32_t hours_today = hours % 24;
 	uint32_t minutes_today = (minutes % (24 * 60)) - (hours_today * 60);
+	uint32_t seconds_today = time_counter % 60;
 
-	return Time::Time(hours_today, minutes_today);
+	return Time::Time(hours_today, minutes_today, seconds_today);
 }
 
 bool RTCController::isTimeSet() const
@@ -81,19 +82,18 @@ void RTCController::update()
 		return;
 	}
 
-	RTC_TimeTypeDef rtc_time;
-	getTime(&rtc_time);
+	Time::Time time = getTime();
 
 	// Second overflow. Call all registered "functions".
 	secCallbackReceivers.callAllReceivers(nullptr);
 
 	// Minute overflow.
-	if (rtc_time.Seconds == 0) {
+	if (time.seconds == 0) {
 		minuteCallbackReceivers.callAllReceivers(nullptr);
 	}
 
 	// Hour overflow
-	if (rtc_time.Minutes == 0) {
+	if (time.minutes == 0) {
 		// ...
 	}
 }

@@ -16,9 +16,10 @@ namespace Time {
 
 struct Time {
 	Time() = default;
-	Time(uint32_t hours, uint32_t minutes);
+	Time(uint32_t hours, uint32_t minutes, uint32_t seconds);
 	uint32_t hours = 0;
 	uint32_t minutes = 0;
+	uint32_t seconds = 0;
 };
 
 uint32_t serialize(Time t);
