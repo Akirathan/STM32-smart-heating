@@ -40,8 +40,8 @@ void Application::frameTerminateCallback()
 	rt_assert(currFrame != nullptr, "currFrame must be set");
 
 	if (currFrame == &clkFrame) {
-		RTC_TimeTypeDef rtc_time = clkFrame.getTime();
-		RTCController::getInstance().setTime(&rtc_time);
+		Time::Time time = clkFrame.getTime();
+		RTCController::getInstance().setTime(time);
 
 		if (EEPROM::getInstance().isEmpty()) {
 			setCurrFrame(&setIntervalFrame);

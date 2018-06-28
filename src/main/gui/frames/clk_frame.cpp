@@ -45,14 +45,14 @@ void ClkFrame::drawHeader()
 /**
  * @brief Gets the time that was set in @ref ClkFrame::passControl.
  */
-RTC_TimeTypeDef ClkFrame::getTime() const
+Time::Time ClkFrame::getTime() const
 {
 	// Investigate window members.
-	RTC_TimeTypeDef rtc_time;
-	rtc_time.Hours = time.getHours();
-	rtc_time.Minutes = time.getMinutes();
+	Time::Time t;
+	t.hours = time.getHours();
+	t.minutes = time.getMinutes();
 
-	return rtc_time;
+	return t;
 }
 
 

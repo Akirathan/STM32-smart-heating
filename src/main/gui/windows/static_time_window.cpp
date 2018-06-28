@@ -6,6 +6,7 @@
 
 #include "static_time_window.hpp"
 #include "rt_assert.h"
+#include "time.hpp"
 
 /**
  *
@@ -135,11 +136,10 @@ void StaticTimeWindow::runClock()
 	rt_assert(is_time_set, "Time must be set in RTCController");
 
 	// Set time.
-	RTC_TimeTypeDef rtc_time;
-	RTCController::getInstance().getTime(&rtc_time);
-	hours = rtc_time.Hours;
-	minutes = rtc_time.Minutes;
-	seconds = rtc_time.Seconds;
+	Time::Time time = RTCController::getInstance().getTime();
+	hours = time.hours;
+	minutes = time.minutes;
+	seconds = time.seconds;
 
 	// Register minute (second) callback.
 	if (secPrecision) {

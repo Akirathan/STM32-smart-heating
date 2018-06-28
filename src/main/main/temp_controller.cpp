@@ -86,14 +86,13 @@ void TempController::controlTemperature()
 uint32_t TempController::currentIntervalTemperature()
 {
 	// Get time from RTC
-	RTC_TimeTypeDef curr_time {0,0,0};
 	RTCController& rtc = RTCController::getInstance();
 
 	rt_assert(rtc.isTimeSet(), "RTC time must be set");
-	rtc.getTime(&curr_time);
+	Time::Time curr_time = rtc.getTime();
 
 	// Serialize current time.
-	uint32_t curr_time_serialized = Time::serialize(Time::Time{curr_time.Hours, curr_time.Minutes});
+	uint32_t curr_time_serialized = Time::serialize(curr_time);
 
 	// Find current interval.
 	for (size_t i = 0; i < dataCount; ++i) {

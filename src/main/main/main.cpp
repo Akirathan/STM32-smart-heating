@@ -25,9 +25,9 @@ void static_time_window_test()
 	/* Clock setting */
 	ClkFrame clk_frame;
 	clk_frame.passControl();
-	RTC_TimeTypeDef rtc_time = clk_frame.getTime();
+	Time::Time time = clk_frame.getTime();
 	// Save time into rtc
-	RTCController::getInstance().setTime(&rtc_time);
+	RTCController::getInstance().setTime(time);
 
 	/* static_time_window initialization */
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
