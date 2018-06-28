@@ -37,27 +37,29 @@ RTCController::RTCController()
 /**
  * @brief Sets current time into RTC.
  *
- * Wrapper for @ref HAL_RTC_SetTime function.
+ * Date is set to 1.1.1970.
  */
-void RTCController::setTime(RTC_TimeTypeDef* time)
+void RTCController::setTime(const Time::Time &time)
 {
-	if (HAL_RTC_SetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
-		Error_Handler();
-	}
+	HAL_StatusTypeDef status = RTC_WriteTimeCounter(&hrtc, time.hours * 3600 + time.minutes * 60);
+	rt_assert(status == HAL_OK, "RTC cannot set counter");
 
 	timeSet = true;
 }
 
 /**
  * @brief Gets current time from RTC.
- *
- * Wrapper for @ref HAL_RTC_GetTime function.
  */
-void RTCController::getTime(RTC_TimeTypeDef* time)
+Time::Time RTCController::getTime()
 {
-	if (HAL_RTC_GetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
-		Error_Handler();
-	}
+	uint32_t time_counter = RTC_ReadTimeCounter(&hrtc);
+
+	uint32_t hours = time_counter / 3600;
+	uint32_t minutes = time_counter / 60;
+	uint32_t hours_today = hours % 24;
+	uint32_t minutes_today = (minutes % (24 * 60)) - (hours_today * 60);
+
+	return Time::Time(hours_today, minutes_today);
 }
 
 bool RTCController::isTimeSet() const
