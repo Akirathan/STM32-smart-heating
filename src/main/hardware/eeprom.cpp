@@ -103,6 +103,22 @@ void EEPROM::save(const IntervalFrameData data[], const size_t count, uint32_t t
 	writePage(FRAME_DELIM, addr);
 }
 
+void EEPROM::saveIntervalsMetadata(uint32_t timestamp, bool time_synced)
+{
+	writePage(timestamp, INTERVALS_TIMESTAMP_ADDR);
+	writePage(static_cast<uint32_t>(time_synced), INTERVALS_TIMESYNCED_ADDR);
+}
+
+void EEPROM::loadIntervalsMetadata(uint32_t *timestamp, bool *time_synced)
+{
+	if (timestamp != nullptr) {
+		*timestamp = readPage(INTERVALS_TIMESTAMP_ADDR);
+	}
+	if (time_synced != nullptr) {
+		*time_synced = static_cast<bool>(readPage(INTERVALS_TIMESYNCED_ADDR));
+	}
+}
+
 bool EEPROM::isEmpty()
 {
 	if (readPage(0) != FRAME_DELIM) {

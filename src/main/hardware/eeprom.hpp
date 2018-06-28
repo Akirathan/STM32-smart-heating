@@ -26,9 +26,16 @@ public:
 	bool isEmpty();
 	void save(const IntervalFrameData data[], const size_t count, uint32_t timestamp, bool time_synced);
 	void load(IntervalFrameData data[], size_t* count, uint32_t *timestamp, bool *time_synced);
+	void saveIntervalsMetadata(uint32_t timestamp, bool time_synced);
+	void loadIntervalsMetadata(uint32_t *timestamp, bool *time_synced);
 private:
-	EEPROM();
 	const uint32_t FRAME_DELIM = 0x1234;
+	const uint16_t START_ADDR = 0;
+	const uint16_t INTERVALS_TIMESTAMP_ADDR = START_ADDR + sizeof(FRAME_DELIM);
+	const uint16_t INTERVALS_TIMESYNCED_ADDR = INTERVALS_TIMESTAMP_ADDR + 4;
+
+	EEPROM();
+
 	void save(const IntervalFrameData &data, uint16_t addr);
 	void load(IntervalFrameData &data, uint16_t addr);
 	uint32_t readPage(uint16_t addr);
