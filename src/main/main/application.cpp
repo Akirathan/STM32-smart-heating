@@ -186,9 +186,8 @@ void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
 IntervalList Application::convertIntervalEventDataToList(const IntervalsChangedEvent &event)
 {
 	IntervalList interval_list;
-	const IntervalFrameData event_data[INTERVALS_NUM];
 	size_t event_data_count = 0;
-	event_data = event.getData(&event_data_count);
+	const IntervalFrameData *event_data = event.getData(&event_data_count);
 
 	interval_list.setTimestamp(event.getTimestamp());
 
