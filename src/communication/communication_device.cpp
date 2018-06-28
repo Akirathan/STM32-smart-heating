@@ -59,14 +59,21 @@ double CommunicationDevice::getTemp() const
 /**
  * Sets the device temperature. Note that this temperature is periodically sent
  * to the server if this device is connected.
+ *
+ * Temperature is saved for sending to the server only in case when time is
+ * already synchronized. Otherwise timestamp that would be sent to the server
+ * would be incorrect.
+ *
  * @param temp ... temperature to set.
  */
 void CommunicationDevice::setTemp(double temp)
 {
-    this->temp = temp;
-    tempTimestamp = getCurrentTimestamp();
+	if (timeSynced) {
+		this->temp = temp;
+		tempTimestamp = getCurrentTimestamp();
 
-    Client::setTemperature(temp, tempTimestamp);
+		Client::setTemperature(temp, tempTimestamp);
+	}
 }
 
 /**
