@@ -323,7 +323,7 @@ http::Request Client::createPostTemperature(const double temp, const uint32_t ti
 {
     char timestamp_str[12];
     char temp_str[10];
-    sprintf_double(temp_str, temp);
+    sprintf_double(temp_str, temp, 4);
     std::sprintf(timestamp_str, "%lu", time_stamp);
     size_t timestamp_len = std::strlen(timestamp_str);
 

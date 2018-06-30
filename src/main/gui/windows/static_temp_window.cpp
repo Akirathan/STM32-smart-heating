@@ -5,6 +5,7 @@
  */
 
 #include "static_temp_window.hpp"
+#include "sprintf_double.hpp"
 
 /**
  *
@@ -44,9 +45,7 @@ void StaticTempWindow::draw() const
 		return;
 	}
 
-	// FIXME: printing format %2.1f does not work
-	uint32_t u_temp = (uint32_t)temp;
-	char text[3];
-	sprintf(text, "%lu", u_temp);
+	char text[7];
+	sprintf_double(text, temp, 3);
 	LCD::print_string(coord.x, coord.y, (uint8_t *)text, LEFT_MODE, LCD::NORMAL_FONT);
 }
