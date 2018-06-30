@@ -18,7 +18,7 @@
  */
 inline int sprintf_double(char str[], double d)
 {
-	char *sign = (d < 0) ? "-" : "";
+	const char *sign = (d < 0) ? "-" : "";
 	d = (d < 0) ? -d : d;
 
 	int int_part = static_cast<int>(d);
