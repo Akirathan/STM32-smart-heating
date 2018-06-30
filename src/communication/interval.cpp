@@ -18,6 +18,11 @@ Interval Interval::deserialize(const uint8_t *buffer, const size_t buff_size)
     return Interval(from_time, to_time, temp);
 }
 
+/**
+ * @param fromTime ... serialized time (hours*60 + minutes)
+ * @param toTime   ... serialized time (hours*60 + minutes)
+ * @param temp     ... temperature in this interval.
+ */
 Interval::Interval(const uint32_t fromTime, const uint32_t toTime, const uint32_t temp) :
         fromTime(fromTime),
         toTime(toTime),

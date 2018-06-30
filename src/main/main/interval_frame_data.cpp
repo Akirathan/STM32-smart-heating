@@ -13,6 +13,11 @@ IntervalFrameData::IntervalFrameData()
 	  temp(0)
 { }
 
+/**
+ * @param from ... serialized time (hours*60 + minutes)
+ * @param to   ... serialized time (hours*60 + minutes)
+ * @param temp ... tempreature in this interval.
+ */
 IntervalFrameData::IntervalFrameData(uint32_t from, uint32_t to, uint32_t temp)
 	: from(from),
 	  to(to),
