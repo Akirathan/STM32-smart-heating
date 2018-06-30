@@ -10,6 +10,11 @@
 #include "application.hpp"
 #include "tcp_driver.hpp"
 
+/* Testing includes (can be removed in release) */
+#include "char_stream_test.hpp"
+#include "response_buffer_test.hpp"
+
+
 void SystemClock_Config();
 static void board_init();
 
@@ -94,6 +99,12 @@ void fat_try(bool formatted, const std::string& fname)
 
 	// Write.
 	f_write(&file, wrbuff, 512, &br);
+}
+
+void tests()
+{
+	CharStreamTest test;
+	test.runAll();
 }
 
 extern "C" {
