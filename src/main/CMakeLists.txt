@@ -6,6 +6,7 @@ set(WINDOWS_PATH "${GUI_PATH}/windows")
 set(HARDWARE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/hardware")
 set(MAIN_PATH "${CMAKE_CURRENT_SOURCE_DIR}/main")
 set(LWIP_CONF_PATH "${CMAKE_CURRENT_SOURCES_DIR}/lwip_conf")
+set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../tests")
 
 
 set(FRAMES_SOURCES
@@ -57,12 +58,18 @@ set(MAIN_SOURCES
 	"${MAIN_PATH}/intervals_changed_event.cpp"
 )
 
+# TODO: TEST_SOURCES - these sources do not have to be in release binary
+set(TEST_SOURCES
+	"${TESTS_PATH}/char_stream_test.cpp"
+)
+
 set(SOURCES
 	${FRAMES_SOURCES}
 	${WINDOWS_SOURCES}
 	${GUI_SOURCES}
 	${HARDWARE_SOURCES}
 	${MAIN_SOURCES}
+	${TEST_SOURCES}
 )
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../cube" "${CMAKE_BINARY_DIR}/cube")
@@ -85,6 +92,8 @@ include_directories(
 	${HARDWARE_PATH}
 	${MAIN_PATH}
 	${LWIP_CONF_PATH}
+	# TODO: tests are optional - do not include them in release
+	${TESTS_PATH}
 )
 
 
