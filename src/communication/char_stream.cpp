@@ -146,7 +146,7 @@ void CharStream::unreadChar()
 bool CharStream::atEndOfLine() const
 {
     bool ret_val = false;
-    if (bufferIdx < bufferSize - 2) {
+    if (bufferIdx <= bufferSize - 2) {
         ret_val = buffer[bufferIdx] == '\r' && buffer[bufferIdx + 1] == '\n';
     }
     return ret_val;
