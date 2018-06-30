@@ -13,7 +13,7 @@
 #include "set_interval_frame.hpp"
 #include "callbacks.hpp"
 #include "measured_temp_event.hpp"
-#include "intervals_changed_event.hpp"
+#include "intervals_changed_stm_event.hpp"
 #include "connected_event.hpp"
 #include "communication_device.hpp"
 
@@ -36,7 +36,7 @@ public:
 	static bool isTimeSynced();
 	static void emitEvent(const ConnectedEvent &event);
 	static void emitEvent(const MeasuredTempEvent &event);
-	static void emitEvent(const IntervalsChangedEvent &event);
+	static void emitEvent(const IntervalsChangedStmEvent &event);
 private:
 	static IFrame* currFrame;
 	static bool clearDisplayFlag;

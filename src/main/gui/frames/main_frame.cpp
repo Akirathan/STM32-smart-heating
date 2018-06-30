@@ -136,7 +136,7 @@ void MainFrame::frameTerminateCallback()
 		size_t count = 0;
 		setIntervalFrame.getData(data, &count);
 
-		IntervalsChangedEvent event(data, count, Application::getCurrTimestamp(), Application::isTimeSynced());
+		IntervalsChangedStmEvent event(data, count, Application::getCurrTimestamp(), Application::isTimeSynced());
 		Application::emitEvent(event);
 	}
 

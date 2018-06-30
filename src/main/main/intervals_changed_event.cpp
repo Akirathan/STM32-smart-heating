@@ -7,25 +7,11 @@
 #include "intervals_changed_event.hpp"
 #include "rt_assert.h"
 
-
-IntervalsChangedEvent::IntervalsChangedEvent(IntervalFrameData data[], const size_t count, const uint32_t timestamp,
-		bool timestamp_synced) :
-	count(count),
-	timestamp(timestamp),
-	timestampSynced(timestamp_synced)
-{
-	rt_assert(count <= INTERVALS_NUM, "Too much intervals");
-
-	for (size_t i = 0; i < count; i++) {
-		this->data[i] = data[i];
-	}
-}
-
 const IntervalFrameData * IntervalsChangedEvent::getData(size_t *count) const
 {
 	rt_assert(count != nullptr, "Unexpected null pointer");
 
-	*count = this->count;
+	*count = dataCount;
 	return data;
 }
 
@@ -41,4 +27,17 @@ uint32_t IntervalsChangedEvent::getTimestamp() const
 bool IntervalsChangedEvent::isTimestampSynced() const
 {
 	return timestampSynced;
+}
+
+IntervalsChangedEvent::IntervalsChangedEvent(IntervalFrameData data[], const size_t count, const uint32_t timestamp,
+		bool timestamp_synced) :
+	dataCount(count),
+	timestamp(timestamp),
+	timestampSynced(timestamp_synced)
+{
+	rt_assert(count <= INTERVALS_NUM, "Too much intervals");
+
+	for (size_t i = 0; i < count; i++) {
+		this->data[i] = data[i];
+	}
 }

@@ -11,27 +11,29 @@
 #include "event.hpp"
 #include "interval_frame_data.hpp"
 #include "settings.h" // For INTERVALS_NUM
+#include "interval_list.hpp"
 
 /**
- * Represents "intervals changed" event.
- * This class contains also timestamp in which this event was generated and
- * bool flag whether the time was synchronized with the server when this
- * event was generated.
+ * Base class for @ref IntervalsChangedStmEvent and @ref IntervalsChangedServerEvent.
  *
- * @note All data members are immutable.
+ * This class contains methods that are common for both derived classes,
+ * especially converting IntervalFrameData[] to IntervalList and vice
+ * versa.
  *
- * See @ref Application::emitEvent for more details.
+ * @note This class cannot be instantiated.
  */
 class IntervalsChangedEvent : public Event {
 public:
-	IntervalsChangedEvent(IntervalFrameData data[], const size_t count, const uint32_t timestamp,
-	         	          bool timestamp_synced);
 	const IntervalFrameData * getData(size_t *count) const;
 	uint32_t getTimestamp() const;
 	bool isTimestampSynced() const;
+protected:
+	IntervalsChangedEvent(IntervalFrameData data[], const size_t count, const uint32_t timestamp,
+	         	          bool timestamp_synced);
 private:
 	IntervalFrameData data[INTERVALS_NUM];
-	size_t count;
+	size_t dataCount;
+	IntervalList intervalList;
 	uint32_t timestamp;
 	bool timestampSynced;
 };

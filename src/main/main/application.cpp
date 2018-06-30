@@ -57,7 +57,7 @@ void Application::frameTerminateCallback()
 		size_t count = 0;
 		setIntervalFrame.getData(data, &count);
 
-		IntervalsChangedEvent event(data, count, getCurrTimestamp(), isTimeSynced());
+		IntervalsChangedStmEvent event(data, count, getCurrTimestamp(), isTimeSynced());
 		Application::emitEvent(event);
 
 		switchCurrFrameToMain();
@@ -157,7 +157,7 @@ void Application::emitEvent(const MeasuredTempEvent &event)
  * This involves comparing timestamp of the intervals.
  * @param event
  */
-void Application::emitEvent(const IntervalsChangedEvent &event)
+void Application::emitEvent(const IntervalsChangedStmEvent &event)
 {
 	size_t count = 0;
 	const IntervalFrameData *data = event.getData(&count);
