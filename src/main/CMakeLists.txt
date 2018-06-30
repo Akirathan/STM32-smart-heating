@@ -61,6 +61,7 @@ set(MAIN_SOURCES
 # TODO: TEST_SOURCES - these sources do not have to be in release binary
 set(TEST_SOURCES
 	"${TESTS_PATH}/char_stream_test.cpp"
+	"${TESTS_PATH}/response_buffer_test.cpp"
 )
 
 set(SOURCES

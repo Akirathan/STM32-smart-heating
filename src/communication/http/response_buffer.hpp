@@ -51,6 +51,8 @@ private:
     static void resolveOptionType(const char *word, HeaderOption::Type *type);
     static char * trimWhiteSpaces(char *str);
     static void reset();
+
+    friend class ResponseBufferTest;
 };
 
 } // namespace http
