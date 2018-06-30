@@ -7,6 +7,7 @@ set(COMMUNICATION_SOURCES
 	"interval_list.cpp"
 	"communication_device.cpp"
 	"client.cpp"
+	"client_timer.cpp"
 )
 
 set(HTTP_SOURCES 
