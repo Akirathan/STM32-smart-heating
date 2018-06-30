@@ -14,6 +14,7 @@
 #include "netif/etharp.h" // For ethernet_input
 #include "ethernetif.h"
 #include "http/response_buffer.hpp"
+#include "client_timer.hpp" // For ClientTimer::checkTimeout
 
 struct ip_addr  TcpDriver::destIpAddress;
 uint16_t        TcpDriver::destPort = 0;
@@ -61,6 +62,7 @@ void TcpDriver::poll()
 {
 	ethernetif_input(&netInterface);
 	sys_check_timeouts();
+	ClientTimer::checkTimeout();
 }
 
 
