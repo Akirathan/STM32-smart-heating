@@ -148,10 +148,10 @@ void Application::emitEvent(const MeasuredTempEvent &event)
 }
 
 /**
- * Dispatches "intervals changed" event. The event is generated on STM, more
+ * Dispatches "intervals changed in STM" event. The event is generated on STM, more
  * specifically it was generated in @ref SetIntervalFrame.
- * Note that the "intervals changed on server" event is handled by @ref Client
- * via calling intervalsRecvCb callback.
+ * Note that the "intervals changed on server" event is handled by other emitEvent
+ * method.
  *
  * Intervals are saved into EEPROM and compared with intervals from server.
  * This involves comparing timestamp of the intervals.
@@ -162,16 +162,31 @@ void Application::emitEvent(const IntervalsChangedStmEvent &event)
 	size_t count = 0;
 	const IntervalFrameData *data = event.getData(&count);
 
-	EEPROM::getInstance().save(data, count, getCurrTimestamp(), isTimeSynced());
+	EEPROM::getInstance().save(data, count, event.getTimestamp(), event.isTimestampSynced());
 	TempController::getInstance().reloadIntervalData(data, count);
 
-	IntervalList interval_list = convertIntervalEventDataToList(event);
 	if (isTimeSynced()) {
-		communicationDevice.setIntervals(interval_list);
+		communicationDevice.setIntervals(event.getList());
 	}
 	else {
-		pendingIntervals = interval_list;
+		pendingIntervals = event.getList();
 	}
+}
+
+/**
+ * Dispatches "intervals changed on server" (intervals downloaded from server) event.
+ *
+ * For more info about this event see @ref IntervalsChangedServerEvent.
+ *
+ * @param event ... event to dispatch
+ */
+void Application::emitEvent(const IntervalsChangedServerEvent &event)
+{
+	size_t data_count = 0;
+	const IntervalFrameData *data = event.getData(&data_count);
+
+	EEPROM::getInstance().save(data, data_count, event.getTimestamp(), event.isTimestampSynced());
+	TempController::getInstance().reloadIntervalData(data, data_count);
 }
 
 void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
@@ -184,21 +199,6 @@ void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
 	if (time_synced == false) {
 		eeprom.saveIntervalsMetadata(getCurrTimestamp() + event.getTimeShift(), true);
 	}
-}
-
-IntervalList Application::convertIntervalEventDataToList(const IntervalsChangedEvent &event)
-{
-	IntervalList interval_list;
-	size_t event_data_count = 0;
-	const IntervalFrameData *event_data = event.getData(&event_data_count);
-
-	interval_list.setTimestamp(event.getTimestamp());
-
-	for (size_t i = 0; i < event_data_count; i++) {
-		Interval interval(event_data[i].from, event_data[i].to, event_data[i].temp);
-		interval_list.addInterval(interval);
-	}
-	return interval_list;
 }
 
 void Application::guiTask()

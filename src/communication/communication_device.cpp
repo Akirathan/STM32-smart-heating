@@ -8,6 +8,7 @@
 #include "rt_assert.h"
 #include "rtc_controller.hpp"
 #include "connected_event.hpp"
+#include "intervals_changed_server_event.hpp"
 #include "application.hpp"
 
 /**
@@ -153,6 +154,11 @@ void CommunicationDevice::intervalsSentCb()
  */
 void CommunicationDevice::intervalsRecvCb(const IntervalList &interval_list)
 {
+	rt_assert(interval_list.getTimestamp() != 0, "Timestamp must be set");
+
+	IntervalsChangedServerEvent event(interval_list, timeSynced);
+	Application::emitEvent(event);
+
     intervalList = interval_list;
 }
 
