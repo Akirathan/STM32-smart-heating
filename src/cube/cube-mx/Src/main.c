@@ -40,7 +40,7 @@
 #include "stm32f1xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "stm3210c_eval.h" // For BSP_LED_Init
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -393,8 +393,11 @@ void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  BSP_LED_Init(LED_ORANGE);
   while(1)
   {
+    BSP_LED_Toggle(LED_ORANGE);
+    HAL_Delay(500);
   }
   /* USER CODE END Error_Handler_Debug */
 }
