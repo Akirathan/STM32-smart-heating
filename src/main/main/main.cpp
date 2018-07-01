@@ -8,6 +8,12 @@
 
 #include "main.hpp"
 #include "application.hpp"
+#include "tcp_driver.hpp"
+
+/* Testing includes (can be removed in release) */
+#include "char_stream_test.hpp"
+#include "response_buffer_test.hpp"
+
 
 void SystemClock_Config();
 static void board_init();
@@ -24,9 +30,9 @@ void static_time_window_test()
 	/* Clock setting */
 	ClkFrame clk_frame;
 	clk_frame.passControl();
-	RTC_TimeTypeDef rtc_time = clk_frame.getTime();
+	Time::Time time = clk_frame.getTime();
 	// Save time into rtc
-	RTCController::getInstance().setTime(&rtc_time);
+	RTCController::getInstance().setTime(time);
 
 	/* static_time_window initialization */
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
@@ -39,73 +45,18 @@ void static_time_window_test()
 	while (true) ;
 }
 
-void eeprom_try()
-{
-	uint8_t buff[8] = {2,2,2,2,2,2,2,2};
-	uint8_t rx_buff[8];
-	uint32_t read_bytes = 8;
-
-	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
-
-	if (BSP_EEPROM_Init() != EEPROM_OK) {
-		error_handler();
-	}
-
-	if (BSP_EEPROM_WriteBuffer(buff, 0, 8) != EEPROM_OK) {
-		error_handler();
-	}
-
-	if (BSP_EEPROM_ReadBuffer(rx_buff, 0, &read_bytes) != EEPROM_OK) {
-		error_handler();
-	}
-}
-
-static err_t net_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
-{
-
-}
-
-static err_t net_tcp_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
-{
-
-}
-
 /**
- * Receives packets in while loop.
+ * Reads whole contents of EEPROM - debugging.
  */
-void net_try()
+void read_eeprom()
 {
-	struct netif net;
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t data_size = 0;
+	uint32_t timestamp = 0;
+	bool time_synced = false;
+	EEPROM &eeprom = EEPROM::getInstance();
 
-	lwip_init();
-
-	// Init IP address.
-	struct ip_addr ip;
-	struct ip_addr netmask;
-	struct ip_addr gw;
-	IP4_ADDR(&ip, 198, 0, 0, 2);
-	IP4_ADDR(&netmask, 255, 255, 255, 0);
-	IP4_ADDR(&gw, 198, 0, 0, 1);
-
-	// Config.
-	netif_add(&net, &ip, &netmask, &gw, NULL, &ethernetif_init,
-			(void (*) (netif *))&ethernetif_input);
-	netif_set_default(&net);
-	netif_set_up(&net);
-	netif_set_link_callback(&net, ethernetif_update_config);
-
-	// Set TCP.
-	struct tcp_pcb * pcb;
-	pcb = tcp_new();
-	err_t err = tcp_bind(pcb, IP_ADDR_ANY, 4567);
-
-	if (err == ERR_OK) {
-		pcb = tcp_listen(pcb);
-	}
-
-	while (true) {
-		ethernetif_input(&net);
-	}
+	eeprom.load(data, &data_size, &timestamp, &time_synced);
 }
 
 void fat_try(bool formatted, const std::string& fname)
@@ -150,6 +101,12 @@ void fat_try(bool formatted, const std::string& fname)
 	f_write(&file, wrbuff, 512, &br);
 }
 
+void tests()
+{
+	CharStreamTest test;
+	test.runAll();
+}
+
 extern "C" {
 	extern int cube_main();
 }
@@ -175,6 +132,9 @@ int main()
 static void board_init()
 {
 	LCD::init();
+
+	lwip_init();
+	TcpDriver::init(192, 168, 0, 1, 8000);
 }
 
 /**

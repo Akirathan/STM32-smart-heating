@@ -9,9 +9,18 @@
 namespace Time {
 
 Time::Time(uint32_t hours, uint32_t minutes)
-	: hours(hours), minutes(minutes)
+	: Time(hours, minutes, 0)
 { }
 
+Time::Time(uint32_t hours, uint32_t minutes, uint32_t seconds)
+	: hours(hours),
+	  minutes(minutes),
+	  seconds(seconds)
+{ }
+
+/**
+ * Serialize just hours and minutes, not seconds.
+ */
 uint32_t serialize(Time t)
 {
 	return t.hours*60 + t.minutes;

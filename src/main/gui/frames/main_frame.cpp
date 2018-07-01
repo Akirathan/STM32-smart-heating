@@ -6,6 +6,7 @@
 
 #include "main_frame.hpp"
 #include "application.hpp"
+#include "intervals_changed_event.hpp"
 
 void MainFrame::drawHeader()
 {
@@ -91,7 +92,7 @@ void MainFrame::exitMessageCallback()
 		// Suppose eeprom is not empty.
 		IntervalFrameData data[INTERVALS_NUM];
 		size_t count = 0;
-		EEPROM::getInstance().load(data, &count);
+		EEPROM::getInstance().load(data, &count, nullptr, nullptr);
 
 		overviewIntervalFrame.setData(data, count);
 		overviewIntervalFrame.registerFrameTerminateCallbackReceiver(this);
@@ -120,6 +121,10 @@ void MainFrame::registerExitMessageCallback()
 /**
  * This callback is called from setIntervalFrame or overviewIntervalFrame in case
  * when one of them is terminating.
+ *
+ * If @ref SetIntervalFrame was terminated it means that user changed intervals
+ * and @ref IntervalsChangedEvent is generated and dispatched to @ref Application.
+ * See @ref Application and its emitEvent methods for more details.
  */
 void MainFrame::frameTerminateCallback()
 {
@@ -127,14 +132,12 @@ void MainFrame::frameTerminateCallback()
 	setIntervalFrame.unregisterFrameTerminateCallbackReceiver(this);
 
 	if (currFrameType == SET_INTERVAL_FRAME) {
-		// Reload data into TempController.
 		IntervalFrameData data[INTERVALS_NUM];
 		size_t count = 0;
 		setIntervalFrame.getData(data, &count);
-		TempController::getInstance().reloadIntervalData(data, count);
 
-		// Save intervals into EEPROM.
-		EEPROM::getInstance().save(data, count);
+		IntervalsChangedStmEvent event(data, count, Application::getCurrTimestamp(), Application::isTimeSynced());
+		Application::emitEvent(event);
 	}
 
 	Application::setCurrFrame(this);

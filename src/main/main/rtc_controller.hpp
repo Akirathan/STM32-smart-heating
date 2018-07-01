@@ -12,6 +12,7 @@
 #include "callbacks.hpp"
 #include "callback_receivers.hpp"
 #include "settings.h"
+#include "time.hpp"
 
 /**
  * @brief Class for controlling the RTC component.
@@ -26,9 +27,11 @@ public:
 	static RTCController& getInstance();
 	void operator=(const RTCController&) = delete;
 	RTCController(const RTCController&) = delete;
-	void setTime(RTC_TimeTypeDef* time);
-	void getTime(RTC_TimeTypeDef* time);
+	void setTime(const Time::Time &time);
+	Time::Time getTime();
 	bool isTimeSet() const;
+	void setTimestamp(uint32_t timestamp);
+	uint32_t getTimestamp() const;
 	void registerMinuteCallback(IMinCallback* min_callback);
 	void registerSecondCallback(ISecCallback* sec_callback);
 	void unregisterSecondCallback(ISecCallback* sec_callback);

@@ -37,27 +37,32 @@ RTCController::RTCController()
 /**
  * @brief Sets current time into RTC.
  *
- * Wrapper for @ref HAL_RTC_SetTime function.
+ * Date is set to 1.1.1970.
  */
-void RTCController::setTime(RTC_TimeTypeDef* time)
+void RTCController::setTime(const Time::Time &time)
 {
-	if (HAL_RTC_SetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
-		Error_Handler();
-	}
+	HAL_StatusTypeDef status = RTC_WriteTimeCounter(&hrtc, time.hours * 3600 + time.minutes * 60 + time.seconds);
+	rt_assert(status == HAL_OK, "RTC cannot set counter");
 
 	timeSet = true;
 }
 
 /**
- * @brief Gets current time from RTC.
+ * @brief Gets current time from RTC in UTC+2.
  *
- * Wrapper for @ref HAL_RTC_GetTime function.
+ * @note Timezones are not supported yet.
  */
-void RTCController::getTime(RTC_TimeTypeDef* time)
+Time::Time RTCController::getTime()
 {
-	if (HAL_RTC_GetTime(&hrtc, time, RTC_FORMAT_BIN) != HAL_OK) {
-		Error_Handler();
-	}
+	uint32_t time_counter = RTC_ReadTimeCounter(&hrtc);
+
+	uint32_t hours = time_counter / 3600;
+	uint32_t minutes = time_counter / 60;
+	uint32_t hours_today = hours % 24;
+	uint32_t minutes_today = (minutes % (24 * 60)) - (hours_today * 60);
+	uint32_t seconds_today = time_counter % 60;
+
+	return Time::Time(hours_today + 2, minutes_today, seconds_today);
 }
 
 bool RTCController::isTimeSet() const
@@ -65,6 +70,16 @@ bool RTCController::isTimeSet() const
 	return timeSet;
 }
 
+void RTCController::setTimestamp(uint32_t timestamp)
+{
+	HAL_StatusTypeDef status = RTC_WriteTimeCounter(&hrtc, timestamp);
+	rt_assert(status == HAL_OK, "RTC cannot set counter");
+}
+
+uint32_t RTCController::getTimestamp() const
+{
+	return RTC_ReadTimeCounter(&hrtc);
+}
 
 /**
  * @brief Called every second by interrupt handler.
@@ -79,19 +94,18 @@ void RTCController::update()
 		return;
 	}
 
-	RTC_TimeTypeDef rtc_time;
-	getTime(&rtc_time);
+	Time::Time time = getTime();
 
 	// Second overflow. Call all registered "functions".
 	secCallbackReceivers.callAllReceivers(nullptr);
 
 	// Minute overflow.
-	if (rtc_time.Seconds == 0) {
+	if (time.seconds == 0) {
 		minuteCallbackReceivers.callAllReceivers(nullptr);
 	}
 
 	// Hour overflow
-	if (rtc_time.Minutes == 0) {
+	if (time.minutes == 0) {
 		// ...
 	}
 }

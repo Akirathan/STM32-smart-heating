@@ -14,6 +14,7 @@
 #include "lcd.hpp"
 #include "frame.hpp"
 #include "callbacks.hpp"
+#include "time.hpp"
 
 /**
  * @brief Represents class for user time selection.
@@ -27,7 +28,7 @@ public:
 	virtual void passControl() override;
 	virtual void exitMessageCallback() override;
 	virtual void registerExitMessageCallback() override;
-	RTC_TimeTypeDef getTime() const;
+	Time::Time getTime() const;
 private:
 	void drawHeader() override;
 	TimeWindow time;

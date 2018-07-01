@@ -72,11 +72,14 @@ uint32_t EEPROM::readPage(uint16_t addr)
 }
 
 /**
- * @brief Saves array of data into EEPROM.
- * @param data Array of data with INTERVALS_NUM length, may contain nullptr.
- * @param count Number of data to save
+ * @brief Saves array of data into EEPROM along with timestamp and time_synced flag.
+ *
+ * @param data        ... Array of data with INTERVALS_NUM length, may contain nullptr.
+ * @param count       ... Number of data to save.
+ * @param timestamp   ... Current (Unix) timestamp.
+ * @param time_synced ... flag denoting whether time is synchronized with server.
  */
-void EEPROM::save(const IntervalFrameData data[], const size_t count)
+void EEPROM::save(const IntervalFrameData data[], const size_t count, uint32_t timestamp, bool time_synced)
 {
 	rt_assert(count <= INTERVALS_NUM, "Attempting to save too much data into EEPROM");
 
@@ -86,6 +89,11 @@ void EEPROM::save(const IntervalFrameData data[], const size_t count)
 	writePage(FRAME_DELIM, addr);
 	addr += 4;
 
+	writePage(timestamp, addr);
+	addr += 4;
+	writePage(static_cast<uint32_t>(time_synced), addr);
+	addr += 4;
+
 	for (size_t i = 0; i < count; ++i) {
 		save(data[i], addr);
 		addr += sizeof(data[i]);
@@ -93,6 +101,22 @@ void EEPROM::save(const IntervalFrameData data[], const size_t count)
 
 	// Write ending delimiter
 	writePage(FRAME_DELIM, addr);
+}
+
+void EEPROM::saveIntervalsMetadata(uint32_t timestamp, bool time_synced)
+{
+	writePage(timestamp, INTERVALS_TIMESTAMP_ADDR);
+	writePage(static_cast<uint32_t>(time_synced), INTERVALS_TIMESYNCED_ADDR);
+}
+
+void EEPROM::loadIntervalsMetadata(uint32_t *timestamp, bool *time_synced)
+{
+	if (timestamp != nullptr) {
+		*timestamp = readPage(INTERVALS_TIMESTAMP_ADDR);
+	}
+	if (time_synced != nullptr) {
+		*time_synced = static_cast<bool>(readPage(INTERVALS_TIMESYNCED_ADDR));
+	}
 }
 
 bool EEPROM::isEmpty()
@@ -106,21 +130,38 @@ bool EEPROM::isEmpty()
 }
 
 /**
- * @brief Loads data stored in EEPROM into @p data.
- * @param data Array of data max INTERVAL_NUMS length.
- * @param count Actual number of interval data contained in EEPROM
+ * Loads data stored in EEPROM into @p data_array, along with their
+ * actual count into @p count and also timestamp and time_synced flag.
+ *
+ * @param data_array  ... Array of data max INTERVAL_NUMS length.
+ * @param count       ... Actual number of interval data contained in EEPROM
+ * @param timestamp   ... timestamp of saved intervals. May be nullptr.
+ * @param time_synced ... flag denoting whether time was synchronized with the
+ *                        server when intervals were saved. May be nullptr.
  *
  */
-void EEPROM::load(IntervalFrameData data_array[], size_t* count)
+void EEPROM::load(IntervalFrameData data_array[], size_t* count, uint32_t *timestamp, bool *time_synced)
 {
 	uint16_t addr = 0;
 
 	if (readPage(addr) != FRAME_DELIM) {
 		return;
 	}
+	addr += 4;
+
+	uint32_t _timestamp = readPage(addr);
+	addr += 4;
+	bool _time_synced = static_cast<bool>(readPage(addr));
+	addr += 4;
+
+	if (timestamp != nullptr) {
+		*timestamp = _timestamp;
+	}
+	if (time_synced != nullptr) {
+		*time_synced = _time_synced;
+	}
 
 	size_t data_idx = 0;
-	addr += 4;
 	while (readPage(addr) != FRAME_DELIM) {
 		rt_assert(data_idx < INTERVALS_NUM, "There is too much intervals data in EEPROM");
 		IntervalFrameData data;

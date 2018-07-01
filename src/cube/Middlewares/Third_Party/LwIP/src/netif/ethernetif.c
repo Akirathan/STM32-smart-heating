@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    LwIP/LwIP_TCP_Echo_Server/Src/ethernetif.c
+  * @file    LwIP/LwIP_TCP_Echo_Client/Src/ethernetif.c
   * @author  MCD Application Team
   * @version V1.3.0
   * @date    18-December-2015
@@ -87,6 +87,7 @@ ETH_HandleTypeDef EthHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+
 /*******************************************************************************
                        LL Driver Interface ( LwIP stack --> ETH) 
 *******************************************************************************/
@@ -100,9 +101,24 @@ ETH_HandleTypeDef EthHandle;
 static void low_level_init(struct netif *netif)
 { 
   uint32_t regvalue = 0;
-
-  /* Ethernet is already initiazed in cube-mx */
-  netif->flags |= NETIF_FLAG_LINK_UP;
+  uint8_t macaddress[6]= { MAC_ADDR0, MAC_ADDR1, MAC_ADDR2, MAC_ADDR3, MAC_ADDR4, MAC_ADDR5 };
+ 
+  EthHandle.Instance = ETH;  
+  EthHandle.Init.MACAddr = macaddress;
+  EthHandle.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
+  EthHandle.Init.Speed = ETH_SPEED_100M;
+  EthHandle.Init.DuplexMode = ETH_MODE_FULLDUPLEX;
+  EthHandle.Init.MediaInterface = ETH_MEDIA_INTERFACE_MII;
+  EthHandle.Init.RxMode = ETH_RXPOLLING_MODE;
+  EthHandle.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
+  EthHandle.Init.PhyAddress = DP83848_PHY_ADDRESS;
+  
+  /* configure ethernet peripheral (GPIOs, clocks, MAC, DMA) */
+  if (HAL_ETH_Init(&EthHandle) == HAL_OK)
+  {
+    /* Set netif link flag */
+    netif->flags |= NETIF_FLAG_LINK_UP;
+  }
   
   /* Initialize Tx Descriptors list: Chain Mode */
   HAL_ETH_DMATxDescListInit(&EthHandle, DMATxDscrTab, &Tx_Buff[0][0], ETH_TXBUFNB);

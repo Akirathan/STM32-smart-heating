@@ -32,6 +32,7 @@
 #include "one_wire.hpp"
 #include "temp_sensor.hpp"
 #include "static_time_window.hpp" //
+#include "settings.h"
 
 // Test includes
 //#include "temp_sensor_tests.hpp"

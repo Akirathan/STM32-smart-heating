@@ -6,6 +6,8 @@
 
 #include "temp_controller.hpp"
 #include "rt_assert.h"
+#include "application.hpp" // For dispatching measured temp event
+#include "measured_temp_event.hpp"
 
 TempController& TempController::getInstance()
 {
@@ -21,6 +23,8 @@ TempController& TempController::getInstance()
  * switched on.
  *
  * @note Switches heating (relay module) off when no interval is active.
+ *
+ * @note Also generated @ref MeasuredTempEvent.
  */
 void TempController::minCallback()
 {
@@ -32,6 +36,9 @@ void TempController::minCallback()
 	TempSensor::init();
 	double temp = TempSensor::measure_temperature();
 	double expected_temp = currentIntervalTemperature();
+
+	MeasuredTempEvent event(temp);
+	Application::emitEvent(event);
 
 	// Compare them
 	if (temp - tempBoundary <= expected_temp && expected_temp <= temp + tempBoundary) {
@@ -61,7 +68,7 @@ TempController::TempController() :
 	EEPROM& eeprom = EEPROM::getInstance();
 
 	rt_assert(!eeprom.isEmpty(), "EEPROM must contain data");
-	eeprom.load(data, &dataCount);
+	eeprom.load(data, &dataCount, nullptr, nullptr);
 }
 
 /**
@@ -79,14 +86,13 @@ void TempController::controlTemperature()
 uint32_t TempController::currentIntervalTemperature()
 {
 	// Get time from RTC
-	RTC_TimeTypeDef curr_time {0,0,0};
 	RTCController& rtc = RTCController::getInstance();
 
 	rt_assert(rtc.isTimeSet(), "RTC time must be set");
-	rtc.getTime(&curr_time);
+	Time::Time curr_time = rtc.getTime();
 
 	// Serialize current time.
-	uint32_t curr_time_serialized = Time::serialize(Time::Time{curr_time.Hours, curr_time.Minutes});
+	uint32_t curr_time_serialized = Time::serialize(curr_time);
 
 	// Find current interval.
 	for (size_t i = 0; i < dataCount; ++i) {
