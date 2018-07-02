@@ -16,6 +16,8 @@
 #include "intervals_changed_stm_event.hpp"
 #include "intervals_changed_server_event.hpp"
 #include "connected_event.hpp"
+#include "eth_link_up_event.hpp"
+#include "communication_error_event.hpp"
 #include "communication_device.hpp"
 
 /**
@@ -39,6 +41,8 @@ public:
 	static void emitEvent(const MeasuredTempEvent &event);
 	static void emitEvent(const IntervalsChangedStmEvent &event);
 	static void emitEvent(const IntervalsChangedServerEvent &event);
+	static void emitEvent(const CommunicationErrorEvent &event);
+	static void emitEvent(const EthLinkUpEvent &event);
 private:
 	static IFrame* currFrame;
 	static bool clearDisplayFlag;

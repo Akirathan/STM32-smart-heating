@@ -189,6 +189,16 @@ void Application::emitEvent(const IntervalsChangedServerEvent &event)
 	TempController::getInstance().reloadIntervalData(data, data_count);
 }
 
+void Application::emitEvent(const CommunicationErrorEvent &event)
+{
+
+}
+
+void Application::emitEvent(const EthLinkUpEvent &event)
+{
+
+}
+
 void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
 {
 	uint32_t timestamp = 0;
