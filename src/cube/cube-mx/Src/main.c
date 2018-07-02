@@ -40,12 +40,10 @@
 #include "stm32f1xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "stm3210c_eval.h" // For BSP_LED_Init
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-ETH_HandleTypeDef heth;
-
 I2C_HandleTypeDef hi2c1;
 
 RTC_HandleTypeDef hrtc;
@@ -65,7 +63,6 @@ static void MX_GPIO_Init(void);
 static void MX_RTC_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI3_Init(void);
-static void MX_ETH_Init(void);
 static void MX_TIM2_Init(void);
 
 /* USER CODE BEGIN PFP */
@@ -111,7 +108,6 @@ int cube_main(void)
   MX_RTC_Init();
   MX_I2C1_Init();
   MX_SPI3_Init();
-  MX_ETH_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_RTCEx_SetSecond_IT(&hrtc);
@@ -195,37 +191,6 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
-}
-
-/* ETH init function */
-static void MX_ETH_Init(void)
-{
-
-   uint8_t MACAddr[6] ;
-
-  heth.Instance = ETH;
-  heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
-  heth.Init.PhyAddress = DP83848_PHY_ADDRESS;
-  MACAddr[0] = 0x00;
-  MACAddr[1] = 0x80;
-  MACAddr[2] = 0xE1;
-  MACAddr[3] = 0x00;
-  MACAddr[4] = 0x00;
-  MACAddr[5] = 0x00;
-  heth.Init.MACAddr = &MACAddr[0];
-  heth.Init.RxMode = ETH_RXPOLLING_MODE;
-  heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
-  heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_MII;
-
-  /* USER CODE BEGIN MACADDRESS */
-    
-  /* USER CODE END MACADDRESS */
-
-  if (HAL_ETH_Init(&heth) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
 }
 
 /* I2C1 init function */
@@ -393,8 +358,11 @@ void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  BSP_LED_Init(LED_ORANGE);
   while(1)
   {
+    BSP_LED_Toggle(LED_ORANGE);
+    HAL_Delay(500);
   }
   /* USER CODE END Error_Handler_Debug */
 }

@@ -17,6 +17,8 @@
 class TcpDriver {
 public:
 	static void init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8_t ip_addr3, uint16_t port);
+	static void linkUpCallback();
+	static void linkDownCallback();
 	static void poll();
 	static bool queueForSend(const uint8_t buff[], const size_t buff_size);
 	static void wholeMessageReceivedCb();
@@ -26,6 +28,7 @@ private:
 	static struct netif netInterface;
 	static struct pbuf *writePacketBuffer;
 	static bool initialized;
+	static bool linkUp;
 	/// Temporary storage for TCP PCB, needed when @ref Client calls
 	/// @ref wholeMessageReceivedCb and we want to disconnect.
 	static struct tcp_pcb *tmpTcpPcb;
