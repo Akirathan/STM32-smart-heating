@@ -106,6 +106,11 @@ void TcpDriver::linkDownCallback()
 	Application::emitEvent(event);
 }
 
+bool TcpDriver::isLinkUp()
+{
+	return linkUp;
+}
+
 /**
  * Processes input from ethernet layer.
  * @note This function has to be called periodically from main loop.
