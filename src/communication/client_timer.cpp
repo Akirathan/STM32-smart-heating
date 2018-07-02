@@ -31,6 +31,8 @@ void ClientTimer::checkTimeout()
 	if (HAL_GetTick() - startedTicks >= TIMEOUT_MS) {
 		started = false;
 		startedTicks = 0;
-		Client::startCycle();
+		if (Client::isConnected()) {
+			Client::startCycle();
+		}
 	}
 }
