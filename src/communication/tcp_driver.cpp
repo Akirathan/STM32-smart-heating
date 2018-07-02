@@ -60,6 +60,9 @@ void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8
  */
 void TcpDriver::poll()
 {
+	// Update link status
+	ethernetif_set_link(&netInterface);
+
 	ethernetif_input(&netInterface);
 	sys_check_timeouts();
 	ClientTimer::checkTimeout();
