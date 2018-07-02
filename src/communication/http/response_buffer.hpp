@@ -34,6 +34,7 @@ namespace http {
 class ResponseBuffer {
 public:
     static void init();
+    static void reset();
     static void buff(const uint8_t *part_buff, const size_t part_buff_size);
     static void awaitBody();
 private:
@@ -50,7 +51,6 @@ private:
     static bool parseOptionLine(CharStream &char_stream, HeaderOption *header_option);
     static void resolveOptionType(const char *word, HeaderOption::Type *type);
     static char * trimWhiteSpaces(char *str);
-    static void reset();
 
     friend class ResponseBufferTest;
 };
