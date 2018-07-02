@@ -52,8 +52,6 @@ void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8
 	IP4_ADDR(&destIpAddress, ip_addr0, ip_addr1, ip_addr2, ip_addr3);
 	destPort = port;
 
-	netif_set_link_callback(&netInterface, ethernetif_update_config);
-
 	// Init IP address.
 	struct ip_addr ip;
 	struct ip_addr netmask;
@@ -63,7 +61,9 @@ void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8
 	IP4_ADDR(&netmask, 255, 255, 255, 0);
 	IP4_ADDR(&gw, 192, 168, 0, 1);
 
+	// Try to initialize the HW and add network interface.
 	netif_add(&netInterface, &ip, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
+	netif_set_link_callback(&netInterface, ethernetif_update_config);
 	netif_set_default(&netInterface);
 
 	if (netif_is_link_up(&netInterface)) {
@@ -83,7 +83,6 @@ void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8
 void TcpDriver::linkUpCallback()
 {
 	netif_set_up(&netInterface);
-
 	linkUp = true;
 }
 
@@ -93,7 +92,6 @@ void TcpDriver::linkUpCallback()
 void TcpDriver::linkDownCallback()
 {
 	netif_set_down(&netInterface);
-
 	linkUp = false;
 }
 
