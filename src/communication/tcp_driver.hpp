@@ -39,6 +39,7 @@ private:
 	static void errorCb(void *arg, err_t err);
 	static void processReceivedData(struct pbuf *packet_buff);
 	static void disconnect(struct tcp_pcb *tpcb);
+	static void reset();
 };
 
 

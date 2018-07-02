@@ -187,7 +187,7 @@ bool CommunicationDevice::connect()
 void CommunicationDevice::disconnect()
 {
     connected = false;
-    Client::disconnect();
+    timeSynced = false;
 }
 
 /**

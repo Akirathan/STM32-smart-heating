@@ -15,6 +15,9 @@
 #include "ethernetif.h"
 #include "http/response_buffer.hpp"
 #include "client_timer.hpp" // For ClientTimer::checkTimeout
+#include "application.hpp" // For Application::emitEvent
+#include "communication_error_event.hpp"
+#include "eth_link_up_event.hpp"
 
 struct ip_addr  TcpDriver::destIpAddress;
 uint16_t        TcpDriver::destPort = 0;
@@ -84,6 +87,9 @@ void TcpDriver::linkUpCallback()
 {
 	netif_set_up(&netInterface);
 	linkUp = true;
+
+	EthLinkUpEvent event;
+	Application::emitEvent(event);
 }
 
 /**
@@ -93,6 +99,11 @@ void TcpDriver::linkDownCallback()
 {
 	netif_set_down(&netInterface);
 	linkUp = false;
+
+	reset();
+
+	CommunicationErrorEvent event(CommunicationErrorEvent::ETH_LINK_DOWN);
+	Application::emitEvent(event);
 }
 
 /**
@@ -216,7 +227,10 @@ err_t TcpDriver::receivedCb(void *arg, struct tcp_pcb *tpcb, struct pbuf *packet
 
 void TcpDriver::errorCb(void *arg, err_t err)
 {
-	rt_assert(false, "Should not be here");
+	reset();
+
+	CommunicationErrorEvent event(CommunicationErrorEvent::TCP_ERROR);
+	Application::emitEvent(event);
 }
 
 // Copies received data into dummyReceiveBuffer for now.
@@ -244,4 +258,11 @@ void TcpDriver::disconnect(struct tcp_pcb *tpcb)
 	tcp_recv(tpcb, nullptr);
 	tcp_sent(tpcb, nullptr);
 	tcp_close(tpcb);
+}
+
+void TcpDriver::reset()
+{
+	if (writePacketBuffer != nullptr) {
+		pbuf_free(writePacketBuffer);
+	}
 }

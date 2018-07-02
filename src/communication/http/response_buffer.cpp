@@ -22,6 +22,15 @@ void ResponseBuffer::init()
     reset();
 }
 
+void ResponseBuffer::reset()
+{
+    for (size_t i = 0; i < BUFF_LEN; i++) {
+        buffer[i] = '\0';
+    }
+    bufferIdx = 0;
+    awaitBodyFlag = false;
+}
+
 /**
  * Buffs part of HTTP message. Given buffer does not have to contain whole HTTP response.
  * Part of messages are saved into ResponseBuffer and when whole message is collected,
@@ -199,15 +208,6 @@ char *ResponseBuffer::trimWhiteSpaces(char *str)
     *(end + 1) = '\0';
 
     return str;
-}
-
-void ResponseBuffer::reset()
-{
-    for (size_t i = 0; i < BUFF_LEN; i++) {
-        buffer[i] = '\0';
-    }
-    bufferIdx = 0;
-    awaitBodyFlag = false;
 }
 
 } // namespace http

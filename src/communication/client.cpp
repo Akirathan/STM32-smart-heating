@@ -99,9 +99,16 @@ void Client::startCycle()
     callTempSentCb();
 }
 
+/**
+ * @brief Disconnects from the server.
+ *
+ * After Client is disconnected, @ref sendConnectReq must be called to connect this
+ * Client again.
+ */
 void Client::disconnect()
 {
     connected = false;
+    state = AWAIT_NONE;
 }
 
 bool Client::isConnected()
