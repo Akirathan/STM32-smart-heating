@@ -41,6 +41,7 @@ set(HAL_SOURCES
 	"${HAL_PATH}/Src/stm32f1xx_hal_cortex.c"
 	"${HAL_PATH}/Src/stm32f1xx_hal_eth.c"
 	"${HAL_PATH}/Src/stm32f1xx_hal_pwr.c"
+	"${HAL_PATH}/Src/stm32f1xx_hal_crc.c"
 )
 
 if(USE_CUBE_MX)
