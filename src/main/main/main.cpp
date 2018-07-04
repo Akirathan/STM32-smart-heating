@@ -182,6 +182,9 @@ int main()
 
 static void board_init()
 {
+	// CRC peripheral is used by crypto library.
+	__HAL_RCC_CRC_CLK_ENABLE();
+
 	LCD::init();
 
 	lwip_init();
