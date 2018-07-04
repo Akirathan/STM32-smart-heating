@@ -111,26 +111,13 @@ extern "C" {
 	extern int cube_main();
 }
 
-#include "des.hpp"
-
 int main()
 {
 	cube_main();
 	board_init();
 
-	const uint8_t des_key[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-	DES::init(des_key);
-
-	const uint8_t *plain_text = "Nazdar, !\0\0\0\0\0\0\0";
-	const int32_t plain_text_len = 16;
-
-	uint8_t enc_text[16] = {0};
-	int32_t enc_text_len = 0;
-	DES::encrypt(plain_text, plain_text_len, enc_text, &enc_text_len);
-
-	uint8_t dec_text[16] = {0};
-	int32_t dec_text_len = 0;
-	DES::decrypt(enc_text, enc_text_len, dec_text, &dec_text_len);
+	Application app;
+	app.run();
 
 	volatile int a = 0;
 	while (1) {
