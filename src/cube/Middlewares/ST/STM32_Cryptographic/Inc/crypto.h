@@ -170,9 +170,9 @@
 #include "Common_ecc_rsa/MATH/math.h"
 #endif
 
-#ifdef INCLUDE_RSA
-#include "RSA/rsa.h"
-#endif
+//#ifdef INCLUDE_RSA
+//#include "RSA/rsa.h"
+//#endif
 
 #ifdef INCLUDE_RNG
 #include "RNG/rng.h"
