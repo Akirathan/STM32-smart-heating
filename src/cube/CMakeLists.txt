@@ -12,6 +12,7 @@ set(HW_PATH "hardware")
 set(HAL_PATH "STM32F1xx_HAL_Driver")
 set(FATFS_PATH "Middlewares/Third_Party/fatfs")
 set(LWIP_PATH "Middlewares/Third_Party/LwIP")
+set(CRYPTO_PATH "Middlewares/ST/STM32_Cryptographic")
 
 set(BSP_SOURCES
 	"BSP/STM3210C_EVAL/stm3210c_eval_io.c"
@@ -142,6 +143,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${LWIP_PATH}/src/include/lwip"
 	"${LWIP_PATH}/src/include/ipv4"
 	"${LWIP_PATH}/system"
+	
+	# Cryptographic includes
+	"${CRYPTO_PATH}/Inc"
 )
 
 if(USE_CUBE_MX)
