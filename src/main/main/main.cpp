@@ -14,6 +14,8 @@
 #include "char_stream_test.hpp"
 #include "response_buffer_test.hpp"
 
+#include "crypto.h"
+
 
 void SystemClock_Config();
 static void board_init();
@@ -111,17 +113,44 @@ extern "C" {
 	extern int cube_main();
 }
 
+void des_encrypt(const uint8_t *key, const uint8_t *in_buff, const int32_t in_len,
+		uint8_t *out_buff, int32_t *out_len)
+{
+	DESECBctx_stt des_ctx;
+	des_ctx.mFlags = E_SK_DEFAULT;
+
+	int32_t state = DES_ECB_Encrypt_Init(&des_ctx, key, nullptr);
+	rt_assert(state == DES_SUCCESS, "DES init failed");
+
+	out_buff[8] = {0};
+	int32_t tmp_out_len = 0;
+	state = DES_ECB_Encrypt_Append(&des_ctx, in_buff, in_len, out_buff, &tmp_out_len);
+	rt_assert(state == DES_SUCCESS, "DES encrypt append failed");
+
+	state = DES_ECB_Encrypt_Finish(&des_ctx, out_buff + tmp_out_len, out_len);
+	rt_assert(state == DES_SUCCESS, "Des_ECB_Encrypt_Finish failed");
+}
+
+void des_decrypt(const uint8_t *key, const uint8_t *in_buff, const int32_t in_len,
+		uint8_t *out_buff, int32_t *out_len)
+{
+	DESECBctx_stt des_ctx;
+	des_ctx.mFlags = E_SK_DEFAULT;
+}
+
 int main()
 {
 	cube_main();
 	board_init();
 
-	//fat_try(false, "file.txt");
-	//net_try();
-	//main_test();
 
-	Application app;
-	app.run();
+	const uint8_t des_key[8] = {0x01, 0x23, 0x45, 0x67, 0x78, 0x9A, 0xBC, 0xDE};
+	const uint8_t *plain_text = "nazdar!\0";
+	const int32_t plaint_text_len = 8;
+
+	uint8_t out_buff[8] = {0};
+	int32_t out_len = 0;
+	des_encrypt(des_key, plain_text, plaint_text_len, out_buff, &out_len);
 
 	volatile int a = 0;
 	while (1) {
