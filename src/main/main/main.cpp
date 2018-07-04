@@ -127,8 +127,12 @@ void des_encrypt(const uint8_t *key, const uint8_t *in_buff, const int32_t in_le
 	state = DES_ECB_Encrypt_Append(&des_ctx, in_buff, in_len, out_buff, &tmp_out_len);
 	rt_assert(state == DES_SUCCESS, "DES encrypt append failed");
 
-	state = DES_ECB_Encrypt_Finish(&des_ctx, out_buff + tmp_out_len, out_len);
+	*out_len = tmp_out_len;
+
+	state = DES_ECB_Encrypt_Finish(&des_ctx, out_buff + tmp_out_len, &tmp_out_len);
 	rt_assert(state == DES_SUCCESS, "Des_ECB_Encrypt_Finish failed");
+
+	*out_len += tmp_out_len;
 }
 
 void des_decrypt(const uint8_t *key, const uint8_t *in_buff, const int32_t in_len,
@@ -136,6 +140,20 @@ void des_decrypt(const uint8_t *key, const uint8_t *in_buff, const int32_t in_le
 {
 	DESECBctx_stt des_ctx;
 	des_ctx.mFlags = E_SK_DEFAULT;
+
+	int32_t state = DES_ECB_Decrypt_Init(&des_ctx, key, nullptr);
+	rt_assert(state == DES_SUCCESS, "DES_ECB_Decrypt_init failed");
+
+	int32_t tmp_out_len = 0;
+	state = DES_ECB_Decrypt_Append(&des_ctx, in_buff, in_len, out_buff, &tmp_out_len);
+	rt_assert(state == DES_SUCCESS, "DES_ECB_Decrypt_Append failed");
+
+	*out_len = tmp_out_len;
+
+	state = DES_ECB_Decrypt_Finish(&des_ctx, out_buff + tmp_out_len, &tmp_out_len);
+	rt_assert(state == DES_SUCCESS, "DES_ECB_Decrypt_Finish failed");
+
+	*out_len += tmp_out_len;
 }
 
 int main()
@@ -148,9 +166,13 @@ int main()
 	const uint8_t *plain_text = "nazdar!\0";
 	const int32_t plaint_text_len = 8;
 
-	uint8_t out_buff[8] = {0};
-	int32_t out_len = 0;
-	des_encrypt(des_key, plain_text, plaint_text_len, out_buff, &out_len);
+	uint8_t enc_text[8] = {0};
+	int32_t enc_text_len = 0;
+	des_encrypt(des_key, plain_text, plaint_text_len, enc_text, &enc_text_len);
+
+	uint8_t dec_text[8] = {0};
+	int32_t dec_text_len = 0;
+	des_decrypt(des_key, enc_text, enc_text_len, dec_text, &dec_text_len);
 
 	volatile int a = 0;
 	while (1) {
