@@ -37,6 +37,16 @@ size_t Request::getSize() const
     return size;
 }
 
+const uint8_t * Request::getBody() const
+{
+	return body;
+}
+
+size_t Request::getBodyLen() const
+{
+	return bodyLen;
+}
+
 /**
  * Copies given header into this Request object.
  */
