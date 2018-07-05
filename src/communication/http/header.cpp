@@ -36,6 +36,15 @@ const char *Header::getOptionValueByType(HeaderOption::Type type) const
 	return nullptr;
 }
 
+void Header::setOptionValue(HeaderOption::Type type, const char *value)
+{
+	for (size_t i = 0; i < optionsIdx; i++) {
+		if (options[i].getType() == type) {
+			options[i].setValue(value);
+		}
+	}
+}
+
 /**
  * Returns total size (of bytes) of this header including trailing linebreak.
  */

@@ -26,6 +26,7 @@ public:
 	Header();
 	void appendOption(const HeaderOption &option);
 	const char *getOptionValueByType(HeaderOption::Type type) const;
+	void setOptionValue(HeaderOption::Type type, const char *value);
 	size_t getTotalSize() const;
 	void toBuffer(char *buffer) const;
 
