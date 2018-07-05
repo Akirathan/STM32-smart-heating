@@ -85,7 +85,7 @@ private:
     static IClientCbRecver *clientCbRecver;
 
     static void initHost(const char *host, const uint16_t port);
-    static bool send(const http::Request &request, bool await_body);
+    static bool send(http::Request request, bool await_body);
     static void readConnectResponse(const http::Response &response);
     static void readIntervalTimestampResp(const http::Response &response);
     static void readIntervalsResp(const http::Response &response, const uint32_t time_stamp);

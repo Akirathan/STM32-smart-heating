@@ -163,35 +163,33 @@ void Client::initHost(const char *host, const uint16_t port)
 }
 
 /**
- * Puts the respond into buffer and send it via TcpDriver.
+ * Puts the respond into buffer and send it via TcpDriver. Also encrypts body
+ * of the request before sending it.
  * @param request    ... response to send to the server.
  * @param await_body  ... whether next received message from server should contain body.
  * @return
  */
-bool Client::send(const http::Request &request, bool await_body)
+bool Client::send(http::Request request, bool await_body)
 {
     if (await_body) {
         http::ResponseBuffer::awaitBody();
     }
 
-    // Copy old request.
-    http::Request enc_request = request;
-
     // Encrypt and reset request's body.
     int32_t enc_body_len = 0;
     uint8_t enc_body[DES::MAX_BUFFER_SIZE];
-    DES::encrypt(enc_request.getBody(), enc_request.getBodyLen(), enc_body, &enc_body_len);
-    enc_request.appendBody(enc_body, enc_body_len);
+    DES::encrypt(request.getBody(), request.getBodyLen(), enc_body, &enc_body_len);
+    request.appendBody(enc_body, enc_body_len);
 
     // Reset Content-Length.
     char enc_body_len_str[10];
     std::sprintf(enc_body_len_str, "%ld", enc_body_len);
-    enc_request.getHeader().setOptionValue(http::HeaderOption::CONTENT_LENGTH, enc_body_len_str);
+    request.getHeader().setOptionValue(http::HeaderOption::CONTENT_LENGTH, enc_body_len_str);
 
     // Copy whole request into buffer.
     char buffer[http::Request::TOTAL_SIZE] = {0};
-    enc_request.toBuffer(buffer);
-    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), enc_request.getSize());
+    request.toBuffer(buffer);
+    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), request.getSize());
 }
 
 /**
