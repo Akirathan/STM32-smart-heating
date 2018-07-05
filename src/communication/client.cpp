@@ -12,6 +12,7 @@
 #include "http/response_buffer.hpp"
 #include "tcp_driver.hpp"
 #include "sprintf_double.hpp"
+#include "des.hpp" // For DES encryption
 
 bool                  Client::initialized = false;
 bool                  Client::connected = false;
@@ -169,7 +170,11 @@ bool Client::send(const http::Request &request, bool await_body)
         http::ResponseBuffer::awaitBody();
     }
 
-    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), request.getSize());
+    uint8_t enc_buffer[DES::MAX_BUFFER_SIZE];
+    int32_t enc_buffer_len = 0;
+    DES::encrypt(reinterpret_cast<uint8_t *>(buffer), request.getSize(), enc_buffer, &enc_buffer_len);
+
+    return TcpDriver::queueForSend(enc_buffer, enc_buffer_len);
 }
 
 /**
