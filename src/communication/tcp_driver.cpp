@@ -117,7 +117,7 @@ void TcpDriver::poll()
 
 	ethernetif_input(&netInterface);
 	sys_check_timeouts();
-	//ClientTimer::checkTimeout();
+	ClientTimer::checkTimeout();
 }
 
 
