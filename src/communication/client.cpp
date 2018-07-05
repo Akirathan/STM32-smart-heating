@@ -170,18 +170,20 @@ void Client::initHost(const char *host, const uint16_t port)
  */
 bool Client::send(const http::Request &request, bool await_body)
 {
-    char buffer[http::Request::TOTAL_SIZE];
-    request.toBuffer(buffer);
-
     if (await_body) {
         http::ResponseBuffer::awaitBody();
     }
 
-    uint8_t enc_buffer[DES::MAX_BUFFER_SIZE];
-    int32_t enc_buffer_len = 0;
-    DES::encrypt(reinterpret_cast<uint8_t *>(buffer), request.getSize(), enc_buffer, &enc_buffer_len);
+    char buffer[http::Request::TOTAL_SIZE];
 
-    return TcpDriver::queueForSend(enc_buffer, enc_buffer_len);
+    request.getHeader().toBuffer(buffer);
+    size_t header_len = std::strlen(buffer);
+
+    int32_t enc_body_len = 0;
+    DES::encrypt(request.getBody(), request.getBodyLen(),
+    		reinterpret_cast<uint8_t *>(buffer + header_len), &enc_body_len);
+
+    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), header_len + enc_body_len);
 }
 
 /**

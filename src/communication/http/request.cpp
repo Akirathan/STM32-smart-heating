@@ -37,6 +37,11 @@ size_t Request::getSize() const
     return size;
 }
 
+const Header & Request::getHeader() const
+{
+	return header;
+}
+
 const uint8_t * Request::getBody() const
 {
 	return body;
