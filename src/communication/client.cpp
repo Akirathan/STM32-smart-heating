@@ -57,7 +57,7 @@ void Client::receiveCb(http::Response &response)
             readIntervalTimestampResp(response);
             break;
         case AWAIT_INTERVALS:
-        	removePaddingFromDecryption(response);
+        	removePaddingFromIntervalsDecryption(response);
             readIntervalsResp(response, tempIntervalsTimestamp);
             break;
         case AWAIT_INTERVALS_ACK:
@@ -210,13 +210,21 @@ void Client::decryptResponseBody(http::Response &response)
     response.copyIntoBody(decrypted_body, decrypted_body_size);
 }
 
-void Client::removePaddingFromDecryption(http::Response &response)
+/**
+ * Used only for response that contains intervals configuration.
+ * Therefore it is mandatory that the trailing zero-bytes padding is removed
+ * until response's body length is a multiply of 12 (serialized interval length).
+ *
+ * @param response ... body of this response will be modified and length of
+ *                     this body will be a multiple of 12.
+ */
+void Client::removePaddingFromIntervalsDecryption(http::Response &response)
 {
     size_t i = response.getBodySize() - 1;
-    while (i > 0 && response.getBody()[i] == 0) {
+    while (i > 0 && response.getBody()[i] == 0 && (i % Interval::SIZE) != 0) {
     	i--;
     }
-    size_t size_without_padding = i + 1;
+    size_t size_without_padding = i;
 
     response.copyIntoBody(response.getBody(), size_without_padding);
 }
