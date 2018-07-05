@@ -176,8 +176,8 @@ bool Client::send(const http::Request &request, bool await_body)
 
     char buffer[http::Request::TOTAL_SIZE];
 
-    request.getHeader().toBuffer(buffer);
-    size_t header_len = std::strlen(buffer);
+    request.toBuffer(buffer);
+    size_t header_len = request.getSize() - request.getBodyLen();
 
     int32_t enc_body_len = 0;
     DES::encrypt(request.getBody(), request.getBodyLen(),
