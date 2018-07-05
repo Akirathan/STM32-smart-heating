@@ -37,7 +37,7 @@ size_t Request::getSize() const
     return size;
 }
 
-const Header & Request::getHeader() const
+Header & Request::getHeader()
 {
 	return header;
 }
