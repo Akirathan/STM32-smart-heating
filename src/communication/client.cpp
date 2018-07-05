@@ -47,11 +47,7 @@ void Client::receiveCb(http::Response &response)
 	rt_assert(initialized, "Client must be initialized before receiving");
     rt_assert(connected, "Client must be connected before receiving anything");
 
-    // Decrypt response body.
-    int32_t decrypted_body_size = 0;
-    uint8_t decrypted_body[DES::MAX_BUFFER_SIZE];
-    DES::decrypt(response.getBody(), response.getBodySize(), decrypted_body, &decrypted_body_size);
-    response.copyIntoBody(decrypted_body, static_cast<size_t>(decrypted_body_size));
+    decryptResponseBody(response);
 
     switch (state) {
         case AWAIT_CONNECT_RESPONSE:
@@ -199,6 +195,27 @@ void Client::encryptRequestBody(http::Request &request)
     std::sprintf(enc_body_len_str, "%ld", enc_body_len);
     request.getHeader().setOptionValue(http::HeaderOption::CONTENT_LENGTH, enc_body_len_str);
 }
+
+void Client::decryptResponseBody(http::Response &response)
+{
+	if (response.getBodySize() == 0) {
+		return;
+	}
+
+    int32_t decrypted_body_size = 0;
+    uint8_t decrypted_body[DES::MAX_BUFFER_SIZE];
+    DES::decrypt(response.getBody(), response.getBodySize(), decrypted_body, &decrypted_body_size);
+
+    // "Remove" trailing zero-byte padding.
+    size_t i = decrypted_body_size;
+    while (i > 0 && decrypted_body[i] == 0) {
+    	i--;
+    }
+    size_t size_without_padding = i + 1;
+
+    response.copyIntoBody(decrypted_body, size_without_padding);
+}
+
 
 /**
  * Reads connect response from the server. If the response is successfully read,
