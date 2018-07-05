@@ -175,6 +175,19 @@ bool Client::send(http::Request request, bool await_body)
         http::ResponseBuffer::awaitBody();
     }
 
+    encryptRequestBody(request);
+
+    char buffer[http::Request::TOTAL_SIZE] = {0};
+    request.toBuffer(buffer);
+    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), request.getSize());
+}
+
+void Client::encryptRequestBody(http::Request &request)
+{
+	if (request.getBodyLen() == 0) {
+		return;
+	}
+
     // Encrypt and reset request's body.
     int32_t enc_body_len = 0;
     uint8_t enc_body[DES::MAX_BUFFER_SIZE];
@@ -185,11 +198,6 @@ bool Client::send(http::Request request, bool await_body)
     char enc_body_len_str[10];
     std::sprintf(enc_body_len_str, "%ld", enc_body_len);
     request.getHeader().setOptionValue(http::HeaderOption::CONTENT_LENGTH, enc_body_len_str);
-
-    // Copy whole request into buffer.
-    char buffer[http::Request::TOTAL_SIZE] = {0};
-    request.toBuffer(buffer);
-    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), request.getSize());
 }
 
 /**
