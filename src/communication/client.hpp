@@ -53,7 +53,7 @@ private:
 
 public:
     static void init(const char *host, uint16_t port, IClientCbRecver *client_cb_recver);
-    static void receiveCb(const http::Response &response);
+    static void receiveCb(http::Response &response);
     static bool sendConnectReq(const char *device_id);
     static void startCycle();
     static void disconnect();

@@ -42,9 +42,16 @@ void Client::init(const char *host, uint16_t port, IClientCbRecver *client_cb_re
     }
 }
 
-void Client::receiveCb(const http::Response &response)
+void Client::receiveCb(http::Response &response)
 {
+	rt_assert(initialized, "Client must be initialized before receiving");
     rt_assert(connected, "Client must be connected before receiving anything");
+
+    // Decrypt response body.
+    int32_t decrypted_body_size = 0;
+    uint8_t decrypted_body[DES::MAX_BUFFER_SIZE];
+    DES::decrypt(response.getBody(), response.getBodySize(), decrypted_body, &decrypted_body_size);
+    response.copyIntoBody(decrypted_body, static_cast<size_t>(decrypted_body_size));
 
     switch (state) {
         case AWAIT_CONNECT_RESPONSE:
