@@ -206,14 +206,18 @@ void Client::decryptResponseBody(http::Response &response)
     uint8_t decrypted_body[DES::MAX_BUFFER_SIZE];
     DES::decrypt(response.getBody(), response.getBodySize(), decrypted_body, &decrypted_body_size);
 
-    // "Remove" trailing zero-byte padding.
-    size_t i = decrypted_body_size;
-    while (i > 0 && decrypted_body[i] == 0) {
+    response.copyIntoBody(decrypted_body, decrypted_body_size);
+}
+
+void Client::removePaddingFromDecryption(http::Response &response)
+{
+    size_t i = response.getBodySize() - 1;
+    while (i > 0 && response.getBody()[i] == 0) {
     	i--;
     }
     size_t size_without_padding = i + 1;
 
-    response.copyIntoBody(decrypted_body, size_without_padding);
+    response.copyIntoBody(response.getBody(), size_without_padding);
 }
 
 

@@ -88,6 +88,7 @@ private:
     static bool send(http::Request request, bool await_body);
     static void encryptRequestBody(http::Request &request);
 	static void decryptResponseBody(http::Response &response);
+	static void removePaddingFromDecryption(http::Response &response);
     static void readConnectResponse(const http::Response &response);
     static void readIntervalTimestampResp(const http::Response &response);
     static void readIntervalsResp(const http::Response &response, const uint32_t time_stamp);
