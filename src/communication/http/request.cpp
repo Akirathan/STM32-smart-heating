@@ -68,7 +68,7 @@ void Request::appendHeader(const Header &header)
 void Request::appendBody(const uint8_t *buff, const size_t buff_size)
 {
     std::memcpy(body, buff, buff_size);
-    bodyLen += buff_size;
+    bodyLen = buff_size;
 }
 
 /**
