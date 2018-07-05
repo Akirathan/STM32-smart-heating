@@ -174,16 +174,24 @@ bool Client::send(const http::Request &request, bool await_body)
         http::ResponseBuffer::awaitBody();
     }
 
-    char buffer[http::Request::TOTAL_SIZE];
+    // Copy old request.
+    http::Request enc_request = request;
 
-    request.toBuffer(buffer);
-    size_t header_len = request.getSize() - request.getBodyLen();
-
+    // Encrypt and reset request's body.
     int32_t enc_body_len = 0;
-    DES::encrypt(request.getBody(), request.getBodyLen(),
-    		reinterpret_cast<uint8_t *>(buffer + header_len), &enc_body_len);
+    uint8_t enc_body[DES::MAX_BUFFER_SIZE];
+    DES::encrypt(enc_request.getBody(), enc_request.getBodyLen(), enc_body, &enc_body_len);
+    enc_request.appendBody(enc_body, enc_body_len);
 
-    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), header_len + enc_body_len);
+    // Reset Content-Length.
+    char enc_body_len_str[10];
+    std::sprintf(enc_body_len_str, "%ld", enc_body_len);
+    enc_request.getHeader().setOptionValue(http::HeaderOption::CONTENT_LENGTH, enc_body_len_str);
+
+    // Copy whole request into buffer.
+    char buffer[http::Request::TOTAL_SIZE] = {0};
+    enc_request.toBuffer(buffer);
+    return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), enc_request.getSize());
 }
 
 /**
