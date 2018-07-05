@@ -57,6 +57,7 @@ void Client::receiveCb(http::Response &response)
             readIntervalTimestampResp(response);
             break;
         case AWAIT_INTERVALS:
+        	removePaddingFromDecryption(response);
             readIntervalsResp(response, tempIntervalsTimestamp);
             break;
         case AWAIT_INTERVALS_ACK:
