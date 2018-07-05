@@ -73,7 +73,7 @@ void Client::receiveCb(http::Response &response)
 /**
  * Sends connection request to the server.
  *
- * @param device_id ... device id (TODO: encrypted?)
+ * @param device_id ... ID of this device
  * @return false when TCPDriver fails to send data.
  */
 bool Client::sendConnectReq(const char *device_id)
