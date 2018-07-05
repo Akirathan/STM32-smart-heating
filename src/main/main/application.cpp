@@ -12,6 +12,7 @@
 #include "settings.h" // For INTERVALS_NUM
 #include "client.hpp"
 #include "response_buffer.hpp" // For ResponseBuffer::reset
+#include "des.hpp" // For DES::init
 
 IFrame            * Application::currFrame = nullptr;
 bool                Application::clearDisplayFlag = false;
@@ -81,6 +82,9 @@ void Application::run()
 	// Prepare first frame for displaying.
 	clkFrame.registerFrameTerminateCallbackReceiver(this);
 	setCurrFrame(&clkFrame);
+
+	const uint8_t des_key[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+	DES::init(des_key);
 
 	Client::init("127.0.0.1", 8000, &communicationDevice);
 	communicationDevice.setKey("key");
