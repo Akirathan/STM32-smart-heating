@@ -84,10 +84,9 @@ void Application::run()
 	setCurrFrame(&clkFrame);
 
 	const uint8_t des_key[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-	DES::init(des_key);
 
 	Client::init("127.0.0.1", 8000, &communicationDevice);
-	communicationDevice.setKey("key");
+	communicationDevice.setKey(des_key);
 	communicationDevice.connect();
 
 	while (true) {
