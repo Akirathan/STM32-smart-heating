@@ -116,10 +116,6 @@ int main()
 	cube_main();
 	board_init();
 
-	//fat_try(false, "file.txt");
-	//net_try();
-	//main_test();
-
 	Application app;
 	app.run();
 
@@ -131,6 +127,9 @@ int main()
 
 static void board_init()
 {
+	// CRC peripheral is used by crypto library.
+	__HAL_RCC_CRC_CLK_ENABLE();
+
 	LCD::init();
 
 	lwip_init();

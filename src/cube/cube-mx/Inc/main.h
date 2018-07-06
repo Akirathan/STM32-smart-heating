@@ -77,6 +77,10 @@
 
 /* USER CODE BEGIN Private defines */
 
+/// This include is needed for crypto-library
+#define HAL_CRC_MODULE_ENABLED
+#define HAL_CORTEX_MODULE_ENABLED
+
 /// Cube-mx does not initialize ethernet peripheral any more, but these defines
 /// need to be somewhere and this file seems to be the right place.
 

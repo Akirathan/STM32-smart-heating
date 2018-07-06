@@ -37,6 +37,21 @@ size_t Request::getSize() const
     return size;
 }
 
+Header & Request::getHeader()
+{
+	return header;
+}
+
+const uint8_t * Request::getBody() const
+{
+	return body;
+}
+
+size_t Request::getBodyLen() const
+{
+	return bodyLen;
+}
+
 /**
  * Copies given header into this Request object.
  */
@@ -53,7 +68,7 @@ void Request::appendHeader(const Header &header)
 void Request::appendBody(const uint8_t *buff, const size_t buff_size)
 {
     std::memcpy(body, buff, buff_size);
-    bodyLen += buff_size;
+    bodyLen = buff_size;
 }
 
 /**

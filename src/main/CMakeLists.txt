@@ -83,6 +83,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
 	"communication"  # static library
+	"${ROOT_DIR}/lib/libSTM32CryptographicV3.0.0_CM3_GCC_ot.a"
 )
 
 include_directories(

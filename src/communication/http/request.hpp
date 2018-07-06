@@ -33,6 +33,9 @@ public:
 
 	Request(method_t method, const char *url);
 	size_t getSize() const;
+	Header & getHeader();
+	const uint8_t * getBody() const;
+	size_t getBodyLen() const;
 	void appendHeader(const Header &header);
 	void appendBody(const uint8_t *buff, const size_t buff_size);
     void toBuffer(char *buffer) const;

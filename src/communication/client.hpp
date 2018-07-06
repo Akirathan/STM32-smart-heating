@@ -53,7 +53,7 @@ private:
 
 public:
     static void init(const char *host, uint16_t port, IClientCbRecver *client_cb_recver);
-    static void receiveCb(const http::Response &response);
+    static void receiveCb(http::Response &response);
     static bool sendConnectReq(const char *device_id);
     static void startCycle();
     static void disconnect();
@@ -85,7 +85,10 @@ private:
     static IClientCbRecver *clientCbRecver;
 
     static void initHost(const char *host, const uint16_t port);
-    static bool send(const http::Request &request, bool await_body);
+    static bool send(http::Request request, bool await_body);
+    static void encryptRequestBody(http::Request &request);
+	static void decryptResponseBody(http::Response &response);
+	static void removePaddingFromIntervalsDecryption(http::Response &response);
     static void readConnectResponse(const http::Response &response);
     static void readIntervalTimestampResp(const http::Response &response);
     static void readIntervalsResp(const http::Response &response, const uint32_t time_stamp);

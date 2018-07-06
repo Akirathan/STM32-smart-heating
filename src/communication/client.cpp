@@ -12,6 +12,7 @@
 #include "http/response_buffer.hpp"
 #include "tcp_driver.hpp"
 #include "sprintf_double.hpp"
+#include "des.hpp" // For DES encryption
 
 bool                  Client::initialized = false;
 bool                  Client::connected = false;
@@ -41,9 +42,12 @@ void Client::init(const char *host, uint16_t port, IClientCbRecver *client_cb_re
     }
 }
 
-void Client::receiveCb(const http::Response &response)
+void Client::receiveCb(http::Response &response)
 {
+	rt_assert(initialized, "Client must be initialized before receiving");
     rt_assert(connected, "Client must be connected before receiving anything");
+
+    decryptResponseBody(response);
 
     switch (state) {
         case AWAIT_CONNECT_RESPONSE:
@@ -53,6 +57,7 @@ void Client::receiveCb(const http::Response &response)
             readIntervalTimestampResp(response);
             break;
         case AWAIT_INTERVALS:
+        	removePaddingFromIntervalsDecryption(response);
             readIntervalsResp(response, tempIntervalsTimestamp);
             break;
         case AWAIT_INTERVALS_ACK:
@@ -68,7 +73,7 @@ void Client::receiveCb(const http::Response &response)
 /**
  * Sends connection request to the server.
  *
- * @param device_id ... device id (TODO: encrypted?)
+ * @param device_id ... ID of this device
  * @return false when TCPDriver fails to send data.
  */
 bool Client::sendConnectReq(const char *device_id)
@@ -155,22 +160,75 @@ void Client::initHost(const char *host, const uint16_t port)
 }
 
 /**
- * Puts the respond into buffer and send it via TcpDriver.
+ * Puts the respond into buffer and send it via TcpDriver. Also encrypts body
+ * of the request before sending it.
  * @param request    ... response to send to the server.
  * @param await_body  ... whether next received message from server should contain body.
  * @return
  */
-bool Client::send(const http::Request &request, bool await_body)
+bool Client::send(http::Request request, bool await_body)
 {
-    char buffer[http::Request::TOTAL_SIZE];
-    request.toBuffer(buffer);
-
     if (await_body) {
         http::ResponseBuffer::awaitBody();
     }
 
+    encryptRequestBody(request);
+
+    char buffer[http::Request::TOTAL_SIZE] = {0};
+    request.toBuffer(buffer);
     return TcpDriver::queueForSend(reinterpret_cast<uint8_t *>(buffer), request.getSize());
 }
+
+void Client::encryptRequestBody(http::Request &request)
+{
+	if (request.getBodyLen() == 0) {
+		return;
+	}
+
+    // Encrypt and reset request's body.
+    int32_t enc_body_len = 0;
+    uint8_t enc_body[DES::MAX_BUFFER_SIZE];
+    DES::encrypt(request.getBody(), request.getBodyLen(), enc_body, &enc_body_len);
+    request.appendBody(enc_body, enc_body_len);
+
+    // Reset Content-Length.
+    char enc_body_len_str[10];
+    std::sprintf(enc_body_len_str, "%ld", enc_body_len);
+    request.getHeader().setOptionValue(http::HeaderOption::CONTENT_LENGTH, enc_body_len_str);
+}
+
+void Client::decryptResponseBody(http::Response &response)
+{
+	if (response.getBodySize() == 0) {
+		return;
+	}
+
+    int32_t decrypted_body_size = 0;
+    uint8_t decrypted_body[DES::MAX_BUFFER_SIZE];
+    DES::decrypt(response.getBody(), response.getBodySize(), decrypted_body, &decrypted_body_size);
+
+    response.copyIntoBody(decrypted_body, decrypted_body_size);
+}
+
+/**
+ * Used only for response that contains intervals configuration.
+ * Therefore it is mandatory that the trailing zero-bytes padding is removed
+ * until response's body length is a multiply of 12 (serialized interval length).
+ *
+ * @param response ... body of this response will be modified and length of
+ *                     this body will be a multiple of 12.
+ */
+void Client::removePaddingFromIntervalsDecryption(http::Response &response)
+{
+    size_t i = response.getBodySize() - 1;
+    while (i > 0 && response.getBody()[i] == 0 && (i % Interval::SIZE) != 0) {
+    	i--;
+    }
+    size_t size_without_padding = i;
+
+    response.copyIntoBody(response.getBody(), size_without_padding);
+}
+
 
 /**
  * Reads connect response from the server. If the response is successfully read,
