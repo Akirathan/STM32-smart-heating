@@ -73,7 +73,7 @@ void SetIntervalFrame::drawHeader()
 	IntervalFrame::drawIntervalHeader();
 
 	sFONT *font = LCD::get_font();
-	LCD::print_char(timeFromWindow.getX() + (font->Width)*5, LINE(6), '-');
+	LCD::print_char(timeFromWindow.getX() + (font->Width)*5, LINE(6), '-', LCD::NORMAL_FONT);
 }
 
 SetIntervalFrame::SetIntervalFrame() :
