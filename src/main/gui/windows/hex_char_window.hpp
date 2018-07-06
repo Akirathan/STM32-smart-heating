@@ -15,6 +15,7 @@
  */
 class HexCharWindow : public IControlWindow {
 public:
+	HexCharWindow();
 	HexCharWindow(const Coord &coord);
 	virtual void setFocus(Message msg) override;
 private:

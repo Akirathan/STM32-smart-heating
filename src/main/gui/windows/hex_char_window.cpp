@@ -7,6 +7,10 @@
 #include "hex_char_window.hpp"
 #include "lcd.hpp"
 
+HexCharWindow::HexCharWindow() :
+	HexCharWindow(Coord(0, 0))
+{ }
+
 HexCharWindow::HexCharWindow(const Coord &coord) :
 	IControlWindow(coord),
 	hexChar('0'),
