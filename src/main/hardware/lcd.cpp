@@ -120,8 +120,9 @@ bool is_initialized()
 	return init_;
 }
 
-void print_char(uint16_t x, uint16_t y, uint8_t ascii)
+void print_char(uint16_t x, uint16_t y, uint8_t ascii, const Font &font)
 {
+	set_font(font);
 	BSP_LCD_DisplayChar(x, y, ascii);
 }
 
