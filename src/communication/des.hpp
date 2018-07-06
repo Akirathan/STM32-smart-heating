@@ -31,6 +31,7 @@ public:
 	static bool decrypt(const uint8_t *in_buff, const int32_t in_len, uint8_t *out_buff, int32_t *out_size);
 private:
 	static uint8_t key[KEY_SIZE];
+	static bool keySet;
 	static uint8_t buffer[MAX_BUFFER_SIZE];
 	static size_t bufferIdx;
 

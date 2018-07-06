@@ -9,6 +9,7 @@
 #include "rt_assert.h"
 
 uint8_t DES::key[KEY_SIZE] = {0};
+bool    DES::keySet = false;
 uint8_t DES::buffer[MAX_BUFFER_SIZE] = {0};
 size_t  DES::bufferIdx = 0;
 
@@ -17,6 +18,7 @@ void DES::init(const uint8_t *key)
 	for (size_t i = 0; i < KEY_SIZE; i++) {
 		DES::key[i] = key[i];
 	}
+	keySet = true;
 }
 
 /**
@@ -30,6 +32,8 @@ void DES::init(const uint8_t *key)
  */
 bool DES::encrypt(const uint8_t *in_buff, const int32_t in_len, uint8_t *out_buff, int32_t *out_size)
 {
+	rt_assert(keySet, "Key must be set before encryption");
+
 	resetInnerBuffer();
 	paddToInnerBuffer(in_buff, in_len);
 
@@ -49,6 +53,8 @@ bool DES::encrypt(const uint8_t *in_buff, const int32_t in_len, uint8_t *out_buf
 
 bool DES::decrypt(const uint8_t *in_buff, const int32_t in_len, uint8_t *out_buff, int32_t *out_size)
 {
+	rt_assert(keySet, "Key must be set before decryption");
+
 	resetInnerBuffer();
 	paddToInnerBuffer(in_buff, in_len);
 
