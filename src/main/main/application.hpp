@@ -8,6 +8,7 @@
 #define APPLICATION_HPP_
 
 #include "frame.hpp"
+#include "key_frame.hpp"
 #include "clk_frame.hpp"
 #include "main_frame.hpp"
 #include "set_interval_frame.hpp"
@@ -53,6 +54,7 @@ private:
 	/// is fixed and they are sent to the server.
 	static IntervalList pendingIntervals;
 
+	KeyFrame keyFrame;
 	ClkFrame clkFrame;
 	MainFrame mainFrame;
 	SetIntervalFrame setIntervalFrame;

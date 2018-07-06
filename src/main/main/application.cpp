@@ -80,8 +80,11 @@ void Application::switchCurrFrameToMain()
 void Application::run()
 {
 	// Prepare first frame for displaying.
-	clkFrame.registerFrameTerminateCallbackReceiver(this);
-	setCurrFrame(&clkFrame);
+	//clkFrame.registerFrameTerminateCallbackReceiver(this);
+	//setCurrFrame(&clkFrame);
+
+	keyFrame.registerFrameTerminateCallbackReceiver(this);
+	setCurrFrame(&keyFrame);
 
 	const uint8_t des_key[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
 
