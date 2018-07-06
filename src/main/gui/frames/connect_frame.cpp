@@ -9,8 +9,8 @@
 
 ConnectFrame::ConnectFrame()
 {
-	yesButton = Button(Coord(LCD::get_x_size()/2 - 15, LINE(8)), "yes");
-	noButton = Button(Coord(LCD::get_x_size()/2 + 30, LINE(8)), "not yet");
+	yesButton = Button(Coord(LCD::get_x_size()/2 - 60, LINE(8)), "yes");
+	noButton = Button(Coord(LCD::get_x_size()/2 + 10, LINE(8)), "not yet");
 
 	windowSystem.addControl(&yesButton);
 	windowSystem.addControl(&noButton);
@@ -41,6 +41,6 @@ bool ConnectFrame::yesButtonPushed() const
 
 void ConnectFrame::drawHeader()
 {
-	LCD::print_string(10, LINE(2), (uint8_t *)"ETH initialized, connect to server?",
-			CENTER_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(10, LINE(4), (uint8_t *)"ETH initialized,", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(10, LINE(5), (uint8_t *)"connect to server?", LEFT_MODE, LCD::NORMAL_FONT);
 }
