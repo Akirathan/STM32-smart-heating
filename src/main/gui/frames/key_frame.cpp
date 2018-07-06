@@ -21,6 +21,10 @@ KeyFrame::KeyFrame()
 	hexCharWindows[1] = HexCharWindow(Coord(x_1, first_row_y));
 
 	submitButton = Button(Coord(submit_button_x, submit_button_y), "SUBMIT");
+
+	windowSystem.addControl(&hexCharWindows[0]);
+	windowSystem.addControl(&hexCharWindows[1]);
+	windowSystem.addControl(&submitButton);
 }
 
 void KeyFrame::passControl()
