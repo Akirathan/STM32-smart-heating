@@ -12,6 +12,7 @@
 #include "callbacks.hpp" // For IExitMessageCallback
 
 class ConnectFrame : public IFrame, public IExitMessageCallback {
+public:
 	ConnectFrame();
 	virtual void passControl() override;
 	virtual void exitMessageCallback() override;
