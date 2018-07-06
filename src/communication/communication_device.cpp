@@ -10,30 +10,43 @@
 #include "connected_event.hpp"
 #include "intervals_changed_server_event.hpp"
 #include "application.hpp"
+#include "des.hpp"
 
 /**
  * Device ID is generated from UID.
  */
 CommunicationDevice::CommunicationDevice() :
+		key{0},
+		keySet(false),
         temp(0.0),
         tempTimestamp(0),
         connected(false),
 		timeSynced(false)
 {
     std::strcpy(id, "stm1");
-    for (size_t i = 0; i < KEY_LEN; i++) {
-    	key[i] = '\0';
-    }
 }
 
-const char *CommunicationDevice::getKey() const
+/**
+ * Returns 8-byte long DES key.
+ */
+const uint8_t *CommunicationDevice::getKey() const
 {
     return key;
 }
 
-void CommunicationDevice::setKey(const char *key)
+/**
+ * Sets the DES key into this CommunicationDevice.
+ * @param key ... DES key 8-bytes long
+ */
+void CommunicationDevice::setKey(const uint8_t *key)
 {
-	std::strcpy(this->key, key);
+	for (size_t i = 0; i < KEY_LEN; i++) {
+		this->key[i] = key[i];
+	}
+
+	DES::init(key);
+
+	keySet = true;
 }
 
 /**
@@ -171,7 +184,7 @@ void CommunicationDevice::intervalsRecvCb(const IntervalList &interval_list)
  */
 bool CommunicationDevice::connect()
 {
-	rt_assert(std::strlen(key) != 0, "Key must be set");
+	rt_assert(keySet, "Key must be set");
 	rt_assert(std::strlen(id) != 0, "Id must be set");
 
     connected = true;

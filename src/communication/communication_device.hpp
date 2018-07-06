@@ -38,15 +38,15 @@
  */
 class CommunicationDevice : public IClientCbRecver {
 private:
-    static const size_t KEY_LEN = 9;
+    static const size_t KEY_LEN = 8;
 
 public:
     static const size_t ID_LEN = 15;
 
     CommunicationDevice();
     /***************** Getters and setters *********************/
-    const char * getKey() const;
-    void setKey(const char *key);
+    const uint8_t * getKey() const;
+    void setKey(const uint8_t *key);
     const char * getId() const;
     bool isConnected() const;
     double getTemp() const;
@@ -66,7 +66,8 @@ public:
     uint32_t getCurrentTimestamp() const;
 
 private:
-    char key[KEY_LEN];
+    uint8_t key[KEY_LEN];
+    bool keySet;
     char id[ID_LEN];
     double temp;
     uint32_t tempTimestamp;
