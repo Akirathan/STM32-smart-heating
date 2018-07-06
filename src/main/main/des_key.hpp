@@ -16,12 +16,14 @@ public:
 
 	static DesKey deserialize(const uint8_t *buff);
 
+	DesKey();
 	DesKey(const char *hex_str);
+	DesKey(const uint8_t *key);
+	const uint8_t * getContent() const;
 	void serialize(uint8_t *buff);
 private:
 	uint8_t content[SIZE];
 
-	DesKey();
 	uint8_t hexCharToByte(const char *hex_byte);
 	uint8_t convertHexChar(char hex_char);
 };

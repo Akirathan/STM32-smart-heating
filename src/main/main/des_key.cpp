@@ -22,6 +22,13 @@ DesKey DesKey::deserialize(const uint8_t *buff)
 	return des_key;
 }
 
+DesKey::DesKey()
+{
+	for (size_t i = 0; i < SIZE; i++) {
+		content[i] = 0;
+	}
+}
+
 /**
  * Creates DES key from a string that represents 16-long hexa string.
  * @param hex_str ... 16-length hexa string
@@ -37,17 +44,22 @@ DesKey::DesKey(const char *hex_str)
 	}
 }
 
+DesKey::DesKey(const uint8_t *key)
+{
+	for (size_t i = 0; i < SIZE; i++) {
+		content[i] = key[i];
+	}
+}
+
+const uint8_t * DesKey::getContent() const
+{
+	return content;
+}
+
 void DesKey::serialize(uint8_t *buff)
 {
 	for (size_t i = 0; i < SIZE; i++) {
 		buff[i] = content[i];
-	}
-}
-
-DesKey::DesKey()
-{
-	for (size_t i = 0; i < SIZE; i++) {
-		content[i] = 0;
 	}
 }
 
