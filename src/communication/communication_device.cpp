@@ -16,7 +16,6 @@
  * Device ID is generated from UID.
  */
 CommunicationDevice::CommunicationDevice() :
-		key{0},
 		keySet(false),
         temp(0.0),
         tempTimestamp(0),
@@ -29,7 +28,7 @@ CommunicationDevice::CommunicationDevice() :
 /**
  * Returns 8-byte long DES key.
  */
-const uint8_t *CommunicationDevice::getKey() const
+const DesKey & CommunicationDevice::getKey() const
 {
     return key;
 }
@@ -38,14 +37,10 @@ const uint8_t *CommunicationDevice::getKey() const
  * Sets the DES key into this CommunicationDevice.
  * @param key ... DES key 8-bytes long
  */
-void CommunicationDevice::setKey(const uint8_t *key)
+void CommunicationDevice::setKey(const DesKey &key)
 {
-	for (size_t i = 0; i < KEY_LEN; i++) {
-		this->key[i] = key[i];
-	}
-
-	DES::init(key);
-
+	this->key = key;
+	DES::init(key.getContent());
 	keySet = true;
 }
 
