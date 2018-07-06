@@ -41,3 +41,9 @@ void KeyFrame::registerExitMessageCallback()
 	// Intentionally left empty.
 }
 
+void KeyFrame::drawHeader()
+{
+	const uint8_t *header = reinterpret_cast<const uint8_t *>("Insert key from server");
+	LCD::draw_header(const_cast<uint8_t *>(header));
+}
+

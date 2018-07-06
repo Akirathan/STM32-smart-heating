@@ -21,6 +21,8 @@ public:
 private:
 	static const size_t HEX_CHAR_WINDOWS_SIZE = 16;
 
+	virtual void drawHeader() override;
+
 	HexCharWindow hexCharWindows[HEX_CHAR_WINDOWS_SIZE];
 	Button submitButton;
 };
