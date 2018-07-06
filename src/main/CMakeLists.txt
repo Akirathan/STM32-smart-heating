@@ -17,6 +17,7 @@ set(FRAMES_SOURCES
 	"${FRAMES_PATH}/overview_interval_frame.cpp"
 	"${FRAMES_PATH}/set_interval_frame.cpp"
 	"${FRAMES_PATH}/connect_frame.cpp"
+	"${FRAMES_PATH}/key_frame.cpp"
 )
 
 set(WINDOWS_SOURCES
