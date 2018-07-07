@@ -163,6 +163,16 @@ bool EEPROM::isEmpty()
 }
 
 /**
+ * Returns true if write/read operation is in progress. This is necessary because
+ * EEPROM is on I2C bus and joystick is also on the same bus and something like
+ * deadlock may happen.
+ */
+bool EEPROM::isOperationInProgress()
+{
+
+}
+
+/**
  * Loads data stored in EEPROM into @p data_array, along with their
  * actual count into @p count and also timestamp and time_synced flag.
  *

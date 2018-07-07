@@ -27,6 +27,7 @@ public:
 	EEPROM(const EEPROM&) = delete;
 	void reset();
 	bool isEmpty();
+	bool isOperationInProgress();
 	void save(const IntervalFrameData data[], const size_t count, uint32_t timestamp, bool time_synced);
 	void load(IntervalFrameData data[], size_t* count, uint32_t *timestamp, bool *time_synced);
 	void saveIntervalsMetadata(uint32_t timestamp, bool time_synced);
