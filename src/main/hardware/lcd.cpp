@@ -15,7 +15,7 @@ static void update();
 
 // Private variables.
 static bool init_ = false;
-static Font curr_font = Font::NORMAL_FONT;
+static Font curr_font = Font::NO_FONT;
 
 /**
  * Updates current font to HAL.
@@ -23,6 +23,8 @@ static Font curr_font = Font::NORMAL_FONT;
 static void update()
 {
 	switch (curr_font) {
+	case Font::NO_FONT:
+		break;
 	case Font::SEL_FONT:
 		BSP_LCD_SetTextColor(SEL_FONT_TEXT_COLOR);
 		BSP_LCD_SetBackColor(SEL_FONT_BACK_COLOR);

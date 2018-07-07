@@ -24,6 +24,7 @@
 namespace LCD {
 
 enum Font {
+	NO_FONT,
 	SEL_FONT,
 	NORMAL_FONT
 };
