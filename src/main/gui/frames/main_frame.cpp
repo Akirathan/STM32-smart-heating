@@ -7,6 +7,7 @@
 #include "main_frame.hpp"
 #include "application.hpp"
 #include "intervals_changed_event.hpp"
+#include "tcp_driver.hpp" // For TcpDriver::isLinkUp
 
 void MainFrame::drawHeader()
 {
@@ -155,9 +156,18 @@ void MainFrame::frameTerminateCallback()
 	Application::setCurrFrame(this);
 }
 
+/**
+ * Checks for device status (CONNECTED / OFFLINE).
+ * @note This is a callback method that is called from SW timer timeout.
+ */
 void MainFrame::timeout()
 {
-
+	if (!TcpDriver::isLinkUp()) {
+		setOfflineStatus();
+	}
+	else if (TcpDriver::isLinkUp() && Application::isConnectedToServer()) {
+		setConnectedStatus();
+	}
 }
 
 void MainFrame::registerFrameTerminateCallback()
