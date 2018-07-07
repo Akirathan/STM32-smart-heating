@@ -39,7 +39,7 @@ bool EEPROM::isEmpty()
  */
 bool EEPROM::isOperationInProgress()
 {
-
+	return operationInProgress;
 }
 
 /**
@@ -132,9 +132,7 @@ bool EEPROM::isKeySet()
 void EEPROM::saveKey(const DesKey &key)
 {
 	writePage(static_cast<uint32_t>(true), KEY_SET_FLAG_ADDR);
-
-	uint32_t error_code = BSP_EEPROM_WriteBuffer((uint8_t *)key.getContent(), KEY_START_ADDR, DesKey::SIZE);
-	rt_assert(error_code == EEPROM_OK, "BSP_EEPROM_WriteBuffer failed");
+	writeBuffer(key.getContent(), DesKey::SIZE, KEY_START_ADDR);
 }
 
 /**
@@ -146,13 +144,13 @@ DesKey EEPROM::loadKey()
 
 	uint8_t key_buffer[DesKey::SIZE] = {0};
 	uint32_t num_bytes_read = DesKey::SIZE;
-	uint32_t error_code = BSP_EEPROM_ReadBuffer(key_buffer, KEY_START_ADDR, &num_bytes_read);
-	rt_assert(error_code == EEPROM_OK, "BSP_EEPROM_ReadBuffer failed");
+	readBuffer(key_buffer, &num_bytes_read, KEY_START_ADDR);
 
 	return DesKey(key_buffer);
 }
 
-EEPROM::EEPROM()
+EEPROM::EEPROM() :
+	operationInProgress(false)
 {
 	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
 
@@ -184,8 +182,7 @@ uint32_t EEPROM::readPage(uint16_t addr)
 	uint32_t num_bytes = 4;
 	uint32_t word = 0;
 
-	uint32_t error_code = BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes);
-	rt_assert(error_code == EEPROM_OK, "BSP EEPROM read buffer failed");
+	readBuffer(buff, &num_bytes, 4);
 
 	for (int i = 0; i < 4; ++i){
 		word |= buff[i];
@@ -205,7 +202,22 @@ void EEPROM::writePage(uint32_t page, uint16_t addr)
 		if (i != 0) page >>= 8;
 	}
 
-	uint32_t error_code = BSP_EEPROM_WriteBuffer(buff, addr, 4);
-	rt_assert(error_code == EEPROM_OK, "BSP EEPROM Write buffer failed");
+	writeBuffer(buff, 4, addr);
+}
+
+void EEPROM::readBuffer(uint8_t *buffer, uint32_t *numbytes, uint16_t addr)
+{
+	operationInProgress = true;
+	uint32_t error_code = BSP_EEPROM_ReadBuffer(buffer, addr, numbytes);
+	rt_assert(error_code == EEPROM_OK, "BSP_EEPROM_ReadBuffer failed");
+	operationInProgress = false;
+}
+
+void EEPROM::writeBuffer(const uint8_t *buffer, uint32_t numbytes, uint16_t addr)
+{
+	operationInProgress = true;
+	uint32_t error_code = BSP_EEPROM_WriteBuffer(const_cast<uint8_t *>(buffer), addr, numbytes);
+	rt_assert(error_code == EEPROM_OK, "BSP_EEPROM_WriteBuffer failed");
+	operationInProgress = false;
 }
 

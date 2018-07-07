@@ -48,12 +48,16 @@ private:
 	const uint16_t INTERVALS_START_ADDR = INTERVALS_NUM_ADDR + 4;
 	const uint16_t INTERVALS_END_ADDR = INTERVALS_START_ADDR + 12 * INTERVALS_NUM;
 
+	bool operationInProgress;
+
 	EEPROM();
 
 	void save(const IntervalFrameData &data, uint16_t addr);
 	void load(IntervalFrameData &data, uint16_t addr);
 	uint32_t readPage(uint16_t addr);
 	void writePage(uint32_t page, uint16_t addr);
+	void readBuffer(uint8_t *buffer, uint32_t *numbytes, uint16_t addr);
+	void writeBuffer(const uint8_t *buffer, uint32_t numbytes, uint16_t addr);
 };
 
 #endif /* INC_EEPROM_HPP_ */
