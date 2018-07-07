@@ -182,7 +182,7 @@ uint32_t EEPROM::readPage(uint16_t addr)
 	uint32_t num_bytes = 4;
 	uint32_t word = 0;
 
-	readBuffer(buff, &num_bytes, 4);
+	readBuffer(buff, &num_bytes, addr);
 
 	for (int i = 0; i < 4; ++i){
 		word |= buff[i];
