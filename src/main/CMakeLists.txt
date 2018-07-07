@@ -61,6 +61,7 @@ set(MAIN_SOURCES
 	"${MAIN_PATH}/timer_events.cpp"
 	"${MAIN_PATH}/intervals_changed_event.cpp"
 	"${MAIN_PATH}/des_key.cpp"
+	"${MAIN_PATH}/sw_timer_owner.cpp"
 )
 
 # TODO: TEST_SOURCES - these sources do not have to be in release binary
