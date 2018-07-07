@@ -52,6 +52,7 @@ MainFrame::MainFrame() :
 	windowSystem.addStatic(&timeWindow);
 	windowSystem.addStatic(&actualTempWindow);
 	windowSystem.addStatic(&presetTempWindow);
+	windowSystem.addStatic(&statusTextWindow);
 	windowSystem.addControl(&overviewButton);
 	windowSystem.addControl(&resetButton);
 }
