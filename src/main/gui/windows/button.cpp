@@ -17,6 +17,10 @@ Button::Button(const Coord& coord, const std::string& name)
 
 void Button::draw() const
 {
+	if (hidden) {
+		return;
+	}
+
 	LCD::Font font;
 
 	if (focused) {
@@ -61,6 +65,16 @@ void Button::setFocus(Message msg)
 {
 	focused = true;
 	redrawFlag = true;
+}
+
+void Button::show()
+{
+	hidden = false;
+}
+
+void Button::hide()
+{
+	hidden = true;
 }
 
 void Button::setPushed(bool b)

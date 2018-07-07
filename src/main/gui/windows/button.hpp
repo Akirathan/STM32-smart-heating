@@ -11,23 +11,27 @@
 #include <string>
 #include "lcd.hpp"
 #include "control_window.hpp"
+#include "hideable_window.hpp" // For IHideableWindow
 
 /**
  * Currently there are just OK, END or NEXT buttons in the application and
  * pressing of any of those buttons means ending current frame.
  */
-class Button : public IControlWindow {
+class Button : public IControlWindow, IHideableWindow {
 public:
 	Button(const Coord& coord, const std::string& name);
 	Button();
 	virtual void draw() const override;
 	virtual void setFocus(Message msg) override;
+	virtual void show() override;
+	virtual void hide() override;
 	bool isPushed() const;
 	void setPushed(bool b);
 private:
 	std::string name;
 	bool pushed = false;
 	bool focused = false;
+	bool hidden = false;
 	virtual Message _eventHandler(JOYState_TypeDef joy_state) override;
 	void unsetFocus();
 };
