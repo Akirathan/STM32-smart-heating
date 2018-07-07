@@ -18,8 +18,8 @@ void MainFrame::drawHeader()
 	uint16_t X = LCD::get_x_size();
 	uint16_t Y = LCD::get_y_size();
 	LCD::print_string(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE, LCD::NORMAL_FONT);
-	LCD::print_string(185, LINE(3), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
-	LCD::print_string(X/4, Y - 60, (uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(X/2 + 30, LINE(4), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(X/4 - 30, Y - 60, (uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
 	LCD::print_string(X/2 + 40, Y - 60, (uint8_t *)"STATUS", LEFT_MODE, LCD::NORMAL_FONT);
 }
 
@@ -42,8 +42,8 @@ MainFrame::MainFrame() :
 	timeWindow = StaticTimeWindow(Coord(X/2 - 30, LINE(1)), true);
 	actualTempWindow = StaticMeasureTempWindow(Coord(70, LINE(4)));
 	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));
-	overviewButton = Button(Coord(X/4, Y - 40), "overview");
-	resetButton = Button(Coord(X/4, Y - 20), "reset");
+	overviewButton = Button(Coord(X/4 - 30, Y - 40), "overview");
+	resetButton = Button(Coord(X/4 - 30, Y - 20), "reset");
 	connectButton = Button(Coord(X/2 + 40, Y - 20), "connect");
 	statusTextWindow = TextWindow(Coord(X/2 + 40, Y - 40), "unknown");
 
