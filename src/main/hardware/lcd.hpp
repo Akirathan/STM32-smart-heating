@@ -38,6 +38,7 @@ uint32_t get_y_size();
 void draw_header(uint8_t* text);
 void print_string(uint16_t x, uint16_t y, uint8_t* text, Line_ModeTypdef mode, const Font& font);
 void print_char(uint16_t x, uint16_t y, uint8_t ascii, const Font &font);
+void fill_rectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
 } // namespace LCD
 

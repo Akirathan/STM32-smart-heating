@@ -128,4 +128,14 @@ void print_char(uint16_t x, uint16_t y, uint8_t ascii, const Font &font)
 	BSP_LCD_DisplayChar(x, y, ascii);
 }
 
+void fill_rectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+{
+	uint16_t old_color = BSP_LCD_GetTextColor();
+	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+
+	BSP_LCD_FillRect(x, y, width, height);
+
+	BSP_LCD_SetTextColor(old_color);
+}
+
 } // namespace LCD
