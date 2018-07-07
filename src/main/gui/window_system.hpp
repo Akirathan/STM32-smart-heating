@@ -42,6 +42,7 @@ private:
 		void next();
 		void addControl(IControlWindow* window);
 		void addStatic(IStaticWindow* window);
+		void removeControl(IControlWindow* window);
 		void drawAllWindows();
 		void setAllForRedraw();
 		void resetFocus();
@@ -59,6 +60,7 @@ private:
 		size_t ctrlWindowIdxGet() const;
 		void ctrlWindowIdxInc();
 		void ctrlWindowIdxDec();
+		bool contains(Window *window);
 	};
 public:
 	virtual void inputCallback(Input input) override;
@@ -69,6 +71,7 @@ public:
 	void stop();
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
+	void removeControl(IControlWindow* window);
 	void clear();
 	void drawAllWindows();
 	void setForRedraw();

@@ -120,6 +120,22 @@ void WindowSystem::Windows::ctrlWindowIdxDec()
 	}
 }
 
+bool WindowSystem::Windows::contains(Window *window)
+{
+	for (size_t i = 0; i < ctrlWindowsCount; i++) {
+		if (ctrlWindows[i] == window) {
+			return true;
+		}
+	}
+
+	for (size_t i = 0; i < staticWindowsCount; i++) {
+		if (staticWindows[i] == window) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /**
  * Sets focus to previous control window.
  */
@@ -147,6 +163,8 @@ void WindowSystem::Windows::addControl(IControlWindow* window)
 	rt_assert(ctrlWindowsCount < WINDOW_SYSTEM_CTRL_WINDOWS,
 			"Attempting to add too much control windows");
 
+	rt_assert(!contains(window), "Window is already contained in this system");
+
 	ctrlWindows[ctrlWindowsCount] = window;
 	ctrlWindowsCount++;
 
@@ -165,8 +183,35 @@ void WindowSystem::Windows::addStatic(IStaticWindow* window)
 {
 	rt_assert(staticWindowsCount < WINDOW_SYSTEM_STATIC_WINDOWS,
 			"Attempting to add too much static windows");
+
+	rt_assert(!contains(window), "Window is already contained in this system");
+
 	staticWindows[staticWindowsCount] = window;
 	staticWindowsCount++;
+}
+
+void WindowSystem::Windows::removeControl(IControlWindow* window)
+{
+	if (system.currWindow == window) {
+		previous();
+	}
+
+	size_t to_be_removed_idx = 0;
+	for (size_t i = 0; i < ctrlWindowsCount; i++) {
+		if (ctrlWindows[i] == window) {
+			to_be_removed_idx = i;
+			break;
+		}
+	}
+
+	rt_assert(to_be_removed_idx != 0, "Control window must be in the system before removal");
+
+	// Shift rest of the ctrlWindows
+	ctrlWindowsCount--;
+	for (size_t i = to_be_removed_idx; i < ctrlWindowsCount; i++) {
+		ctrlWindows[i] = ctrlWindows[i+1];
+	}
+	ctrlWindows[ctrlWindowsCount] = nullptr;
 }
 
 
@@ -206,6 +251,7 @@ void WindowSystem::Windows::resetFocus()
 
 /**
  * @brief Adds one control window.
+ * @attention One window cannot be added more than once.
  * @attention Order of adding is important, see docs for class.
  */
 void WindowSystem::addControl(IControlWindow* window)
@@ -213,9 +259,24 @@ void WindowSystem::addControl(IControlWindow* window)
 	return windows.addControl(window);
 }
 
+/**
+ * @brief Adds one static window.
+ * @attention One window cannot be added more than once.
+ */
 void WindowSystem::addStatic(IStaticWindow* window)
 {
 	return windows.addStatic(window);
+}
+
+/**
+ * Removes given control window. @p window must be in this WindowSystem before.
+ * If the window to be removed is currently focues, the previous control window
+ * is focused.
+ * @param window ... Window to be removed.
+ */
+void WindowSystem::removeControl(IControlWindow* window)
+{
+	windows.removeControl(window);
 }
 
 /**
