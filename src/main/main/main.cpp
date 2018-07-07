@@ -48,15 +48,53 @@ void static_time_window_test()
 /**
  * Reads whole contents of EEPROM - debugging.
  */
-void read_eeprom()
+static void eeprom_try()
 {
-	IntervalFrameData data[INTERVALS_NUM];
-	size_t data_size = 0;
-	uint32_t timestamp = 0;
-	bool time_synced = false;
 	EEPROM &eeprom = EEPROM::getInstance();
 
-	eeprom.load(data, &data_size, &timestamp, &time_synced);
+	eeprom.reset();
+
+	rt_assert(eeprom.isEmpty(), "");
+	rt_assert(!eeprom.isKeySet(), "");
+
+	/* Key storing/loading */
+	uint8_t key_buffer[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+	eeprom.saveKey(key_buffer);
+	rt_assert(eeprom.isKeySet(), "");
+
+	DesKey des_key = eeprom.loadKey();
+
+	/* Intervals storing */
+	IntervalFrameData interval_data[2];
+	interval_data[0] = IntervalFrameData(540, 600, 19);
+	interval_data[1] = IntervalFrameData(600, 660, 21);
+	uint32_t timestamp = 1530817;
+	eeprom.save(interval_data, 2, timestamp, true);
+
+	/* Intervals loading */
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t data_size = 0;
+	bool time_synced = false;
+	uint32_t timestamp_load = 0;
+	eeprom.load(data, &data_size, &timestamp_load, &time_synced);
+}
+
+static void eeprom_read()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	DesKey des_key;
+	if (eeprom.isKeySet()) {
+		des_key = eeprom.loadKey();
+	}
+
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t data_size = 0;
+	bool time_synced = false;
+	uint32_t timestamp_load = 0;
+	if (!eeprom.isEmpty()) {
+		eeprom.load(data, &data_size, &timestamp_load, &time_synced);
+	}
 }
 
 void fat_try(bool formatted, const std::string& fname)
