@@ -24,61 +24,22 @@ void EEPROM::reset()
 	}
 }
 
-EEPROM::EEPROM()
+/**
+ * Returns true when there are no intervals saved.
+ */
+bool EEPROM::isEmpty()
 {
-	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
-
-	uint32_t ret = BSP_EEPROM_Init();
-	rt_assert(ret == EEPROM_OK, "BSP EEPROM initialization failed");
+	return readPage(INTERVALS_NUM_ADDR) == 0;
 }
 
-void EEPROM::save(const IntervalFrameData& data, uint16_t addr)
+/**
+ * Returns true if write/read operation is in progress. This is necessary because
+ * EEPROM is on I2C bus and joystick is also on the same bus and something like
+ * deadlock may happen.
+ */
+bool EEPROM::isOperationInProgress()
 {
-	writePage(data.from, addr);
-	addr += 4;
-	writePage(data.to, addr);
-	addr += 4;
-	writePage(data.temp, addr);
-}
 
-void EEPROM::load(IntervalFrameData& data, uint16_t addr)
-{
-	data.from = readPage(addr);
-	addr += 4;
-	data.to = readPage(addr);
-	addr += 4;
-	data.temp = readPage(addr);
-}
-
-void EEPROM::writePage(uint32_t page, uint16_t addr)
-{
-	uint8_t buff[4] = {0};
-
-	for (int i = 3; i >= 0; --i) {
-		buff[i] |= page;
-		if (i != 0) page >>= 8;
-	}
-
-	uint32_t error_code = BSP_EEPROM_WriteBuffer(buff, addr, 4);
-	rt_assert(error_code == EEPROM_OK, "BSP EEPROM Write buffer failed");
-}
-
-uint32_t EEPROM::readPage(uint16_t addr)
-{
-	uint8_t buff[4];
-	uint32_t num_bytes = 4;
-	uint32_t word = 0;
-
-	uint32_t error_code = BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes);
-	rt_assert(error_code == EEPROM_OK, "BSP EEPROM read buffer failed");
-
-	for (int i = 0; i < 4; ++i){
-		word |= buff[i];
-		if (i != 3) {
-			word <<= 8;
-		}
-	}
-	return word;
 }
 
 /**
@@ -102,6 +63,43 @@ void EEPROM::save(const IntervalFrameData data[], const size_t count, uint32_t t
 		save(data[i], addr);
 		addr += sizeof(data[i]);
 	}
+}
+
+/**
+ * Loads data stored in EEPROM into @p data_array, along with their
+ * actual count into @p count and also timestamp and time_synced flag.
+ *
+ * @param data_array  ... Array of data max INTERVAL_NUMS length.
+ * @param count       ... Actual number of interval data contained in EEPROM
+ * @param timestamp   ... timestamp of saved intervals. May be nullptr.
+ * @param time_synced ... flag denoting whether time was synchronized with the
+ *                        server when intervals were saved. May be nullptr.
+ *
+ */
+void EEPROM::load(IntervalFrameData data_array[], size_t* count, uint32_t *timestamp, bool *time_synced)
+{
+	uint32_t _timestamp = readPage(INTERVALS_TIMESTAMP_ADDR);
+	bool _time_synced = static_cast<bool>(readPage(INTERVALS_TIMESYNCED_ADDR));
+	uint32_t _count = readPage(INTERVALS_NUM_ADDR);
+	rt_assert(_count <= INTERVALS_NUM, "There is too much intervals data in EEPROM");
+
+	uint16_t addr = INTERVALS_START_ADDR;
+	for (size_t i = 0; i < _count; i++) {
+		IntervalFrameData data;
+
+		load(data, addr);
+		data_array[i] = data;
+
+		addr += sizeof(data);
+	}
+
+	if (timestamp != nullptr) {
+		*timestamp = _timestamp;
+	}
+	if (time_synced != nullptr) {
+		*time_synced = _time_synced;
+	}
+	*count = _count;
 }
 
 void EEPROM::saveIntervalsMetadata(uint32_t timestamp, bool time_synced)
@@ -154,57 +152,60 @@ DesKey EEPROM::loadKey()
 	return DesKey(key_buffer);
 }
 
-/**
- * Returns true when there are no intervals saved.
- */
-bool EEPROM::isEmpty()
+EEPROM::EEPROM()
 {
-	return readPage(INTERVALS_NUM_ADDR) == 0;
+	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
+
+	uint32_t ret = BSP_EEPROM_Init();
+	rt_assert(ret == EEPROM_OK, "BSP EEPROM initialization failed");
 }
 
-/**
- * Returns true if write/read operation is in progress. This is necessary because
- * EEPROM is on I2C bus and joystick is also on the same bus and something like
- * deadlock may happen.
- */
-bool EEPROM::isOperationInProgress()
+void EEPROM::save(const IntervalFrameData& data, uint16_t addr)
 {
-
+	writePage(data.from, addr);
+	addr += 4;
+	writePage(data.to, addr);
+	addr += 4;
+	writePage(data.temp, addr);
 }
 
-/**
- * Loads data stored in EEPROM into @p data_array, along with their
- * actual count into @p count and also timestamp and time_synced flag.
- *
- * @param data_array  ... Array of data max INTERVAL_NUMS length.
- * @param count       ... Actual number of interval data contained in EEPROM
- * @param timestamp   ... timestamp of saved intervals. May be nullptr.
- * @param time_synced ... flag denoting whether time was synchronized with the
- *                        server when intervals were saved. May be nullptr.
- *
- */
-void EEPROM::load(IntervalFrameData data_array[], size_t* count, uint32_t *timestamp, bool *time_synced)
+void EEPROM::load(IntervalFrameData& data, uint16_t addr)
 {
-	uint32_t _timestamp = readPage(INTERVALS_TIMESTAMP_ADDR);
-	bool _time_synced = static_cast<bool>(readPage(INTERVALS_TIMESYNCED_ADDR));
-	uint32_t _count = readPage(INTERVALS_NUM_ADDR);
-	rt_assert(_count <= INTERVALS_NUM, "There is too much intervals data in EEPROM");
-
-	uint16_t addr = INTERVALS_START_ADDR;
-	for (size_t i = 0; i < _count; i++) {
-		IntervalFrameData data;
-
-		load(data, addr);
-		data_array[i] = data;
-
-		addr += sizeof(data);
-	}
-
-	if (timestamp != nullptr) {
-		*timestamp = _timestamp;
-	}
-	if (time_synced != nullptr) {
-		*time_synced = _time_synced;
-	}
-	*count = _count;
+	data.from = readPage(addr);
+	addr += 4;
+	data.to = readPage(addr);
+	addr += 4;
+	data.temp = readPage(addr);
 }
+
+uint32_t EEPROM::readPage(uint16_t addr)
+{
+	uint8_t buff[4];
+	uint32_t num_bytes = 4;
+	uint32_t word = 0;
+
+	uint32_t error_code = BSP_EEPROM_ReadBuffer(buff, addr, &num_bytes);
+	rt_assert(error_code == EEPROM_OK, "BSP EEPROM read buffer failed");
+
+	for (int i = 0; i < 4; ++i){
+		word |= buff[i];
+		if (i != 3) {
+			word <<= 8;
+		}
+	}
+	return word;
+}
+
+void EEPROM::writePage(uint32_t page, uint16_t addr)
+{
+	uint8_t buff[4] = {0};
+
+	for (int i = 3; i >= 0; --i) {
+		buff[i] |= page;
+		if (i != 0) page >>= 8;
+	}
+
+	uint32_t error_code = BSP_EEPROM_WriteBuffer(buff, addr, 4);
+	rt_assert(error_code == EEPROM_OK, "BSP EEPROM Write buffer failed");
+}
+
