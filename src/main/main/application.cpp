@@ -115,6 +115,11 @@ uint32_t Application::getCurrTimestamp()
 	return communicationDevice.getCurrentTimestamp();
 }
 
+bool Application::isConnectedToServer()
+{
+	return communicationDevice.isConnected();
+}
+
 /**
  * Returns bool whether time (specificaly timestamp) is synchronized with server
  * or not.

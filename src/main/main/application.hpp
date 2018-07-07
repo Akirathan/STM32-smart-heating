@@ -39,6 +39,7 @@ public:
 	void switchCurrFrameToMain();
 	void run();
 	static uint32_t getCurrTimestamp();
+	static bool isConnectedToServer();
 	static bool isTimeSynced();
 	static void registerSwTimerOwnerForPolling(SwTimerOwner *timer_owner);
 	static void emitEvent(const ConnectedEvent &event);
