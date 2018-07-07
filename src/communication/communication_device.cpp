@@ -59,7 +59,7 @@ const char *CommunicationDevice::getId() const
  */
 bool CommunicationDevice::isConnected() const
 {
-    return connected;
+    return timeSynced;
 }
 
 double CommunicationDevice::getTemp() const
