@@ -31,6 +31,7 @@ set(WINDOWS_SOURCES
 	"${WINDOWS_PATH}/temp_window.cpp"
 	"${WINDOWS_PATH}/time_window.cpp"
 	"${WINDOWS_PATH}/hex_char_window.cpp"
+	"${WINDOWS_PATH}/text_window.cpp"
 	"${WINDOWS_PATH}/window.cpp"
 )
 
