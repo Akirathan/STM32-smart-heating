@@ -70,11 +70,13 @@ void Button::setFocus(Message msg)
 void Button::show()
 {
 	hidden = false;
+	redrawFlag = true;
 }
 
 void Button::hide()
 {
 	hidden = true;
+	redrawFlag = true;
 }
 
 void Button::setPushed(bool b)
