@@ -15,12 +15,12 @@ void MainFrame::drawHeader()
 	LCD::clear();
 
 	// Draw headers.
+	uint16_t X = LCD::get_x_size();
+	uint16_t Y = LCD::get_y_size();
 	LCD::print_string(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE, LCD::NORMAL_FONT);
 	LCD::print_string(185, LINE(3), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
-	LCD::print_string(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 60,
-			(uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
-	LCD::print_string(LCD::get_x_size()/2 + 60, LCD::get_y_size() - 60,
-			(uint8_t *)"STATUS", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(X/4, Y - 60, (uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(X/2 + 40, Y - 60, (uint8_t *)"STATUS", LEFT_MODE, LCD::NORMAL_FONT);
 }
 
 /**
@@ -31,18 +31,23 @@ void MainFrame::drawHeader()
 MainFrame::MainFrame() :
 	SwTimerOwner(TIMER_TIMEOUT),
 	currFrameType(NONE),
-	connectedStatus(OFFLINE),
+	connectedStatus(UNKNOWN),
 	setIntervalFrame(),
 	overviewIntervalFrame(),
-	callbackRegistered(false)
+	callbackRegistered(false),
+	connectButtonInWindowSystem(false)
 {
-	timeWindow = StaticTimeWindow(Coord(LCD::get_x_size()/2 - 30, LINE(1)), true);
+	uint16_t X = LCD::get_x_size();
+	uint16_t Y = LCD::get_y_size();
+	timeWindow = StaticTimeWindow(Coord(X/2 - 30, LINE(1)), true);
 	actualTempWindow = StaticMeasureTempWindow(Coord(70, LINE(4)));
 	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));
-	overviewButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 40), "overview");
-	resetButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 20), "reset");
-	connectButton = Button(Coord(LCD::get_x_size()/2 + 60, LCD::get_y_size() - 30), "connect");
-	statusTextWindow = TextWindow(Coord(LCD::get_x_size()/2 + 70, LCD::get_y_size() - 40), "offline");
+	overviewButton = Button(Coord(X/4, Y - 40), "overview");
+	resetButton = Button(Coord(X/4, Y - 20), "reset");
+	connectButton = Button(Coord(X/2 + 40, Y - 20), "connect");
+	statusTextWindow = TextWindow(Coord(X/2 + 40, Y - 40), "unknown");
+
+	updateStatus();
 
 	windowSystem.addStatic(&timeWindow);
 	windowSystem.addStatic(&actualTempWindow);
@@ -162,17 +167,22 @@ void MainFrame::frameTerminateCallback()
  */
 void MainFrame::timeout()
 {
+	updateStatus();
+}
+
+void MainFrame::registerFrameTerminateCallback()
+{
+	// Intentionally left empty: method not used.
+}
+
+void MainFrame::updateStatus()
+{
 	if (!TcpDriver::isLinkUp()) {
 		setOfflineStatus();
 	}
 	else if (TcpDriver::isLinkUp() && Application::isConnectedToServer()) {
 		setConnectedStatus();
 	}
-}
-
-void MainFrame::registerFrameTerminateCallback()
-{
-	// Intentionally left empty: method not used.
 }
 
 /**
@@ -182,10 +192,17 @@ void MainFrame::registerFrameTerminateCallback()
  */
 void MainFrame::setOfflineStatus()
 {
-	if (connectedStatus != OFFLINE) {
-		connectedStatus = OFFLINE;
-		connectButton.show();
-		statusTextWindow.setText("offline");
+	if (connectedStatus == OFFLINE) {
+		return;
+	}
+
+	connectedStatus = OFFLINE;
+	connectButton.show();
+	statusTextWindow.setText("offline");
+
+	if (!connectButtonInWindowSystem) {
+		windowSystem.addControl(&connectButton);
+		connectButtonInWindowSystem = true;
 	}
 }
 
@@ -196,10 +213,17 @@ void MainFrame::setOfflineStatus()
  */
 void MainFrame::setConnectedStatus()
 {
-	if (connectedStatus != CONNECTED) {
-		connectedStatus = CONNECTED;
-		connectButton.hide();
-		statusTextWindow.setText("connected");
+	if (connectedStatus == CONNECTED) {
+		return;
+	}
+
+	connectButton.hide();
+	statusTextWindow.setText("connected");
+	connectedStatus = CONNECTED;
+
+	if (connectButtonInWindowSystem) {
+		windowSystem.removeControl(&connectButton);
+		connectButtonInWindowSystem = false;
 	}
 }
 

@@ -57,6 +57,7 @@ private:
 	} currFrameType;
 
 	enum status_t {
+		UNKNOWN,
 		OFFLINE,
 		CONNECTED
 	} connectedStatus;
@@ -71,8 +72,10 @@ private:
 	SetIntervalFrame setIntervalFrame;
 	OverviewIntervalFrame overviewIntervalFrame;
 	bool callbackRegistered;
+	bool connectButtonInWindowSystem;
 
 	void drawHeader() override;
+	void updateStatus();
 	void setOfflineStatus();
 	void setConnectedStatus();
 };
