@@ -25,7 +25,7 @@ Application::Application() :
 	clkFrame(),
 	mainFrame()
 {
-
+	Client::init("127.0.0.1", 8000, &communicationDevice);
 }
 
 /**
