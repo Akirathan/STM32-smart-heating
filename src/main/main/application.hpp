@@ -9,6 +9,7 @@
 
 #include "frame.hpp"
 #include "key_frame.hpp"
+#include "connect_frame.hpp"
 #include "clk_frame.hpp"
 #include "main_frame.hpp"
 #include "set_interval_frame.hpp"
@@ -55,6 +56,7 @@ private:
 	static IntervalList pendingIntervals;
 
 	KeyFrame keyFrame;
+	ConnectFrame connectFrame;
 	ClkFrame clkFrame;
 	MainFrame mainFrame;
 	SetIntervalFrame setIntervalFrame;

@@ -79,18 +79,20 @@ void Application::switchCurrFrameToMain()
 
 void Application::run()
 {
-	// Prepare first frame for displaying.
-	//clkFrame.registerFrameTerminateCallbackReceiver(this);
-	//setCurrFrame(&clkFrame);
+	EEPROM &eeprom = EEPROM::getInstance();
 
-	keyFrame.registerFrameTerminateCallbackReceiver(this);
-	setCurrFrame(&keyFrame);
-
-	const uint8_t des_key[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-
-	Client::init("127.0.0.1", 8000, &communicationDevice);
-	communicationDevice.setKey(des_key);
-	communicationDevice.connect();
+	if (!TcpDriver::isLinkUp()) {
+		clkFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&clkFrame);
+	}
+	else if (TcpDriver::isLinkUp() && !eeprom.isKeySet()) {
+		connectFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&connectFrame);
+	}
+	else if (TcpDriver::isLinkUp() && eeprom.isKeySet()) {
+		mainFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&mainFrame);
+	}
 
 	while (true) {
 		guiTask();
