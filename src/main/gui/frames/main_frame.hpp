@@ -20,6 +20,7 @@
 #include "temp_controller.hpp"
 #include "frame.hpp"
 #include "callbacks.hpp"
+#include "sw_timer_owner.hpp"
 
 /**
  * @brief Main frame of the application.
@@ -31,7 +32,7 @@
  * Note that user can access setIntervalFrame or overviewIntervalFrame with
  * resetButton or overviewButton. In those cases main frame is not displayed.
  */
-class MainFrame : public IFrame, IFrameTerminateCallback, IExitMessageCallback {
+class MainFrame : public IFrame, IFrameTerminateCallback, IExitMessageCallback, SwTimerOwner {
 public:
 	MainFrame();
 	virtual void passControl() override;
@@ -39,7 +40,13 @@ public:
 	virtual void registerExitMessageCallback() override;
 	virtual void frameTerminateCallback() override;
 	virtual void registerFrameTerminateCallback() override;
+	virtual void timeout() override;
 private:
+	/**
+	 * Timer timeout in milliseconds, for more information see @ref SwTimerOwner
+	 */
+	static const unsigned int TIMER_TIMEOUT = 2000;
+
 	/**
 	 * Which frame is currently displayed.
 	 */

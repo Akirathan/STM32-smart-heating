@@ -28,6 +28,7 @@ void MainFrame::drawHeader()
  *
  */
 MainFrame::MainFrame() :
+	SwTimerOwner(TIMER_TIMEOUT),
 	currFrameType(NONE),
 	connectedStatus(OFFLINE),
 	setIntervalFrame(),
@@ -146,6 +147,11 @@ void MainFrame::frameTerminateCallback()
 	}
 
 	Application::setCurrFrame(this);
+}
+
+void MainFrame::timeout()
+{
+
 }
 
 void MainFrame::registerFrameTerminateCallback()
