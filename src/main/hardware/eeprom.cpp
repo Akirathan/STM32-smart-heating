@@ -14,6 +14,16 @@ EEPROM& EEPROM::getInstance()
 	return instance;
 }
 
+/**
+ * Deletes all data from EEPROM.
+ */
+void EEPROM::reset()
+{
+	for (uint16_t addr = START_ADDR; addr < INTERVALS_END_ADDR; addr += 4) {
+		writePage(0, addr);
+	}
+}
+
 EEPROM::EEPROM()
 {
 	BSP_EEPROM_SelectDevice(BSP_EEPROM_M24C64_32);
@@ -83,24 +93,15 @@ void EEPROM::save(const IntervalFrameData data[], const size_t count, uint32_t t
 {
 	rt_assert(count <= INTERVALS_NUM, "Attempting to save too much data into EEPROM");
 
-	uint16_t addr = 0;
+	writePage(timestamp, INTERVALS_TIMESTAMP_ADDR);
+	writePage(static_cast<uint32_t>(time_synced), INTERVALS_TIMESYNCED_ADDR);
+	writePage(static_cast<uint32_t>(count), INTERVALS_NUM_ADDR);
 
-	// Write starting delimiter.
-	writePage(FRAME_DELIM, addr);
-	addr += 4;
-
-	writePage(timestamp, addr);
-	addr += 4;
-	writePage(static_cast<uint32_t>(time_synced), addr);
-	addr += 4;
-
+	uint16_t addr = INTERVALS_START_ADDR;
 	for (size_t i = 0; i < count; ++i) {
 		save(data[i], addr);
 		addr += sizeof(data[i]);
 	}
-
-	// Write ending delimiter
-	writePage(FRAME_DELIM, addr);
 }
 
 void EEPROM::saveIntervalsMetadata(uint32_t timestamp, bool time_synced)
@@ -119,14 +120,46 @@ void EEPROM::loadIntervalsMetadata(uint32_t *timestamp, bool *time_synced)
 	}
 }
 
+/**
+ * Returns true if the DesKey is stored in EEPROM.
+ */
+bool EEPROM::isKeySet()
+{
+	return static_cast<bool>(readPage(KEY_SET_FLAG_ADDR));
+}
+
+/**
+ * Sets given DesKey into EEPROM, also sets KEY_SET_FLAG.
+ */
+void EEPROM::saveKey(const DesKey &key)
+{
+	writePage(static_cast<uint32_t>(true), KEY_SET_FLAG_ADDR);
+
+	uint32_t error_code = BSP_EEPROM_WriteBuffer((uint8_t *)key.getContent(), KEY_START_ADDR, DesKey::SIZE);
+	rt_assert(error_code == EEPROM_OK, "BSP_EEPROM_WriteBuffer failed");
+}
+
+/**
+ * Loads DesKey from EEPROM. Note that the key must be set before loading.
+ */
+DesKey EEPROM::loadKey()
+{
+	rt_assert(isKeySet(), "Key must be set before loading");
+
+	uint8_t key_buffer[DesKey::SIZE] = {0};
+	uint32_t num_bytes_read = DesKey::SIZE;
+	uint32_t error_code = BSP_EEPROM_ReadBuffer(key_buffer, KEY_START_ADDR, &num_bytes_read);
+	rt_assert(error_code == EEPROM_OK, "BSP_EEPROM_ReadBuffer failed");
+
+	return DesKey(key_buffer);
+}
+
+/**
+ * Returns true when there are no intervals saved.
+ */
 bool EEPROM::isEmpty()
 {
-	if (readPage(0) != FRAME_DELIM) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return readPage(INTERVALS_NUM_ADDR) == 0;
 }
 
 /**
@@ -142,17 +175,20 @@ bool EEPROM::isEmpty()
  */
 void EEPROM::load(IntervalFrameData data_array[], size_t* count, uint32_t *timestamp, bool *time_synced)
 {
-	uint16_t addr = 0;
+	uint32_t _timestamp = readPage(INTERVALS_TIMESTAMP_ADDR);
+	bool _time_synced = static_cast<bool>(readPage(INTERVALS_TIMESYNCED_ADDR));
+	uint32_t _count = readPage(INTERVALS_NUM_ADDR);
+	rt_assert(_count <= INTERVALS_NUM, "There is too much intervals data in EEPROM");
 
-	if (readPage(addr) != FRAME_DELIM) {
-		return;
+	uint16_t addr = INTERVALS_START_ADDR;
+	for (size_t i = 0; i < _count; i++) {
+		IntervalFrameData data;
+
+		load(data, addr);
+		data_array[i] = data;
+
+		addr += sizeof(data);
 	}
-	addr += 4;
-
-	uint32_t _timestamp = readPage(addr);
-	addr += 4;
-	bool _time_synced = static_cast<bool>(readPage(addr));
-	addr += 4;
 
 	if (timestamp != nullptr) {
 		*timestamp = _timestamp;
@@ -160,18 +196,5 @@ void EEPROM::load(IntervalFrameData data_array[], size_t* count, uint32_t *times
 	if (time_synced != nullptr) {
 		*time_synced = _time_synced;
 	}
-
-	size_t data_idx = 0;
-	while (readPage(addr) != FRAME_DELIM) {
-		rt_assert(data_idx < INTERVALS_NUM, "There is too much intervals data in EEPROM");
-		IntervalFrameData data;
-
-		load(data, addr);
-		data_array[data_idx] = data;
-
-		data_idx++;
-		addr += sizeof(data);
-	}
-
-	*count = data_idx;
+	*count = _count;
 }

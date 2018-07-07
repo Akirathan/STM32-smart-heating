@@ -9,6 +9,8 @@
 
 #include "interval_frame_data.hpp"
 #include "stm3210c_eval_eeprom.h"
+#include "des_key.hpp"
+#include "settings.h" // For INTERVALS_NUM
 
 /**
  * @brief Class representing EEPROM compoment.
@@ -23,16 +25,27 @@ public:
 	static EEPROM& getInstance();
 	void operator=(const EEPROM&) = delete;
 	EEPROM(const EEPROM&) = delete;
+	void reset();
 	bool isEmpty();
 	void save(const IntervalFrameData data[], const size_t count, uint32_t timestamp, bool time_synced);
 	void load(IntervalFrameData data[], size_t* count, uint32_t *timestamp, bool *time_synced);
 	void saveIntervalsMetadata(uint32_t timestamp, bool time_synced);
 	void loadIntervalsMetadata(uint32_t *timestamp, bool *time_synced);
+	bool isKeySet();
+	void saveKey(const DesKey &key);
+	DesKey loadKey();
 private:
-	const uint32_t FRAME_DELIM = 0x1234;
 	const uint16_t START_ADDR = 0;
-	const uint16_t INTERVALS_TIMESTAMP_ADDR = START_ADDR + sizeof(FRAME_DELIM);
+
+	const uint16_t KEY_SET_FLAG_ADDR = START_ADDR;
+	const uint16_t KEY_START_ADDR = KEY_SET_FLAG_ADDR + 4;
+	const uint16_t KEY_END_ADDR = KEY_START_ADDR + 8;
+
+	const uint16_t INTERVALS_TIMESTAMP_ADDR = KEY_END_ADDR;
 	const uint16_t INTERVALS_TIMESYNCED_ADDR = INTERVALS_TIMESTAMP_ADDR + 4;
+	const uint16_t INTERVALS_NUM_ADDR = INTERVALS_TIMESYNCED_ADDR + 4;
+	const uint16_t INTERVALS_START_ADDR = INTERVALS_NUM_ADDR + 4;
+	const uint16_t INTERVALS_END_ADDR = INTERVALS_START_ADDR + 12 * INTERVALS_NUM;
 
 	EEPROM();
 
