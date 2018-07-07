@@ -192,19 +192,15 @@ void WindowSystem::Windows::addStatic(IStaticWindow* window)
 
 void WindowSystem::Windows::removeControl(IControlWindow* window)
 {
-	if (system.currWindow == window) {
-		previous();
-	}
-
-	size_t to_be_removed_idx = 0;
+	int to_be_removed_idx = -1;
 	for (size_t i = 0; i < ctrlWindowsCount; i++) {
 		if (ctrlWindows[i] == window) {
-			to_be_removed_idx = i;
+			to_be_removed_idx = static_cast<int>(i);
 			break;
 		}
 	}
 
-	rt_assert(to_be_removed_idx != 0, "Control window must be in the system before removal");
+	rt_assert(to_be_removed_idx != -1, "Control window must be in the system before removal");
 
 	// Shift rest of the ctrlWindows
 	ctrlWindowsCount--;
@@ -212,6 +208,10 @@ void WindowSystem::Windows::removeControl(IControlWindow* window)
 		ctrlWindows[i] = ctrlWindows[i+1];
 	}
 	ctrlWindows[ctrlWindowsCount] = nullptr;
+
+	if (system.currWindow == window) {
+		previous();
+	}
 }
 
 
