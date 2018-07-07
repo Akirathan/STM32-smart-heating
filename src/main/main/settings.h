@@ -19,4 +19,7 @@
 
 #define INTERVALS_NUM                           2
 
+// Maximum number of software timers
+#define SW_TIMERS_NUM                           3
+
 #endif /* SETTINGS_H_ */

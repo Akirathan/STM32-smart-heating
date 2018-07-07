@@ -18,6 +18,8 @@ IFrame            * Application::currFrame = nullptr;
 bool                Application::clearDisplayFlag = false;
 CommunicationDevice Application::communicationDevice;
 IntervalList        Application::pendingIntervals;
+SwTimerOwner      * Application::swTimerOwners[SW_TIMERS_NUM] = {nullptr};
+size_t              Application::swTimerOwnersIdx = 0;
 
 Application::Application() :
 	clkFrame(),
@@ -97,6 +99,7 @@ void Application::run()
 	while (true) {
 		guiTask();
 		TcpDriver::poll();
+		pollSwTimers();
 	}
 }
 
@@ -121,6 +124,13 @@ uint32_t Application::getCurrTimestamp()
 bool Application::isTimeSynced()
 {
 	return communicationDevice.isTimeSynchronized();
+}
+
+void Application::registerSwTimerOwnerForPolling(SwTimerOwner *timer_owner)
+{
+	rt_assert(swTimerOwnersIdx <= SW_TIMERS_NUM, "Attempting too add too much SW timer owners");
+	swTimerOwners[swTimerOwnersIdx] = timer_owner;
+	swTimerOwnersIdx++;
 }
 
 /**
@@ -239,3 +249,11 @@ void Application::guiTask()
 	}
 	currFrame->redraw();
 }
+
+void Application::pollSwTimers()
+{
+	for (size_t i = 0; i < swTimerOwnersIdx; i++) {
+		swTimerOwners[i]->poll();
+	}
+}
+

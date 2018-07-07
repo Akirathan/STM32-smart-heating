@@ -21,6 +21,7 @@
 #include "eth_link_up_event.hpp"
 #include "communication_error_event.hpp"
 #include "communication_device.hpp"
+#include "sw_timer_owner.hpp"
 
 /**
  * This class contains main application logic in its @ref run method.
@@ -39,6 +40,7 @@ public:
 	void run();
 	static uint32_t getCurrTimestamp();
 	static bool isTimeSynced();
+	static void registerSwTimerOwnerForPolling(SwTimerOwner *timer_owner);
 	static void emitEvent(const ConnectedEvent &event);
 	static void emitEvent(const MeasuredTempEvent &event);
 	static void emitEvent(const IntervalsChangedStmEvent &event);
@@ -54,6 +56,8 @@ private:
 	/// server and time is synchronized - after this timestamp of pendingIntervals
 	/// is fixed and they are sent to the server.
 	static IntervalList pendingIntervals;
+	static SwTimerOwner * swTimerOwners[SW_TIMERS_NUM];
+	static size_t swTimerOwnersIdx;
 
 	KeyFrame keyFrame;
 	ConnectFrame connectFrame;
@@ -64,6 +68,7 @@ private:
 	static void updateIntervalsMetadataInEEPROM(const ConnectedEvent &event);
 
 	void guiTask();
+	void pollSwTimers();
 };
 
 
