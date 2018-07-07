@@ -20,7 +20,8 @@ Button::Button(const Coord& coord, const char *name)
 void Button::draw() const
 {
 	if (hidden) {
-		return;
+		sFONT *font = LCD::get_font();
+		LCD::fill_rectangle(coord.x, coord.y, std::strlen(name) * font->Width, font->Height);
 	}
 
 	LCD::Font font;
