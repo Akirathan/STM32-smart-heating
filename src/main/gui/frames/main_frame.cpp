@@ -59,6 +59,8 @@ MainFrame::MainFrame() :
  */
 void MainFrame::passControl()
 {
+	startSwTimer();
+
 	// Register time and temperature windows for minute or second callbacks.
 	if (!callbackRegistered) {
 		timeWindow.runClock();
@@ -85,6 +87,8 @@ void MainFrame::exitMessageCallback()
 {
 	windowSystem.unregisterExitMessageCallbackReceiver(this);
 	windowSystem.stop();
+
+	stopSwTimer();
 
 	// Hide windows registered for callbacks.
 	timeWindow.hide();
@@ -136,6 +140,8 @@ void MainFrame::frameTerminateCallback()
 {
 	overviewIntervalFrame.unregisterFrameTerminateCallbackReceiver(this);
 	setIntervalFrame.unregisterFrameTerminateCallbackReceiver(this);
+
+	startSwTimer();
 
 	if (currFrameType == SET_INTERVAL_FRAME) {
 		IntervalFrameData data[INTERVALS_NUM];
