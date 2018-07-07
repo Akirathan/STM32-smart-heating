@@ -31,8 +31,7 @@ void SwTimerOwner::poll()
 	}
 
 	if (HAL_GetTick() - startedTicks >= timeoutMs) {
-		started = false;
-		startedTicks = 0;
+		startedTicks = HAL_GetTick();
 		timeout();
 	}
 }
