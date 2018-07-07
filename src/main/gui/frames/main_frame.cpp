@@ -18,6 +18,8 @@ void MainFrame::drawHeader()
 	LCD::print_string(185, LINE(3), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
 	LCD::print_string(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 60,
 			(uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(LCD::get_x_size()/2 + 60, LCD::get_y_size() - 60,
+			(uint8_t *)"STATUS", LEFT_MODE, LCD::NORMAL_FONT);
 }
 
 /**
@@ -27,6 +29,7 @@ void MainFrame::drawHeader()
  */
 MainFrame::MainFrame() :
 	currFrameType(NONE),
+	connectedStatus(OFFLINE),
 	setIntervalFrame(),
 	overviewIntervalFrame(),
 	callbackRegistered(false)
@@ -36,6 +39,8 @@ MainFrame::MainFrame() :
 	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));
 	overviewButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 40), "overview");
 	resetButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 20), "reset");
+	connectButton = Button(Coord(LCD::get_x_size()/2 + 60, LCD::get_y_size() - 30), "connect");
+	statusTextWindow = TextWindow(Coord(LCD::get_x_size()/2 + 70, LCD::get_y_size() - 40), "offline");
 
 	windowSystem.addStatic(&timeWindow);
 	windowSystem.addStatic(&actualTempWindow);
@@ -146,5 +151,33 @@ void MainFrame::frameTerminateCallback()
 void MainFrame::registerFrameTerminateCallback()
 {
 	// Intentionally left empty: method not used.
+}
+
+/**
+ * Sets the "connected status" to OFFLINE - connect button will be shown
+ * and OFFLINE status text will be shown.
+ * @note This method is called periodically from @ref MainFrameTimer.
+ */
+void MainFrame::setOfflineStatus()
+{
+	if (connectedStatus != OFFLINE) {
+		connectedStatus = OFFLINE;
+		connectButton.show();
+		statusTextWindow.setText("offline");
+	}
+}
+
+/**
+ * Sets the "connected status" to CONNECTED - this means that connected status
+ * text will be shown and connected button will be hidden.
+ * @note This method is called periodically from @ref MainFrameTimer.
+ */
+void MainFrame::setConnectedStatus()
+{
+	if (connectedStatus != CONNECTED) {
+		connectedStatus = CONNECTED;
+		connectButton.hide();
+		statusTextWindow.setText("connected");
+	}
 }
 

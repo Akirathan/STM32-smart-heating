@@ -14,6 +14,7 @@
 #include "static_time_window.hpp"
 #include "static_measure_temp_window.hpp"
 #include "static_preset_temp_window.hpp"
+#include "text_window.hpp"
 #include "window_system.hpp"
 #include "lcd.hpp"
 #include "temp_controller.hpp"
@@ -48,15 +49,25 @@ private:
 		OVERVIEW_INTERVAL_FRAME
 	} currFrameType;
 
+	enum status_t {
+		OFFLINE,
+		CONNECTED
+	} connectedStatus;
+
 	StaticTimeWindow timeWindow;
 	StaticMeasureTempWindow actualTempWindow;
 	StaticPresetTempWindow presetTempWindow;
 	Button overviewButton;
 	Button resetButton;
+	Button connectButton;
+	TextWindow statusTextWindow;
 	SetIntervalFrame setIntervalFrame;
 	OverviewIntervalFrame overviewIntervalFrame;
 	bool callbackRegistered;
+
 	void drawHeader() override;
+	void setOfflineStatus();
+	void setConnectedStatus();
 };
 
 
