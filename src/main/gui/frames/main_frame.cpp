@@ -157,8 +157,6 @@ void MainFrame::frameTerminateCallback()
 	overviewIntervalFrame.unregisterFrameTerminateCallbackReceiver(this);
 	setIntervalFrame.unregisterFrameTerminateCallbackReceiver(this);
 
-	startSwTimer();
-
 	if (currFrameType == SET_INTERVAL_FRAME) {
 		IntervalFrameData data[INTERVALS_NUM];
 		size_t count = 0;
@@ -173,6 +171,7 @@ void MainFrame::frameTerminateCallback()
 		Application::emitEvent(event);
 	}
 
+	startSwTimer();
 	Application::setCurrFrame(this);
 }
 
