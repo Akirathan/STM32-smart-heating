@@ -87,10 +87,10 @@ void Application::switchCurrFrameToMain()
 void Application::run()
 {
 	while (true) {
-		guiTask();
 		TcpDriver::poll();
-		pollSwTimers();
 		mainTask();
+		pollSwTimers();
+		guiTask();
 	}
 }
 
