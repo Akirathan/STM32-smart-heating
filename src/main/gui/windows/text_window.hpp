@@ -19,8 +19,10 @@ private:
 	static const size_t TEXT_LEN = 15;
 
 	char text[TEXT_LEN];
+	char oldText[TEXT_LEN];
 
 	virtual void draw() const override;
+	void clearOldText() const;
 };
 
 #endif /* TEXT_WINDOW_HPP_ */
