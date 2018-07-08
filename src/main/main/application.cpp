@@ -233,6 +233,11 @@ void Application::emitEvent(const EthLinkUpEvent &event)
 	communicationDevice.connect();
 }
 
+void Application::emitEvent(const KeySetEvent &event)
+{
+
+}
+
 void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
 {
 	uint32_t timestamp = 0;

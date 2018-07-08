@@ -20,6 +20,7 @@
 #include "connected_event.hpp"
 #include "eth_link_up_event.hpp"
 #include "communication_error_event.hpp"
+#include "key_set_event.hpp"
 #include "communication_device.hpp"
 #include "sw_timer_owner.hpp"
 
@@ -48,6 +49,7 @@ public:
 	static void emitEvent(const IntervalsChangedServerEvent &event);
 	static void emitEvent(const CommunicationErrorEvent &event);
 	static void emitEvent(const EthLinkUpEvent &event);
+	static void emitEvent(const KeySetEvent &event);
 private:
 	static IFrame* currFrame;
 	static bool clearDisplayFlag;
