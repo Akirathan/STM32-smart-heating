@@ -133,6 +133,26 @@ bool WindowSystem::Windows::contains(Window *window)
 }
 
 /**
+ * Adds given window to the list of windows that should be clear when GUI task
+ * will run.
+ */
+void WindowSystem::Windows::addToToBeClearedWindows(Window *window)
+{
+	rt_assert(toBeClearedWindowsIdx < WINDOW_SYSTEM_CTRL_WINDOWS, "Too much windows in toBeClearedWindow list");
+	toBeClearedWindows[toBeClearedWindowsIdx] = window;
+	toBeClearedWindowsIdx++;
+}
+
+void WindowSystem::Windows::clearPendingWindows()
+{
+	for (size_t i = 0; i < toBeClearedWindowsIdx; i++) {
+		toBeClearedWindows[i]->clear();
+		toBeClearedWindows[i] = nullptr;
+	}
+	toBeClearedWindowsIdx = 0;
+}
+
+/**
  * Sets focus to previous control window.
  */
 void WindowSystem::Windows::previous() {
@@ -197,6 +217,7 @@ void WindowSystem::Windows::removeControl(IControlWindow* window)
 	}
 
 	rt_assert(to_be_removed_idx != -1, "Control window must be in the system before removal");
+	addToToBeClearedWindows(ctrlWindows[to_be_removed_idx]);
 
 	// Shift rest of the ctrlWindows
 	ctrlWindowsCount--;
@@ -210,12 +231,13 @@ void WindowSystem::Windows::removeControl(IControlWindow* window)
 	}
 }
 
-
 /**
  * @brief Redraw all windows.
  */
 void WindowSystem::Windows::drawAllWindows()
 {
+	clearPendingWindows();
+
 	for (size_t i = 0; i < staticWindowsCount; ++i) {
 		staticWindows[i]->redraw();
 	}
@@ -280,7 +302,7 @@ void WindowSystem::removeControl(IControlWindow* window)
  */
 void WindowSystem::clear()
 {
-
+	// TODO
 }
 
 void WindowSystem::drawAllWindows()

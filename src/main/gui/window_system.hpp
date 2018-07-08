@@ -63,6 +63,8 @@ private:
 		void ctrlWindowIdxInc();
 		void ctrlWindowIdxDec();
 		bool contains(Window *window);
+		void addToToBeClearedWindows(Window *window);
+		void clearPendingWindows();
 	};
 public:
 	virtual void inputCallback(Input input) override;
