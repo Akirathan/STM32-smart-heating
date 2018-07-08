@@ -185,6 +185,12 @@ void MainFrame::updateStatus()
 	else if (TcpDriver::isLinkUp() && Application::isConnectedToServer()) {
 		setConnectedStatus();
 	}
+	else if (TcpDriver::isLinkUp() && ! EEPROM::getInstance().isKeySet()) {
+		setLinkUpStatus();
+	}
+	else {
+		setConnectingStatus();
+	}
 }
 
 /**
@@ -200,11 +206,29 @@ void MainFrame::setOfflineStatus()
 
 	connectedStatus = OFFLINE;
 	statusTextWindow.setText("offline");
+	hideConnectButton();
+}
 
-	if (!connectButtonInWindowSystem) {
-		windowSystem.addControl(&connectButton);
-		connectButtonInWindowSystem = true;
+void MainFrame::setLinkUpStatus()
+{
+	if (connectedStatus == LINK_UP) {
+		return;
 	}
+
+	connectedStatus = LINK_UP;
+	statusTextWindow.setText("offline");
+	showConnectButton();
+}
+
+void MainFrame::setConnectingStatus()
+{
+	if (connectedStatus == CONNECTING) {
+		return;
+	}
+
+	connectedStatus = CONNECTING;
+	statusTextWindow.setText("connecting");
+	hideConnectButton();
 }
 
 /**
@@ -218,9 +242,21 @@ void MainFrame::setConnectedStatus()
 		return;
 	}
 
-	statusTextWindow.setText("connected");
 	connectedStatus = CONNECTED;
+	statusTextWindow.setText("connected");
+	hideConnectButton();
+}
 
+void MainFrame::showConnectButton()
+{
+	if (!connectButtonInWindowSystem) {
+		windowSystem.addControl(&connectButton);
+		connectButtonInWindowSystem = true;
+	}
+}
+
+void MainFrame::hideConnectButton()
+{
 	if (connectButtonInWindowSystem) {
 		windowSystem.removeControl(&connectButton);
 		connectButtonInWindowSystem = false;

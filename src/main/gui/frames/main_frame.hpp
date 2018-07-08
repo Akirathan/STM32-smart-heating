@@ -58,8 +58,10 @@ private:
 
 	enum status_t {
 		UNKNOWN,
-		OFFLINE,
-		CONNECTED
+		OFFLINE,       // ETH link is down, cannot connect
+		LINK_UP,       // ETH link up, but key is not in EEPROM
+		CONNECTING,
+		CONNECTED      // STM is fully connected to the server
 	} connectedStatus;
 
 	StaticTimeWindow timeWindow;
@@ -77,7 +79,11 @@ private:
 	void drawHeader() override;
 	void updateStatus();
 	void setOfflineStatus();
+	void setLinkUpStatus();
+	void setConnectingStatus();
 	void setConnectedStatus();
+	void showConnectButton();
+	void hideConnectButton();
 };
 
 
