@@ -67,6 +67,7 @@ private:
 	ClkFrame clkFrame;
 	MainFrame mainFrame;
 	SetIntervalFrame setIntervalFrame;
+	bool mainTaskFinished;
 
 	static void updateIntervalsMetadataInEEPROM(const ConnectedEvent &event);
 	static bool isMainFrameCurrFrame();
@@ -74,6 +75,7 @@ private:
 
 	void guiTask();
 	void pollSwTimers();
+	void mainTask();
 };
 
 

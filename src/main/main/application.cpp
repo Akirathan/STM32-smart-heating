@@ -23,7 +23,8 @@ size_t              Application::swTimerOwnersIdx = 0;
 
 Application::Application() :
 	clkFrame(),
-	mainFrame()
+	mainFrame(),
+	mainTaskFinished(false)
 {
 	Client::init("127.0.0.1", 8000, &communicationDevice);
 }
@@ -85,28 +86,11 @@ void Application::switchCurrFrameToMain()
 
 void Application::run()
 {
-	EEPROM &eeprom = EEPROM::getInstance();
-
-	if (!TcpDriver::isLinkUp()) {
-		clkFrame.registerFrameTerminateCallbackReceiver(this);
-		setCurrFrame(&clkFrame);
-	}
-	else if (TcpDriver::isLinkUp() && !eeprom.isKeySet()) {
-		connectFrame.registerFrameTerminateCallbackReceiver(this);
-		setCurrFrame(&connectFrame);
-	}
-	else if (TcpDriver::isLinkUp() && eeprom.isKeySet()) {
-		// Set dummy time - it will be overwriten in a while.
-		RTCController::getInstance().setTime(Time::Time(0, 0));
-
-		mainFrame.registerFrameTerminateCallbackReceiver(this);
-		setCurrFrame(&mainFrame);
-	}
-
 	while (true) {
 		guiTask();
 		TcpDriver::poll();
 		pollSwTimers();
+		mainTask();
 	}
 }
 
@@ -308,5 +292,32 @@ void Application::pollSwTimers()
 	for (size_t i = 0; i < swTimerOwnersIdx; i++) {
 		swTimerOwners[i]->poll();
 	}
+}
+
+void Application::mainTask()
+{
+	if (mainTaskFinished) {
+		return;
+	}
+
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	if (!TcpDriver::isLinkUp()) {
+		clkFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&clkFrame);
+	}
+	else if (TcpDriver::isLinkUp() && !eeprom.isKeySet()) {
+		connectFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&connectFrame);
+	}
+	else if (TcpDriver::isLinkUp() && eeprom.isKeySet()) {
+		// Set dummy time - it will be overwriten in a while.
+		RTCController::getInstance().setTime(Time::Time(0, 0));
+
+		mainFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&mainFrame);
+	}
+
+	mainTaskFinished = true;
 }
 
