@@ -25,6 +25,11 @@ void HexCharWindow::setFocus(Message msg)
 	redrawFlag = true;
 }
 
+char HexCharWindow::getChar()
+{
+	return hexChar;
+}
+
 void HexCharWindow::draw() const
 {
 	LCD::Font font;

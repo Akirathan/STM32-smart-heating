@@ -18,6 +18,7 @@ public:
 	HexCharWindow();
 	HexCharWindow(const Coord &coord);
 	virtual void setFocus(Message msg) override;
+	char getChar();
 private:
 	char hexChar;
 	bool focused;
