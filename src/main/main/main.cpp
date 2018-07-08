@@ -14,6 +14,9 @@
 #include "char_stream_test.hpp"
 #include "response_buffer_test.hpp"
 
+// TODO: remove
+#include <string>
+
 
 void SystemClock_Config();
 static void board_init();
