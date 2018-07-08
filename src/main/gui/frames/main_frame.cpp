@@ -8,6 +8,7 @@
 #include "application.hpp"
 #include "intervals_changed_event.hpp"
 #include "tcp_driver.hpp" // For TcpDriver::isLinkUp
+#include "key_set_event.hpp"
 
 void MainFrame::drawHeader()
 {
@@ -122,9 +123,16 @@ void MainFrame::exitMessageCallback()
 		setIntervalFrame.registerFrameTerminateCallbackReceiver(this);
 		Application::setCurrFrame(&setIntervalFrame);
 	}
+	else if (connectButton.isPushed()) {
+		currFrameType = KEY_FRAME;
+
+		keyFrame.registerFrameTerminateCallbackReceiver(this);
+		Application::setCurrFrame(&keyFrame);
+	}
 
 	overviewButton.setPushed(false);
 	resetButton.setPushed(false);
+	connectButton.setPushed(false);
 }
 
 /**
@@ -157,6 +165,11 @@ void MainFrame::frameTerminateCallback()
 		setIntervalFrame.getData(data, &count);
 
 		IntervalsChangedStmEvent event(data, count, Application::getCurrTimestamp(), Application::isTimeSynced());
+		Application::emitEvent(event);
+	}
+	else if (currFrameType == KEY_FRAME) {
+		DesKey key = keyFrame.getKey();
+		KeySetEvent event(key);
 		Application::emitEvent(event);
 	}
 

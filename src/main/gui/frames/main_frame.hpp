@@ -10,6 +10,7 @@
 #include <button.hpp>
 #include "overview_interval_frame.hpp"
 #include "set_interval_frame.hpp"
+#include "key_frame.hpp"
 #include "eeprom.hpp"
 #include "static_time_window.hpp"
 #include "static_measure_temp_window.hpp"
@@ -53,7 +54,8 @@ private:
 	enum {
 		NONE,
 		SET_INTERVAL_FRAME,
-		OVERVIEW_INTERVAL_FRAME
+		OVERVIEW_INTERVAL_FRAME,
+		KEY_FRAME
 	} currFrameType;
 
 	enum status_t {
@@ -73,6 +75,7 @@ private:
 	TextWindow statusTextWindow;
 	SetIntervalFrame setIntervalFrame;
 	OverviewIntervalFrame overviewIntervalFrame;
+	KeyFrame keyFrame;
 	bool callbackRegistered;
 	bool connectButtonInWindowSystem;
 
