@@ -69,6 +69,8 @@ private:
 	SetIntervalFrame setIntervalFrame;
 
 	static void updateIntervalsMetadataInEEPROM(const ConnectedEvent &event);
+	static bool isMainFrameCurrFrame();
+	static void connectToServerIfPossible();
 
 	void guiTask();
 	void pollSwTimers();

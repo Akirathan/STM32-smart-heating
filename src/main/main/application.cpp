@@ -38,6 +38,10 @@ void Application::setCurrFrame(IFrame* frame)
 	frame->setForRedraw();
 	frame->passControl();
 	clearDisplayFlag = true;
+
+	if (isMainFrameCurrFrame()) {
+		connectToServerIfPossible();
+	}
 }
 
 void Application::frameTerminateCallback()
@@ -230,12 +234,18 @@ void Application::emitEvent(const CommunicationErrorEvent &event)
  */
 void Application::emitEvent(const EthLinkUpEvent &event)
 {
-	communicationDevice.connect();
+	connectToServerIfPossible();
 }
 
+/**
+ * This event is generated when user inputs the DES key into @ref KeyFrame
+ */
 void Application::emitEvent(const KeySetEvent &event)
 {
+	EEPROM::getInstance().saveKey(event.getKey());
+	communicationDevice.setKey(event.getKey());
 
+	connectToServerIfPossible();
 }
 
 void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
@@ -247,6 +257,34 @@ void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
 	eeprom.loadIntervalsMetadata(&timestamp, &time_synced);
 	if (time_synced == false) {
 		eeprom.saveIntervalsMetadata(getCurrTimestamp() + event.getTimeShift(), true);
+	}
+}
+
+/**
+ * We need to check if current frame is MainFrame because all connectivity
+ * issues are related just to MainFrame (we want to notify user about
+ * connectivity only in MainFrame, not in other frames).
+ */
+bool Application::isMainFrameCurrFrame()
+{
+	MainFrame *main_frame = dynamic_cast<MainFrame *>(currFrame);
+	return main_frame != nullptr;
+}
+
+/**
+ * MainFrame is going to be current frame. Try to connect to the server.
+ *
+ * Note that this is the only method (in all application) where connection to
+ * the server may be invoked.
+ */
+void Application::connectToServerIfPossible()
+{
+	if (isConnectedToServer()) {
+		return;
+	}
+
+	if (TcpDriver::isLinkUp() && EEPROM::getInstance().isKeySet() && isMainFrameCurrFrame()) {
+		communicationDevice.connect();
 	}
 }
 
