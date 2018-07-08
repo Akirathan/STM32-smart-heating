@@ -42,6 +42,7 @@ private:
 		void next();
 		void addControl(IControlWindow* window);
 		void addStatic(IStaticWindow* window);
+		void removeControl(IControlWindow* window);
 		void drawAllWindows();
 		void setAllForRedraw();
 		void resetFocus();
@@ -56,9 +57,14 @@ private:
 		size_t staticWindowsCount;
 		IControlWindow * ctrlWindows[WINDOW_SYSTEM_CTRL_WINDOWS];
 		IStaticWindow * staticWindows[WINDOW_SYSTEM_STATIC_WINDOWS];
+		Window * toBeClearedWindows[WINDOW_SYSTEM_CTRL_WINDOWS];
+		size_t toBeClearedWindowsIdx;
 		size_t ctrlWindowIdxGet() const;
 		void ctrlWindowIdxInc();
 		void ctrlWindowIdxDec();
+		bool contains(Window *window);
+		void addToToBeClearedWindows(Window *window);
+		void clearPendingWindows();
 	};
 public:
 	virtual void inputCallback(Input input) override;
@@ -69,6 +75,7 @@ public:
 	void stop();
 	void addControl(IControlWindow* window);
 	void addStatic(IStaticWindow* window);
+	void removeControl(IControlWindow* window);
 	void clear();
 	void drawAllWindows();
 	void setForRedraw();

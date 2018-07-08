@@ -5,15 +5,19 @@
  */
 
 #include "button.hpp"
+#include <cstring> // For std::strcpy
 
 Button::Button()
 	: Button(Coord(0,0), "")
 { }
 
-Button::Button(const Coord& coord, const std::string& name)
+Button::Button(const Coord& coord, const char *name)
 	: IControlWindow(coord),
-	  name(name)
-{ }
+	  pushed(false),
+	  focused(false)
+{
+	std::strcpy(this->name, name);
+}
 
 void Button::draw() const
 {
@@ -26,7 +30,15 @@ void Button::draw() const
 		font = LCD::NORMAL_FONT;
 	}
 
-	LCD::print_string(coord.x, coord.y, (uint8_t *)name.c_str(), LEFT_MODE, font);
+	LCD::print_string(coord.x, coord.y, (uint8_t *)name, LEFT_MODE, font);
+}
+
+void Button::clear()
+{
+	pushed = false;
+	focused = false;
+	sFONT *font = LCD::get_font();
+	LCD::fill_rectangle(coord.x, coord.y, std::strlen(name) * font->Width, font->Height);
 }
 
 Message Button::_eventHandler(JOYState_TypeDef joy_state)

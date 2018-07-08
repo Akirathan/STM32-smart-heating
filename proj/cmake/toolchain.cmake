@@ -62,7 +62,7 @@ string(CONCAT CMAKE_CXX_FLAGS
   "-std=c++14 "
   "-fno-exceptions "
   "-fno-threadsafe-statics "
-  "-fno-rtti "
+  # "-fno-rtti "
   "-fpermissive "             # For FAT library
 )
 

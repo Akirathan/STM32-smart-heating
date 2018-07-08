@@ -14,9 +14,12 @@
 #define CALLBACK_RECEIVERS_NUM_SECOND_IT        1
 #define CALLBACK_RECEIVERS_NUM_MINUTE_IT        4
 
-#define WINDOW_SYSTEM_CTRL_WINDOWS              5
+#define WINDOW_SYSTEM_CTRL_WINDOWS              18
 #define WINDOW_SYSTEM_STATIC_WINDOWS            5
 
 #define INTERVALS_NUM                           2
+
+// Maximum number of software timers
+#define SW_TIMERS_NUM                           3
 
 #endif /* SETTINGS_H_ */

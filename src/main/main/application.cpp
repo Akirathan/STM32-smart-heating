@@ -18,12 +18,15 @@ IFrame            * Application::currFrame = nullptr;
 bool                Application::clearDisplayFlag = false;
 CommunicationDevice Application::communicationDevice;
 IntervalList        Application::pendingIntervals;
+SwTimerOwner      * Application::swTimerOwners[SW_TIMERS_NUM] = {nullptr};
+size_t              Application::swTimerOwnersIdx = 0;
 
 Application::Application() :
 	clkFrame(),
-	mainFrame()
+	mainFrame(),
+	mainTaskFinished(false)
 {
-
+	Client::init("127.0.0.1", 8000, &communicationDevice);
 }
 
 /**
@@ -36,6 +39,10 @@ void Application::setCurrFrame(IFrame* frame)
 	frame->setForRedraw();
 	frame->passControl();
 	clearDisplayFlag = true;
+
+	if (isMainFrameCurrFrame()) {
+		connectToServerIfPossible();
+	}
 }
 
 void Application::frameTerminateCallback()
@@ -79,19 +86,11 @@ void Application::switchCurrFrameToMain()
 
 void Application::run()
 {
-	// Prepare first frame for displaying.
-	clkFrame.registerFrameTerminateCallbackReceiver(this);
-	setCurrFrame(&clkFrame);
-
-	const uint8_t des_key[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-
-	Client::init("127.0.0.1", 8000, &communicationDevice);
-	communicationDevice.setKey(des_key);
-	communicationDevice.connect();
-
 	while (true) {
-		guiTask();
 		TcpDriver::poll();
+		mainTask();
+		pollSwTimers();
+		guiTask();
 	}
 }
 
@@ -107,6 +106,11 @@ uint32_t Application::getCurrTimestamp()
 	return communicationDevice.getCurrentTimestamp();
 }
 
+bool Application::isConnectedToServer()
+{
+	return communicationDevice.isConnected();
+}
+
 /**
  * Returns bool whether time (specificaly timestamp) is synchronized with server
  * or not.
@@ -116,6 +120,13 @@ uint32_t Application::getCurrTimestamp()
 bool Application::isTimeSynced()
 {
 	return communicationDevice.isTimeSynchronized();
+}
+
+void Application::registerSwTimerOwnerForPolling(SwTimerOwner *timer_owner)
+{
+	rt_assert(swTimerOwnersIdx <= SW_TIMERS_NUM, "Attempting too add too much SW timer owners");
+	swTimerOwners[swTimerOwnersIdx] = timer_owner;
+	swTimerOwnersIdx++;
 }
 
 /**
@@ -210,7 +221,18 @@ void Application::emitEvent(const CommunicationErrorEvent &event)
  */
 void Application::emitEvent(const EthLinkUpEvent &event)
 {
-	communicationDevice.connect();
+	connectToServerIfPossible();
+}
+
+/**
+ * This event is generated when user inputs the DES key into @ref KeyFrame
+ */
+void Application::emitEvent(const KeySetEvent &event)
+{
+	EEPROM::getInstance().saveKey(event.getKey());
+	communicationDevice.setKey(event.getKey());
+
+	connectToServerIfPossible();
 }
 
 void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
@@ -225,6 +247,36 @@ void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
 	}
 }
 
+/**
+ * We need to check if current frame is MainFrame because all connectivity
+ * issues are related just to MainFrame (we want to notify user about
+ * connectivity only in MainFrame, not in other frames).
+ */
+bool Application::isMainFrameCurrFrame()
+{
+	MainFrame *main_frame = dynamic_cast<MainFrame *>(currFrame);
+	return main_frame != nullptr;
+}
+
+/**
+ * MainFrame is going to be current frame. Try to connect to the server.
+ *
+ * Note that this is the only method (in all application) where connection to
+ * the server may be invoked.
+ */
+void Application::connectToServerIfPossible()
+{
+	if (isConnectedToServer()) {
+		return;
+	}
+
+	EEPROM &eeprom = EEPROM::getInstance();
+	if (TcpDriver::isLinkUp() && eeprom.isKeySet() && isMainFrameCurrFrame()) {
+		communicationDevice.setKey(eeprom.loadKey());
+		communicationDevice.connect();
+	}
+}
+
 void Application::guiTask()
 {
 	if (clearDisplayFlag) {
@@ -234,3 +286,38 @@ void Application::guiTask()
 	}
 	currFrame->redraw();
 }
+
+void Application::pollSwTimers()
+{
+	for (size_t i = 0; i < swTimerOwnersIdx; i++) {
+		swTimerOwners[i]->poll();
+	}
+}
+
+void Application::mainTask()
+{
+	if (mainTaskFinished) {
+		return;
+	}
+
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	if (!TcpDriver::isLinkUp()) {
+		clkFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&clkFrame);
+	}
+	else if (TcpDriver::isLinkUp() && !eeprom.isKeySet()) {
+		connectFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&connectFrame);
+	}
+	else if (TcpDriver::isLinkUp() && eeprom.isKeySet()) {
+		// Set dummy time - it will be overwriten in a while.
+		RTCController::getInstance().setTime(Time::Time(0, 0));
+
+		mainFrame.registerFrameTerminateCallbackReceiver(this);
+		setCurrFrame(&mainFrame);
+	}
+
+	mainTaskFinished = true;
+}
+

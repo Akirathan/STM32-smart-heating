@@ -8,7 +8,6 @@
 #ifndef INC_BUTTONS_HPP_
 #define INC_BUTTONS_HPP_
 
-#include <string>
 #include "lcd.hpp"
 #include "control_window.hpp"
 
@@ -18,16 +17,19 @@
  */
 class Button : public IControlWindow {
 public:
-	Button(const Coord& coord, const std::string& name);
+	Button(const Coord& coord, const char *name);
 	Button();
 	virtual void draw() const override;
+	virtual void clear() override;
 	virtual void setFocus(Message msg) override;
 	bool isPushed() const;
 	void setPushed(bool b);
 private:
-	std::string name;
-	bool pushed = false;
-	bool focused = false;
+	static const size_t NAME_LEN = 15;
+
+	char name[15];
+	bool pushed;
+	bool focused;
 	virtual Message _eventHandler(JOYState_TypeDef joy_state) override;
 	void unsetFocus();
 };

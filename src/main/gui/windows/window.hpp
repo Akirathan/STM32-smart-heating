@@ -43,6 +43,7 @@ public:
 	uint16_t getY() const;
 	void redraw();
 	void setRedrawFlag();
+	virtual void clear();
 protected:
 	Coord coord;
 	bool redrawFlag;

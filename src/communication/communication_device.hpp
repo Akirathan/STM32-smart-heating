@@ -7,6 +7,7 @@
 
 #include "interval_list.hpp"
 #include "i_client_cb_recver.hpp"
+#include "des_key.hpp"
 
 /**
  * @brief Represents this STM device in "asynchronous communication with server" context.
@@ -37,16 +38,13 @@
  * See @ref Client for more information about communication with server.
  */
 class CommunicationDevice : public IClientCbRecver {
-private:
-    static const size_t KEY_LEN = 8;
-
 public:
     static const size_t ID_LEN = 15;
 
     CommunicationDevice();
     /***************** Getters and setters *********************/
-    const uint8_t * getKey() const;
-    void setKey(const uint8_t *key);
+    const DesKey & getKey() const;
+    void setKey(const DesKey &key);
     const char * getId() const;
     bool isConnected() const;
     double getTemp() const;
@@ -66,7 +64,7 @@ public:
     uint32_t getCurrentTimestamp() const;
 
 private:
-    uint8_t key[KEY_LEN];
+    DesKey key;
     bool keySet;
     char id[ID_LEN];
     double temp;

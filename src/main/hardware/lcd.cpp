@@ -15,7 +15,7 @@ static void update();
 
 // Private variables.
 static bool init_ = false;
-static Font curr_font = Font::NORMAL_FONT;
+static Font curr_font = Font::NO_FONT;
 
 /**
  * Updates current font to HAL.
@@ -23,6 +23,8 @@ static Font curr_font = Font::NORMAL_FONT;
 static void update()
 {
 	switch (curr_font) {
+	case Font::NO_FONT:
+		break;
 	case Font::SEL_FONT:
 		BSP_LCD_SetTextColor(SEL_FONT_TEXT_COLOR);
 		BSP_LCD_SetBackColor(SEL_FONT_BACK_COLOR);
@@ -120,9 +122,20 @@ bool is_initialized()
 	return init_;
 }
 
-void print_char(uint16_t x, uint16_t y, uint8_t ascii)
+void print_char(uint16_t x, uint16_t y, uint8_t ascii, const Font &font)
 {
+	set_font(font);
 	BSP_LCD_DisplayChar(x, y, ascii);
+}
+
+void fill_rectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+{
+	uint16_t old_color = BSP_LCD_GetTextColor();
+	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+
+	BSP_LCD_FillRect(x, y, width, height);
+
+	BSP_LCD_SetTextColor(old_color);
 }
 
 } // namespace LCD

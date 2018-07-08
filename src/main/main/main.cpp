@@ -14,6 +14,9 @@
 #include "char_stream_test.hpp"
 #include "response_buffer_test.hpp"
 
+// TODO: remove
+#include <string>
+
 
 void SystemClock_Config();
 static void board_init();
@@ -45,18 +48,72 @@ void static_time_window_test()
 	while (true) ;
 }
 
+static void eeprom_reset()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+	eeprom.reset();
+	rt_assert(eeprom.isEmpty(), "");
+	rt_assert(!eeprom.isKeySet(), "");
+}
+
+static void eeprom_fill_intervals()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	IntervalFrameData data(600, 660, 21);
+	eeprom.save(&data, 1, 457, false);
+}
+
 /**
  * Reads whole contents of EEPROM - debugging.
  */
-void read_eeprom()
+static void eeprom_try()
 {
-	IntervalFrameData data[INTERVALS_NUM];
-	size_t data_size = 0;
-	uint32_t timestamp = 0;
-	bool time_synced = false;
 	EEPROM &eeprom = EEPROM::getInstance();
 
-	eeprom.load(data, &data_size, &timestamp, &time_synced);
+	eeprom.reset();
+
+	rt_assert(eeprom.isEmpty(), "");
+	rt_assert(!eeprom.isKeySet(), "");
+
+	/* Key storing/loading */
+	uint8_t key_buffer[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+	eeprom.saveKey(key_buffer);
+	rt_assert(eeprom.isKeySet(), "");
+
+	DesKey des_key = eeprom.loadKey();
+
+	/* Intervals storing */
+	IntervalFrameData interval_data[2];
+	interval_data[0] = IntervalFrameData(540, 600, 19);
+	interval_data[1] = IntervalFrameData(600, 660, 21);
+	uint32_t timestamp = 1530817;
+	eeprom.save(interval_data, 2, timestamp, true);
+
+	/* Intervals loading */
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t data_size = 0;
+	bool time_synced = false;
+	uint32_t timestamp_load = 0;
+	eeprom.load(data, &data_size, &timestamp_load, &time_synced);
+}
+
+static void eeprom_read()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	DesKey des_key;
+	if (eeprom.isKeySet()) {
+		des_key = eeprom.loadKey();
+	}
+
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t data_size = 0;
+	bool time_synced = false;
+	uint32_t timestamp_load = 0;
+	if (!eeprom.isEmpty()) {
+		eeprom.load(data, &data_size, &timestamp_load, &time_synced);
+	}
 }
 
 void fat_try(bool formatted, const std::string& fname)
@@ -105,6 +162,16 @@ void tests()
 {
 	CharStreamTest test;
 	test.runAll();
+}
+
+static void lcd_try()
+{
+	uint16_t x = 30;
+	uint16_t y = 40;
+	LCD::print_string(x, y, (uint8_t *)"Nazdar", LEFT_MODE, LCD::NORMAL_FONT);
+
+	sFONT *font = LCD::get_font();
+	LCD::fill_rectangle(x, y, 6 * font->Width, font->Height);
 }
 
 extern "C" {

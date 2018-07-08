@@ -16,6 +16,8 @@ set(FRAMES_SOURCES
 	"${FRAMES_PATH}/main_frame.cpp"
 	"${FRAMES_PATH}/overview_interval_frame.cpp"
 	"${FRAMES_PATH}/set_interval_frame.cpp"
+	"${FRAMES_PATH}/connect_frame.cpp"
+	"${FRAMES_PATH}/key_frame.cpp"
 )
 
 set(WINDOWS_SOURCES
@@ -28,6 +30,8 @@ set(WINDOWS_SOURCES
 	"${WINDOWS_PATH}/static_window.cpp"
 	"${WINDOWS_PATH}/temp_window.cpp"
 	"${WINDOWS_PATH}/time_window.cpp"
+	"${WINDOWS_PATH}/hex_char_window.cpp"
+	"${WINDOWS_PATH}/text_window.cpp"
 	"${WINDOWS_PATH}/window.cpp"
 )
 
@@ -56,6 +60,8 @@ set(MAIN_SOURCES
 	"${MAIN_PATH}/time.cpp"
 	"${MAIN_PATH}/timer_events.cpp"
 	"${MAIN_PATH}/intervals_changed_event.cpp"
+	"${MAIN_PATH}/des_key.cpp"
+	"${MAIN_PATH}/sw_timer_owner.cpp"
 )
 
 # TODO: TEST_SOURCES - these sources do not have to be in release binary

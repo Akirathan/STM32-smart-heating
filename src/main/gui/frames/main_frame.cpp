@@ -7,6 +7,8 @@
 #include "main_frame.hpp"
 #include "application.hpp"
 #include "intervals_changed_event.hpp"
+#include "tcp_driver.hpp" // For TcpDriver::isLinkUp
+#include "key_set_event.hpp"
 
 void MainFrame::drawHeader()
 {
@@ -14,10 +16,12 @@ void MainFrame::drawHeader()
 	LCD::clear();
 
 	// Draw headers.
+	uint16_t X = LCD::get_x_size();
+	uint16_t Y = LCD::get_y_size();
 	LCD::print_string(20, LINE(3), (uint8_t *)"actual temp", LEFT_MODE, LCD::NORMAL_FONT);
-	LCD::print_string(185, LINE(3), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
-	LCD::print_string(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 60,
-			(uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(X/2 + 30, LINE(4), (uint8_t *)"set temp", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(X/4 - 30, Y - 60, (uint8_t *)"INTERVALS", LEFT_MODE, LCD::NORMAL_FONT);
+	LCD::print_string(X/2 + 40, Y - 60, (uint8_t *)"STATUS", LEFT_MODE, LCD::NORMAL_FONT);
 }
 
 /**
@@ -26,22 +30,33 @@ void MainFrame::drawHeader()
  *
  */
 MainFrame::MainFrame() :
+	SwTimerOwner(TIMER_TIMEOUT),
 	currFrameType(NONE),
+	connectedStatus(UNKNOWN),
 	setIntervalFrame(),
 	overviewIntervalFrame(),
-	callbackRegistered(false)
+	callbackRegistered(false),
+	connectButtonInWindowSystem(false)
 {
-	timeWindow = StaticTimeWindow(Coord(LCD::get_x_size()/2 - 30, LINE(1)), true);
+	uint16_t X = LCD::get_x_size();
+	uint16_t Y = LCD::get_y_size();
+	timeWindow = StaticTimeWindow(Coord(X/2 - 30, LINE(1)), true);
 	actualTempWindow = StaticMeasureTempWindow(Coord(70, LINE(4)));
 	presetTempWindow = StaticPresetTempWindow(Coord(220, LINE(4)));
-	overviewButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 40), "overview");
-	resetButton = Button(Coord(LCD::get_x_size()/2 - 30, LCD::get_y_size() - 20), "reset");
+	overviewButton = Button(Coord(X/4 - 30, Y - 40), "overview");
+	resetButton = Button(Coord(X/4 - 30, Y - 20), "reset");
+	connectButton = Button(Coord(X/2 + 40, Y - 20), "connect");
+	statusTextWindow = TextWindow(Coord(X/2 + 40, Y - 40), "unknown");
+
+	updateStatus();
 
 	windowSystem.addStatic(&timeWindow);
 	windowSystem.addStatic(&actualTempWindow);
 	windowSystem.addStatic(&presetTempWindow);
+	windowSystem.addStatic(&statusTextWindow);
 	windowSystem.addControl(&overviewButton);
 	windowSystem.addControl(&resetButton);
+	// Do not add connectButton to windowSystem here.
 }
 
 /**
@@ -53,6 +68,8 @@ MainFrame::MainFrame() :
  */
 void MainFrame::passControl()
 {
+	startSwTimer();
+
 	// Register time and temperature windows for minute or second callbacks.
 	if (!callbackRegistered) {
 		timeWindow.runClock();
@@ -80,6 +97,8 @@ void MainFrame::exitMessageCallback()
 	windowSystem.unregisterExitMessageCallbackReceiver(this);
 	windowSystem.stop();
 
+	stopSwTimer();
+
 	// Hide windows registered for callbacks.
 	timeWindow.hide();
 	actualTempWindow.hide();
@@ -104,9 +123,16 @@ void MainFrame::exitMessageCallback()
 		setIntervalFrame.registerFrameTerminateCallbackReceiver(this);
 		Application::setCurrFrame(&setIntervalFrame);
 	}
+	else if (connectButton.isPushed()) {
+		currFrameType = KEY_FRAME;
+
+		keyFrame.registerFrameTerminateCallbackReceiver(this);
+		Application::setCurrFrame(&keyFrame);
+	}
 
 	overviewButton.setPushed(false);
 	resetButton.setPushed(false);
+	connectButton.setPushed(false);
 }
 
 /**
@@ -139,12 +165,113 @@ void MainFrame::frameTerminateCallback()
 		IntervalsChangedStmEvent event(data, count, Application::getCurrTimestamp(), Application::isTimeSynced());
 		Application::emitEvent(event);
 	}
+	else if (currFrameType == KEY_FRAME) {
+		DesKey key = keyFrame.getKey();
+		KeySetEvent event(key);
+		Application::emitEvent(event);
+	}
 
+	startSwTimer();
 	Application::setCurrFrame(this);
+}
+
+/**
+ * Checks for device status (CONNECTED / OFFLINE).
+ * @note This is a callback method that is called from SW timer timeout.
+ */
+void MainFrame::timeout()
+{
+	updateStatus();
 }
 
 void MainFrame::registerFrameTerminateCallback()
 {
 	// Intentionally left empty: method not used.
+}
+
+void MainFrame::updateStatus()
+{
+	if (!TcpDriver::isLinkUp()) {
+		setOfflineStatus();
+	}
+	else if (TcpDriver::isLinkUp() && Application::isConnectedToServer()) {
+		setConnectedStatus();
+	}
+	else if (TcpDriver::isLinkUp() && ! EEPROM::getInstance().isKeySet()) {
+		setLinkUpStatus();
+	}
+	else {
+		setConnectingStatus();
+	}
+}
+
+/**
+ * Sets the "connected status" to OFFLINE - connect button will be shown
+ * and OFFLINE status text will be shown.
+ * @note This method is called periodically from @ref MainFrameTimer.
+ */
+void MainFrame::setOfflineStatus()
+{
+	if (connectedStatus == OFFLINE) {
+		return;
+	}
+
+	connectedStatus = OFFLINE;
+	statusTextWindow.setText("offline");
+	hideConnectButton();
+}
+
+void MainFrame::setLinkUpStatus()
+{
+	if (connectedStatus == LINK_UP) {
+		return;
+	}
+
+	connectedStatus = LINK_UP;
+	statusTextWindow.setText("offline");
+	showConnectButton();
+}
+
+void MainFrame::setConnectingStatus()
+{
+	if (connectedStatus == CONNECTING) {
+		return;
+	}
+
+	connectedStatus = CONNECTING;
+	statusTextWindow.setText("connecting");
+	hideConnectButton();
+}
+
+/**
+ * Sets the "connected status" to CONNECTED - this means that connected status
+ * text will be shown and connected button will be hidden.
+ * @note This method is called periodically from @ref MainFrameTimer.
+ */
+void MainFrame::setConnectedStatus()
+{
+	if (connectedStatus == CONNECTED) {
+		return;
+	}
+
+	connectedStatus = CONNECTED;
+	statusTextWindow.setText("connected");
+	hideConnectButton();
+}
+
+void MainFrame::showConnectButton()
+{
+	if (!connectButtonInWindowSystem) {
+		windowSystem.addControl(&connectButton);
+		connectButtonInWindowSystem = true;
+	}
+}
+
+void MainFrame::hideConnectButton()
+{
+	if (connectButtonInWindowSystem) {
+		windowSystem.removeControl(&connectButton);
+		connectButtonInWindowSystem = false;
+	}
 }
 
