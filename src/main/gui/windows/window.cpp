@@ -46,3 +46,16 @@ void Window::setRedrawFlag()
 {
 	redrawFlag = true;
 }
+
+/**
+ * @brief Clear part of the display that this window was drawed on.
+ *
+ * This method is called on a window after this window is removed from
+ * @ref WindowSystem. This is a default implementation that does nothing
+ * for convenience.
+ */
+void Window::clear()
+{
+
+}
+
