@@ -150,10 +150,19 @@ void StaticTimeWindow::runClock()
 	}
 }
 
+/**
+ * This method needs to react on time change events that can happen when
+ * connection to server is establish and server timestamp is received.
+ * Thatswhy it reads time directly from @ref RTCController.
+ */
 void StaticTimeWindow::secCallback()
 {
-	// Increase seconds and redraw window
-	incSec();
+	//incSec();
+	Time::Time time = RTCController::getInstance().getTime();
+	hours = time.hours;
+	minutes = time.minutes;
+	seconds = time.seconds;
+
 	redrawFlag = true;
 }
 
