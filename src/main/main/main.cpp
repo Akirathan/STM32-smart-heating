@@ -145,6 +145,16 @@ void tests()
 	test.runAll();
 }
 
+static void lcd_try()
+{
+	uint16_t x = 30;
+	uint16_t y = 40;
+	LCD::print_string(x, y, (uint8_t *)"Nazdar", LEFT_MODE, LCD::NORMAL_FONT);
+
+	sFONT *font = LCD::get_font();
+	LCD::fill_rectangle(x, y, 6 * font->Width, font->Height);
+}
+
 extern "C" {
 	extern int cube_main();
 }
