@@ -283,7 +283,9 @@ void Application::connectToServerIfPossible()
 		return;
 	}
 
-	if (TcpDriver::isLinkUp() && EEPROM::getInstance().isKeySet() && isMainFrameCurrFrame()) {
+	EEPROM &eeprom = EEPROM::getInstance();
+	if (TcpDriver::isLinkUp() && eeprom.isKeySet() && isMainFrameCurrFrame()) {
+		communicationDevice.setKey(eeprom.loadKey());
 		communicationDevice.connect();
 	}
 }
