@@ -274,7 +274,8 @@ void WindowSystem::Windows::resetFocus()
  */
 void WindowSystem::addControl(IControlWindow* window)
 {
-	return windows.addControl(window);
+	window->setRedrawFlag();
+	windows.addControl(window);
 }
 
 /**
@@ -283,7 +284,8 @@ void WindowSystem::addControl(IControlWindow* window)
  */
 void WindowSystem::addStatic(IStaticWindow* window)
 {
-	return windows.addStatic(window);
+	window->setRedrawFlag();
+	windows.addStatic(window);
 }
 
 /**
