@@ -28,9 +28,8 @@ private:
 	static const size_t NAME_LEN = 15;
 
 	char name[15];
-	bool pushed = false;
-	bool focused = false;
-	bool hidden = false;
+	bool pushed;
+	bool focused;
 	virtual Message _eventHandler(JOYState_TypeDef joy_state) override;
 	void unsetFocus();
 };

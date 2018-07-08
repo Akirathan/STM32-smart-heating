@@ -12,7 +12,9 @@ Button::Button()
 { }
 
 Button::Button(const Coord& coord, const char *name)
-	: IControlWindow(coord)
+	: IControlWindow(coord),
+	  pushed(false),
+	  focused(false)
 {
 	std::strcpy(this->name, name);
 }
