@@ -75,16 +75,12 @@ WindowSystem::Windows::Windows(WindowSystem& system)
 	: system(system),
 	  ctrlWindowIdx(0),
 	  ctrlWindowsCount(0),
-	  staticWindowsCount(0)
-{
-	for (size_t i = 0; i < WINDOW_SYSTEM_CTRL_WINDOWS; ++i) {
-		ctrlWindows[i] = nullptr;
-	}
-
-	for (size_t i = 0; i < WINDOW_SYSTEM_STATIC_WINDOWS; ++i) {
-		staticWindows[i] = nullptr;
-	}
-}
+	  staticWindowsCount(0),
+	  ctrlWindows{nullptr},
+	  staticWindows{nullptr},
+	  toBeClearedWindows{nullptr},
+	  toBeClearedWindowsIdx(0)
+{ }
 
 /**
  * Returns control window indexer.

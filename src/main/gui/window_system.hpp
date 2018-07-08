@@ -57,6 +57,8 @@ private:
 		size_t staticWindowsCount;
 		IControlWindow * ctrlWindows[WINDOW_SYSTEM_CTRL_WINDOWS];
 		IStaticWindow * staticWindows[WINDOW_SYSTEM_STATIC_WINDOWS];
+		Window * toBeClearedWindows[WINDOW_SYSTEM_CTRL_WINDOWS];
+		size_t toBeClearedWindowsIdx;
 		size_t ctrlWindowIdxGet() const;
 		void ctrlWindowIdxInc();
 		void ctrlWindowIdxDec();
