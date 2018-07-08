@@ -56,7 +56,7 @@ const uint8_t * DesKey::getContent() const
 	return content;
 }
 
-void DesKey::serialize(uint8_t *buff)
+void DesKey::serialize(uint8_t *buff) const
 {
 	for (size_t i = 0; i < SIZE; i++) {
 		buff[i] = content[i];

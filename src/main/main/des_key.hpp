@@ -20,7 +20,7 @@ public:
 	DesKey(const char *hex_str);
 	DesKey(const uint8_t *key);
 	const uint8_t * getContent() const;
-	void serialize(uint8_t *buff);
+	void serialize(uint8_t *buff) const;
 private:
 	uint8_t content[SIZE];
 
