@@ -198,7 +198,6 @@ void MainFrame::setOfflineStatus()
 	}
 
 	connectedStatus = OFFLINE;
-	connectButton.show();
 	statusTextWindow.setText("offline");
 
 	if (!connectButtonInWindowSystem) {
@@ -218,7 +217,6 @@ void MainFrame::setConnectedStatus()
 		return;
 	}
 
-	connectButton.hide();
 	statusTextWindow.setText("connected");
 	connectedStatus = CONNECTED;
 
