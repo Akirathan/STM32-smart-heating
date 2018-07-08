@@ -55,6 +55,7 @@ MainFrame::MainFrame() :
 	windowSystem.addStatic(&statusTextWindow);
 	windowSystem.addControl(&overviewButton);
 	windowSystem.addControl(&resetButton);
+	// Do not add connectButton to windowSystem here.
 }
 
 /**
