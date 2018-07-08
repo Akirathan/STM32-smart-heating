@@ -10,20 +10,18 @@
 
 #include "lcd.hpp"
 #include "control_window.hpp"
-#include "hideable_window.hpp" // For IHideableWindow
 
 /**
  * Currently there are just OK, END or NEXT buttons in the application and
  * pressing of any of those buttons means ending current frame.
  */
-class Button : public IControlWindow, IHideableWindow {
+class Button : public IControlWindow {
 public:
 	Button(const Coord& coord, const char *name);
 	Button();
 	virtual void draw() const override;
+	virtual void clear() override;
 	virtual void setFocus(Message msg) override;
-	virtual void show() override;
-	virtual void hide() override;
 	bool isPushed() const;
 	void setPushed(bool b);
 private:

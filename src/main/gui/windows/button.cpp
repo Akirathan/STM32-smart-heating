@@ -19,11 +19,6 @@ Button::Button(const Coord& coord, const char *name)
 
 void Button::draw() const
 {
-	if (hidden) {
-		sFONT *font = LCD::get_font();
-		LCD::fill_rectangle(coord.x, coord.y, std::strlen(name) * font->Width, font->Height);
-	}
-
 	LCD::Font font;
 
 	if (focused) {
@@ -34,6 +29,12 @@ void Button::draw() const
 	}
 
 	LCD::print_string(coord.x, coord.y, (uint8_t *)name, LEFT_MODE, font);
+}
+
+void Button::clear()
+{
+	sFONT *font = LCD::get_font();
+	LCD::fill_rectangle(coord.x, coord.y, std::strlen(name) * font->Width, font->Height);
 }
 
 Message Button::_eventHandler(JOYState_TypeDef joy_state)
@@ -67,18 +68,6 @@ void Button::unsetFocus()
 void Button::setFocus(Message msg)
 {
 	focused = true;
-	redrawFlag = true;
-}
-
-void Button::show()
-{
-	hidden = false;
-	redrawFlag = true;
-}
-
-void Button::hide()
-{
-	hidden = true;
 	redrawFlag = true;
 }
 
