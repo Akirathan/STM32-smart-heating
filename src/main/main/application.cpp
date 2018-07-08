@@ -96,6 +96,9 @@ void Application::run()
 		setCurrFrame(&connectFrame);
 	}
 	else if (TcpDriver::isLinkUp() && eeprom.isKeySet()) {
+		// Set dummy time - it will be overwriten in a while.
+		RTCController::getInstance().setTime(Time::Time(0, 0));
+
 		mainFrame.registerFrameTerminateCallbackReceiver(this);
 		setCurrFrame(&mainFrame);
 	}
