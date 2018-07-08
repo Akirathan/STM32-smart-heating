@@ -48,6 +48,22 @@ void static_time_window_test()
 	while (true) ;
 }
 
+static void eeprom_reset()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+	eeprom.reset();
+	rt_assert(eeprom.isEmpty(), "");
+	rt_assert(!eeprom.isKeySet(), "");
+}
+
+static void eeprom_fill_intervals()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	IntervalFrameData data(600, 660, 21);
+	eeprom.save(&data, 1, 457, false);
+}
+
 /**
  * Reads whole contents of EEPROM - debugging.
  */
