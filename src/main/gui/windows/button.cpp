@@ -33,6 +33,8 @@ void Button::draw() const
 
 void Button::clear()
 {
+	pushed = false;
+	focused = false;
 	sFONT *font = LCD::get_font();
 	LCD::fill_rectangle(coord.x, coord.y, std::strlen(name) * font->Width, font->Height);
 }
