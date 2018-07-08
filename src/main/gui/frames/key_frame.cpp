@@ -59,6 +59,21 @@ void KeyFrame::registerExitMessageCallback()
 	// Intentionally left empty.
 }
 
+/**
+ * Returns the content of all hexCharWindows (this is what user has inputted).
+ *
+ * @attention This method should be called after submit button was pressed ie.
+ * after this frame terminated.
+ */
+DesKey KeyFrame::getKey()
+{
+	char hex_str[HEX_CHAR_WINDOWS_SIZE + 1] = {0};
+	for (size_t i = 0; i < HEX_CHAR_WINDOWS_SIZE; i++) {
+		hex_str[i] = hexCharWindows[i].getChar();
+	}
+	return DesKey(hex_str);
+}
+
 void KeyFrame::drawHeader()
 {
 	const uint8_t *header = reinterpret_cast<const uint8_t *>("Insert key");

@@ -11,6 +11,7 @@
 #include "callbacks.hpp" // For IExitMessageCallback
 #include "hex_char_window.hpp"
 #include "button.hpp"
+#include "des_key.hpp"
 
 class KeyFrame : public IFrame, public IExitMessageCallback {
 public:
@@ -18,6 +19,7 @@ public:
 	virtual void passControl() override;
 	virtual void exitMessageCallback() override;
 	virtual void registerExitMessageCallback() override;
+	DesKey getKey();
 private:
 	static const size_t HEX_CHAR_WINDOWS_SIZE = 16;
 
