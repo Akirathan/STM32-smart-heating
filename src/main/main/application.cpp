@@ -49,11 +49,14 @@ void Application::frameTerminateCallback()
 {
 	rt_assert(currFrame != nullptr, "currFrame must be set");
 
+	currFrame->unregisterFrameTerminateCallbackReceiver(this);
+
 	if (currFrame == &clkFrame) {
 		Time::Time time = clkFrame.getTime();
 		RTCController::getInstance().setTime(time);
 
 		if (EEPROM::getInstance().isEmpty()) {
+			setIntervalFrame.registerFrameTerminateCallbackReceiver(this);
 			setCurrFrame(&setIntervalFrame);
 		}
 		else {
@@ -71,17 +74,27 @@ void Application::frameTerminateCallback()
 
 		switchCurrFrameToMain();
 	}
+	else if (currFrame == &connectFrame) {
+		if (connectFrame.yesButtonPushed()) {
+			keyFrame.registerFrameTerminateCallbackReceiver(this);
+			setCurrFrame(&keyFrame);
+		}
+		else {
+			clkFrame.registerFrameTerminateCallbackReceiver(this);
+			setCurrFrame(&clkFrame);
+		}
+	}
+	else if (currFrame == &keyFrame) {
+		DesKey key = keyFrame.getKey();
+		KeySetEvent event(key);
+		emitEvent(event);
+		switchCurrFrameToMain();
+	}
 }
 
 void Application::registerFrameTerminateCallback()
 {
 	// Intentionally left blank.
-}
-
-void Application::switchCurrFrameToMain()
-{
-	TempController::getInstance().controlTemperature();
-	setCurrFrame(&mainFrame);
 }
 
 void Application::run()
@@ -311,13 +324,20 @@ void Application::mainTask()
 		setCurrFrame(&connectFrame);
 	}
 	else if (TcpDriver::isLinkUp() && eeprom.isKeySet()) {
-		// Set dummy time - it will be overwriten in a while.
-		RTCController::getInstance().setTime(Time::Time(0, 0));
-
-		mainFrame.registerFrameTerminateCallbackReceiver(this);
-		setCurrFrame(&mainFrame);
+		switchCurrFrameToMain();
 	}
 
 	mainTaskFinished = true;
+}
+
+void Application::switchCurrFrameToMain()
+{
+	RTCController &rtc = RTCController::getInstance();
+	if (!rtc.isTimeSet()) {
+		rtc.setTime(Time::Time(0, 0));
+	}
+
+	TempController::getInstance().controlTemperature();
+	setCurrFrame(&mainFrame);
 }
 
