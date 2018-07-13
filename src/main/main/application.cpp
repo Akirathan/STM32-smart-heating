@@ -49,6 +49,8 @@ void Application::frameTerminateCallback()
 {
 	rt_assert(currFrame != nullptr, "currFrame must be set");
 
+	currFrame->unregisterFrameTerminateCallbackReceiver(this);
+
 	if (currFrame == &clkFrame) {
 		Time::Time time = clkFrame.getTime();
 		RTCController::getInstance().setTime(time);
