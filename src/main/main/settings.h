@@ -17,7 +17,7 @@
 #define WINDOW_SYSTEM_CTRL_WINDOWS              18
 #define WINDOW_SYSTEM_STATIC_WINDOWS            5
 
-#define INTERVALS_NUM                           2
+#define INTERVALS_NUM                           15
 
 // Maximum number of software timers
 #define SW_TIMERS_NUM                           3
