@@ -78,12 +78,6 @@ void Application::registerFrameTerminateCallback()
 	// Intentionally left blank.
 }
 
-void Application::switchCurrFrameToMain()
-{
-	TempController::getInstance().controlTemperature();
-	setCurrFrame(&mainFrame);
-}
-
 void Application::run()
 {
 	while (true) {
@@ -319,5 +313,16 @@ void Application::mainTask()
 	}
 
 	mainTaskFinished = true;
+}
+
+void Application::switchCurrFrameToMain()
+{
+	RTCController &rtc = RTCController::getInstance();
+	if (!rtc.isTimeSet()) {
+		rtc.setTime(Time::Time(0, 0));
+	}
+
+	TempController::getInstance().controlTemperature();
+	setCurrFrame(&mainFrame);
 }
 

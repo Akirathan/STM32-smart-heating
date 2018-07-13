@@ -37,7 +37,6 @@ public:
 	static void setCurrFrame(IFrame* frame);
 	virtual void frameTerminateCallback() override;
 	virtual void registerFrameTerminateCallback() override;
-	void switchCurrFrameToMain();
 	void run();
 	static uint32_t getCurrTimestamp();
 	static bool isConnectedToServer();
@@ -76,6 +75,7 @@ private:
 	void guiTask();
 	void pollSwTimers();
 	void mainTask();
+	void switchCurrFrameToMain();
 };
 
 
