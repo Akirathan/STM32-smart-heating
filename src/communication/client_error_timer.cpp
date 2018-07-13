@@ -8,6 +8,7 @@
 #include "stm32f1xx_hal.h" // For HAL_GetTick
 #include "client.hpp" // For Client::startCycle
 #include "settings.hpp" // For DEVICE_ID
+#include "tcp_driver.hpp" // For TcpDriver::isLinkUp
 
 bool     ClientErrorTimer::started = false;
 uint32_t ClientErrorTimer::startedTicks = 0;
@@ -31,7 +32,9 @@ void ClientErrorTimer::checkTimeout()
 	if (HAL_GetTick() - startedTicks >= TIMEOUT_MS) {
 		started = false;
 		startedTicks = 0;
-		Client::sendConnectReq(DEVICE_ID);
+		if (TcpDriver::isLinkUp()) {
+			Client::sendConnectReq(DEVICE_ID);
+		}
 	}
 }
 
