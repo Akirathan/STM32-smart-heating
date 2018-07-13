@@ -59,7 +59,7 @@ const char *CommunicationDevice::getId() const
  */
 bool CommunicationDevice::isConnected() const
 {
-    return timeSynced;
+    return connected;
 }
 
 double CommunicationDevice::getTemp() const
@@ -129,6 +129,7 @@ void CommunicationDevice::connectedCb(uint32_t server_real_time)
 	ConnectedEvent connectedEvent(getCurrentTimestamp(), server_real_time);
 	Application::emitEvent(connectedEvent);
 
+    connected = true;
 	timeSynced = true;
 }
 
@@ -182,7 +183,6 @@ bool CommunicationDevice::connect()
 	rt_assert(keySet, "Key must be set");
 	rt_assert(std::strlen(id) != 0, "Id must be set");
 
-    connected = true;
     return Client::sendConnectReq(id);
 }
 
