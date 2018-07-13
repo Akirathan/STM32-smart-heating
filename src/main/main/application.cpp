@@ -56,6 +56,7 @@ void Application::frameTerminateCallback()
 		RTCController::getInstance().setTime(time);
 
 		if (EEPROM::getInstance().isEmpty()) {
+			setIntervalFrame.registerFrameTerminateCallbackReceiver(this);
 			setCurrFrame(&setIntervalFrame);
 		}
 		else {
@@ -71,6 +72,22 @@ void Application::frameTerminateCallback()
 		IntervalsChangedStmEvent event(data, count, getCurrTimestamp(), isTimeSynced());
 		Application::emitEvent(event);
 
+		switchCurrFrameToMain();
+	}
+	else if (currFrame == &connectFrame) {
+		if (connectFrame.yesButtonPushed()) {
+			keyFrame.registerFrameTerminateCallbackReceiver(this);
+			setCurrFrame(&keyFrame);
+		}
+		else {
+			clkFrame.registerFrameTerminateCallbackReceiver(this);
+			setCurrFrame(&clkFrame);
+		}
+	}
+	else if (currFrame == &keyFrame) {
+		DesKey key = keyFrame.getKey();
+		KeySetEvent event(key);
+		emitEvent(event);
 		switchCurrFrameToMain();
 	}
 }
