@@ -14,6 +14,7 @@
 #include "ethernetif.h"
 #include "http/response_buffer.hpp"
 #include "client_timer.hpp" // For ClientTimer::checkTimeout
+#include "client_error_timer.hpp" // For ClientErrorTimer::checkTimeout
 #include "application.hpp" // For Application::emitEvent
 #include "communication_error_event.hpp"
 #include "eth_link_up_event.hpp"
@@ -123,6 +124,7 @@ void TcpDriver::poll()
 	ethernetif_input(&netInterface);
 	sys_check_timeouts();
 	ClientTimer::checkTimeout();
+	ClientErrorTimer::checkTimeout();
 }
 
 
