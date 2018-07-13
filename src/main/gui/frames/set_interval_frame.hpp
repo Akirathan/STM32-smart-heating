@@ -10,7 +10,7 @@
 #include "callbacks.hpp"
 #include "interval_frame.hpp"
 #include "interval_frame_data.hpp"
-#include "settings.h"
+#include "settings.hpp"
 #include "time_window.hpp"
 #include "temp_window.hpp"
 #include "time.hpp"

@@ -8,11 +8,11 @@
 #ifndef INC_INPUT_HPP_
 #define INC_INPUT_HPP_
 
+#include <settings.hpp>
 #include <unistd.h> //TODO: ?
 #include "stm3210c_eval.h"
 #include "callbacks.hpp"
 #include "callback_receivers.hpp"
-#include "settings.h"
 
 class IO {
 public:

@@ -6,7 +6,6 @@
 
 #include "tcp_driver.hpp"
 #include <cstring>   // For std::memcpy
-#include "settings.h"
 #include "rt_assert.h"
 #include "lwip/init.h"
 #include "lwip/tcp.h"
@@ -18,6 +17,7 @@
 #include "application.hpp" // For Application::emitEvent
 #include "communication_error_event.hpp"
 #include "eth_link_up_event.hpp"
+#include "settings.hpp"
 
 struct ip_addr  TcpDriver::destIpAddress;
 uint16_t        TcpDriver::destPort = 0;

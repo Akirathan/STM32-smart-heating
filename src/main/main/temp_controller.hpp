@@ -7,13 +7,13 @@
 #ifndef TEMP_CONTROLLER_HPP_
 #define TEMP_CONTROLLER_HPP_
 
+#include <settings.hpp>
 #include "callbacks.hpp"
 #include "rtc_controller.hpp"
 #include "eeprom.hpp"
 #include "relay.hpp"
 #include "time.hpp"
 #include "temp_sensor.hpp"
-#include "settings.h"
 
 /**
  * @brief This class controls heating.

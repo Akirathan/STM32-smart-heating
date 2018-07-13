@@ -4,8 +4,8 @@
  * @date 18.7.2017
  */
 
+#include <settings.hpp>
 #include "eeprom.hpp"
-#include "settings.h"
 #include "rt_assert.h"
 
 EEPROM& EEPROM::getInstance()

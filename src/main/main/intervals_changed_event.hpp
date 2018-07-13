@@ -7,10 +7,10 @@
 #ifndef INTERVALS_CHANGED_EVENT_HPP_
 #define INTERVALS_CHANGED_EVENT_HPP_
 
+#include <settings.hpp> // For INTERVALS_NUM
 #include <cstddef> // For size_t
 #include "event.hpp"
 #include "interval_frame_data.hpp"
-#include "settings.h" // For INTERVALS_NUM
 #include "interval_list.hpp"
 
 /**
