@@ -224,7 +224,7 @@ void Application::emitEvent(const IntervalsChangedServerEvent &event)
 void Application::emitEvent(const CommunicationErrorEvent &event)
 {
 	communicationDevice.disconnect();
-	Client::disconnect();
+	Client::handleError();
 	http::ResponseBuffer::reset();
 }
 
