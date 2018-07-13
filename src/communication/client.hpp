@@ -57,6 +57,7 @@ public:
     static bool sendConnectReq(const char *device_id);
     static void startCycle();
     static void disconnect();
+    static void handleError();
     static bool isConnected();
     static void setTemperature(const double temp, const uint32_t time_stamp);
     static void setIntervals(const IntervalList &intervals);
