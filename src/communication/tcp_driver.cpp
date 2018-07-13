@@ -6,7 +6,6 @@
 
 #include "tcp_driver.hpp"
 #include <cstring>   // For std::memcpy
-#include "settings.h"
 #include "rt_assert.h"
 #include "lwip/init.h"
 #include "lwip/tcp.h"
@@ -15,9 +14,11 @@
 #include "ethernetif.h"
 #include "http/response_buffer.hpp"
 #include "client_timer.hpp" // For ClientTimer::checkTimeout
+#include "client_error_timer.hpp" // For ClientErrorTimer::checkTimeout
 #include "application.hpp" // For Application::emitEvent
 #include "communication_error_event.hpp"
 #include "eth_link_up_event.hpp"
+#include "settings.hpp"
 
 struct ip_addr  TcpDriver::destIpAddress;
 uint16_t        TcpDriver::destPort = 0;
@@ -123,6 +124,7 @@ void TcpDriver::poll()
 	ethernetif_input(&netInterface);
 	sys_check_timeouts();
 	ClientTimer::checkTimeout();
+	ClientErrorTimer::checkTimeout();
 }
 
 
@@ -147,6 +149,10 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 	if (err != ERR_OK) {
 		return false;
 	}
+
+	// Set error callback
+	tcp_err(pcb, errorCb);
+
 	return true;
 }
 
@@ -167,7 +173,6 @@ err_t TcpDriver::connectedCb(void *arg, struct tcp_pcb *tpcb, err_t err)
 {
 	tcp_recv(tpcb, receivedCb);
 	tcp_sent(tpcb, sentCb);
-	tcp_err(tpcb, errorCb);
 	tmpTcpPcb = tpcb;
 
 	while (writePacketBuffer != nullptr && writePacketBuffer->len <= tcp_sndbuf(tpcb)) {

@@ -14,7 +14,7 @@
 #include "time.hpp"
 #include "window_system.hpp"
 #include "callbacks.hpp"
-#include "settings.h"
+#include "settings.hpp"
 
 /**
  * @brief Used for overview of intervals.

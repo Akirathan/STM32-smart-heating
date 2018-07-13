@@ -7,11 +7,11 @@
 #ifndef RTC_CONTROLLER_HPP_
 #define RTC_CONTROLLER_HPP_
 
+#include <settings.hpp>
 #include "stm32f1xx_hal.h"
 #include "stm3210c_eval.h"
 #include "callbacks.hpp"
 #include "callback_receivers.hpp"
-#include "settings.h"
 #include "time.hpp"
 
 /**

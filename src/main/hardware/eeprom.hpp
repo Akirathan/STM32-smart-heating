@@ -7,10 +7,10 @@
 #ifndef INC_EEPROM_HPP_
 #define INC_EEPROM_HPP_
 
+#include <settings.hpp> // For INTERVALS_NUM
 #include "interval_frame_data.hpp"
 #include "stm3210c_eval_eeprom.h"
 #include "des_key.hpp"
-#include "settings.h" // For INTERVALS_NUM
 
 /**
  * @brief Class representing EEPROM compoment.

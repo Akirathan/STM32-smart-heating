@@ -4,12 +4,12 @@
  * @date Mar 30, 2018
  */
 
+#include <settings.hpp> // For INTERVALS_NUM
 #include "lcd.hpp"
 #include "application.hpp"
 #include "eeprom.hpp"
 #include "rt_assert.h"
 #include "tcp_driver.hpp"
-#include "settings.h" // For INTERVALS_NUM
 #include "client.hpp"
 #include "response_buffer.hpp" // For ResponseBuffer::reset
 #include "des.hpp" // For DES::init
@@ -224,7 +224,7 @@ void Application::emitEvent(const IntervalsChangedServerEvent &event)
 void Application::emitEvent(const CommunicationErrorEvent &event)
 {
 	communicationDevice.disconnect();
-	Client::disconnect();
+	Client::handleError();
 	http::ResponseBuffer::reset();
 }
 

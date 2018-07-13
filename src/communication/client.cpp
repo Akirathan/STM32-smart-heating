@@ -7,6 +7,7 @@
 #include "rt_assert.h"
 #include "client.hpp"
 #include "client_timer.hpp"
+#include "client_error_timer.hpp"
 #include <cstdio> // For std::sprintf
 #include <cstdlib> // For std::atoi
 #include "http/response_buffer.hpp"
@@ -114,6 +115,20 @@ void Client::disconnect()
 {
     connected = false;
     state = AWAIT_NONE;
+}
+
+/**
+ * Start @ref ClientErrorTimer countdown so the connection is tried again
+ * in some time.
+ *
+ * @note This method is called when a connection error occurs.
+ */
+void Client::handleError()
+{
+	connected = false;
+	state = AWAIT_NONE;
+
+	ClientErrorTimer::start();
 }
 
 bool Client::isConnected()
@@ -240,8 +255,7 @@ void Client::removePaddingFromIntervalsDecryption(http::Response &response)
 void Client::readConnectResponse(const http::Response &response)
 {
     if (response.getStatusCode() != http::Response::OK) {
-        // TODO: error handling
-        sendConnectReq(deviceId);
+    	handleError();
         return;
     }
 
@@ -260,8 +274,7 @@ void Client::readConnectResponse(const http::Response &response)
 void Client::readIntervalTimestampResp(const http::Response &response)
 {
     if (response.getStatusCode() != http::Response::OK) {
-        // TODO: error handling
-        send(createIntervalTimestampReq(), true);
+    	handleError();
         return;
     }
 
@@ -298,8 +311,7 @@ void Client::readIntervalTimestampResp(const http::Response &response)
 void Client::readIntervalsResp(const http::Response &response, const uint32_t time_stamp)
 {
     if (response.getStatusCode() != http::Response::OK) {
-        // TODO: error handling
-        send(createGetIntervalsReq(), true);
+    	handleError();
         return;
     }
 
@@ -319,8 +331,7 @@ void Client::readIntervalsResp(const http::Response &response, const uint32_t ti
 void Client::readIntervalsAckResp(const http::Response &response)
 {
     if (response.getStatusCode() != http::Response::OK) {
-        // TODO: error handling
-        send(createPostIntervalsReq(intervalList), false);
+    	handleError();
         return;
     }
 
@@ -333,8 +344,7 @@ void Client::readIntervalsAckResp(const http::Response &response)
 void Client::readTempAckResp(const http::Response &response)
 {
     if (response.getStatusCode() != http::Response::OK) {
-        // TODO: error handling
-        send(createPostTemperature(temperature, temperatureTimestamp), false);
+    	handleError();
         return;
     }
 

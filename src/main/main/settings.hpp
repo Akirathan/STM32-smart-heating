@@ -1,11 +1,11 @@
 /**
- * @file settings.h
- * @author mayfa
+ * @file settings.hpp
+ * @author Pavel Marek
  * @date Mar 30, 2018
  */
 
-#ifndef SETTINGS_H_
-#define SETTINGS_H_
+#ifndef SETTINGS_HPP_
+#define SETTINGS_HPP_
 
 #define CALLBACK_RECEIVERS_NUM_INPUT            1
 #define CALLBACK_RECEIVERS_NUM_FRAME_TERMINATE  1
@@ -22,4 +22,6 @@
 // Maximum number of software timers
 #define SW_TIMERS_NUM                           3
 
-#endif /* SETTINGS_H_ */
+const char DEVICE_ID[]                          = "stm1";
+
+#endif /* SETTINGS_HPP_ */
