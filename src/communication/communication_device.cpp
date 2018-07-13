@@ -11,6 +11,7 @@
 #include "intervals_changed_server_event.hpp"
 #include "application.hpp"
 #include "des.hpp"
+#include "settings.hpp" // For DEVICE_ID
 
 /**
  * Device ID is generated from UID.
@@ -22,7 +23,7 @@ CommunicationDevice::CommunicationDevice() :
         connected(false),
 		timeSynced(false)
 {
-    std::strcpy(id, "stm1");
+    std::strcpy(id, DEVICE_ID);
 }
 
 /**
