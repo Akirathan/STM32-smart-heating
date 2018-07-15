@@ -14,12 +14,36 @@
 #include "response_buffer.hpp" // For ResponseBuffer::reset
 #include "des.hpp" // For DES::init
 
+
+static IntervalList retrieve_intervals_from_eeprom();
+
+
 IFrame            * Application::currFrame = nullptr;
 bool                Application::clearDisplayFlag = false;
 CommunicationDevice Application::communicationDevice;
-IntervalList        Application::pendingIntervals;
+IntervalList        Application::pendingIntervals = retrieve_intervals_from_eeprom();
 SwTimerOwner      * Application::swTimerOwners[SW_TIMERS_NUM] = {nullptr};
 size_t              Application::swTimerOwnersIdx = 0;
+
+
+static IntervalList retrieve_intervals_from_eeprom()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+
+	IntervalFrameData data[INTERVALS_NUM];
+	size_t data_count = 0;
+	uint32_t timestamp = 0;
+	eeprom.load(data, &data_count, &timestamp, nullptr);
+
+	IntervalList interval_list;
+	interval_list.setTimestamp(timestamp);
+	for (size_t i = 0; i < data_count; i++) {
+		Interval interval(data[i].from, data[i].to, data[i].temp);
+		interval_list.addInterval(interval);
+	}
+	return interval_list;
+}
+
 
 Application::Application() :
 	clkFrame(),
@@ -157,11 +181,12 @@ void Application::emitEvent(const ConnectedEvent &event)
 
 	updateIntervalsMetadataInEEPROM(event);
 
-	if (!pendingIntervals.isEmpty()) {
-		uint32_t curr_timestamp = pendingIntervals.getTimestamp();
-		pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
-		communicationDevice.setIntervals(pendingIntervals);
-	}
+	// Fix pendingInterval's timestamp and set them into communicationDevice.
+	rt_assert(!pendingIntervals.isEmpty(), "pendingIntervals must be initialized");
+	uint32_t curr_timestamp = pendingIntervals.getTimestamp();
+	rt_assert(curr_timestamp <= event.getServerTime(), "");
+	pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
+	communicationDevice.setIntervals(pendingIntervals);
 }
 
 /**
