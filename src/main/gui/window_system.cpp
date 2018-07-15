@@ -263,6 +263,7 @@ void WindowSystem::Windows::setAllForRedraw()
  */
 void WindowSystem::Windows::resetFocus()
 {
+	ctrlWindowIdx = 0;
 	system.currWindow = ctrlWindows[0];
 	system.currWindow->setFocus(Message::FOCUS_LEFT);
 }
