@@ -98,7 +98,7 @@ bool ResponseBuffer::parse(const char *buffer, const size_t buffer_size, Respons
     const char *body = char_stream.getRestOfBuffer();
     const size_t body_len = char_stream.getBufferSize() - char_stream.getBufferIdx();
 
-    if (body == nullptr && awaitBodyFlag) {
+    if (body == nullptr && awaitBodyFlag && status_code == 202) {
         ret_val = false;
     }
 
