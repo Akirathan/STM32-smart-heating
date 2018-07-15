@@ -8,6 +8,7 @@
 #include "client.hpp"
 #include "client_timer.hpp"
 #include "client_error_timer.hpp"
+#include "client_receive_timeout_timer.hpp"
 #include <cstdio> // For std::sprintf
 #include <cstdlib> // For std::atoi
 #include "http/response_buffer.hpp"
@@ -192,6 +193,8 @@ bool Client::send(http::Request request, bool await_body)
     }
 
     encryptRequestBody(request);
+
+    ClientReceiveTimeoutTimer::start();
 
     char buffer[http::Request::TOTAL_SIZE] = {0};
     request.toBuffer(buffer);

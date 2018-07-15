@@ -9,6 +9,7 @@ set(COMMUNICATION_SOURCES
 	"client.cpp"
 	"client_timer.cpp"
 	"client_error_timer.cpp"
+	"client_receive_timeout_timer.cpp"
 	"des.cpp"
 )
 
