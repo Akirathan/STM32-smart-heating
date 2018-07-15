@@ -372,29 +372,13 @@ http::Request Client::createGetIntervalsReq()
 
 http::Request Client::createPostIntervalsReq(const IntervalList &interval_list)
 {
-    char timestamp_str[12];
-    std::sprintf(timestamp_str, "%lu", interval_list.getTimestamp());
+	uint8_t body[4 + IntervalList::MAX_SIZE];
+	*(reinterpret_cast<uint32_t *>(body)) = interval_list.getTimestamp();
 
-    uint8_t buffer[IntervalList::MAX_SIZE];
-    size_t buff_len = 0;
-    interval_list.serialize(buffer, &buff_len);
+	size_t intervals_len = 0;
+	interval_list.serialize(body + 4, &intervals_len);
 
-    // Copy timestamp into body
-    char body[IntervalList::MAX_SIZE + 13];
-    char *body_it = body;
-    std::strcpy(body_it, timestamp_str);
-    body_it += std::strlen(timestamp_str);
-
-    *body_it = '\n';
-    body_it++;
-
-    // Copy intervals into body
-    std::memcpy(body_it, buffer, buff_len);
-    body_it += buff_len;
-
-    *body_it = '\0';
-
-    return createPostReq(INTERVALS_URL, body, std::strlen(timestamp_str) + 1 + buff_len,
+    return createPostReq(INTERVALS_URL, reinterpret_cast<char *>(body), 4 + intervals_len,
                          "application/octet-stream");
 }
 
