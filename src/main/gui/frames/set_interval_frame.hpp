@@ -39,6 +39,7 @@ private:
 	size_t dataCount;
 	void processInterval();
 	void drawHeader() override;
+	void terminate();
 };
 
 
