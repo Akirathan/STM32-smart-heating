@@ -48,7 +48,7 @@ void static_time_window_test()
 	while (true) ;
 }
 
-static void eeprom_reset()
+static void eeprom_clear()
 {
 	EEPROM &eeprom = EEPROM::getInstance();
 	eeprom.reset();
@@ -62,6 +62,22 @@ static void eeprom_fill_intervals()
 
 	IntervalFrameData data(600, 660, 21);
 	eeprom.save(&data, 1, 457, false);
+}
+
+static void eeprom_fill_key()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+	const uint8_t key[8] = {0x9E, 0x59, 0xfb, 0xc4, 0x99, 0x00, 0x98, 0xd7};
+
+	eeprom.saveKey(key);
+	rt_assert(eeprom.isKeySet(), "");
+}
+
+static void eeprom_reset()
+{
+	eeprom_clear();
+	eeprom_fill_intervals();
+	eeprom_fill_key();
 }
 
 /**
