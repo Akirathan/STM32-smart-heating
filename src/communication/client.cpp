@@ -48,6 +48,10 @@ void Client::receiveCb(http::Response &response)
 	rt_assert(initialized, "Client must be initialized before receiving");
     rt_assert(connected, "Client must be connected before receiving anything");
 
+    if (response.getStatusCode() != http::Response::OK) {
+    	handleError();
+    }
+
     decryptResponseBody(response);
 
     switch (state) {
