@@ -242,6 +242,10 @@ void Client::decryptResponseBody(http::Response &response)
  */
 void Client::removePaddingFromIntervalsDecryption(http::Response &response)
 {
+	if ((response.getBodySize() % Interval::SIZE) == 0) {
+		return;
+	}
+
     size_t i = response.getBodySize() - 1;
     while (i > 0 && response.getBody()[i] == 0 && (i % Interval::SIZE) != 0) {
     	i--;
