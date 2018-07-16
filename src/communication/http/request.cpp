@@ -6,6 +6,7 @@
 
 #include "request.hpp"
 #include <cstring>
+#include "rt_assert.h"
 
 namespace http {
 
@@ -67,6 +68,8 @@ void Request::appendHeader(const Header &header)
  */
 void Request::appendBody(const uint8_t *buff, const size_t buff_size)
 {
+	rt_assert(buff_size <= Body::MAX_SIZE, "buffer overflow");
+
     std::memcpy(body, buff, buff_size);
     bodyLen = buff_size;
 }
