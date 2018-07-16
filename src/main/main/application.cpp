@@ -281,7 +281,7 @@ void Application::updateIntervalsMetadataInEEPROM(const ConnectedEvent &event)
 
 	eeprom.loadIntervalsMetadata(&timestamp, &time_synced);
 	if (time_synced == false) {
-		eeprom.saveIntervalsMetadata(getCurrTimestamp() + event.getTimeShift(), true);
+		eeprom.saveIntervalsMetadata(timestamp + event.getTimeShift(), true);
 	}
 }
 
