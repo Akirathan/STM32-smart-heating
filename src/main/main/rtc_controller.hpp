@@ -20,6 +20,9 @@
  * This class is basically a container for objects that are registered for
  * minute or second callbacks.
  *
+ * Also the server's timestamp is set into this RTCController when this
+ * device is connected.
+ *
  * @note Implemented as a singleton class.
  */
 class RTCController {

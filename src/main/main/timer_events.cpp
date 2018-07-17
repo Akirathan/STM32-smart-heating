@@ -11,7 +11,7 @@
 
 void timer_event_rtc()
 {
-
+	// TODO
 }
 
 /**

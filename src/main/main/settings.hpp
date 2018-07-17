@@ -2,6 +2,9 @@
  * @file settings.hpp
  * @author Pavel Marek
  * @date Mar 30, 2018
+ *
+ * This file contains all necessary settings that are important for one STM device.
+ * Most of these settings are numbers representing length of various buffers.
  */
 
 #ifndef SETTINGS_HPP_

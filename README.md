@@ -68,6 +68,32 @@ creating a new `build` directory and putting all the object files inside.
 
 `flash.bat` can be used for flashing built firmware into STM3210C-Eval board.
 
+# Directory structure
+
+### src directory
+`src` directory contains all sources neeeded to build the firmware.
+
+`src/cube` contains mostly copied sources from CubeF1 library, with one exception - `src/cube/cube-mx`
+which contains sources generated from CubeMX program (used for generating some peripheral-initializations
+code).
+There is also a CubeMX file `generic_eval.ioc` in `src/cube/cube-mx`.
+
+`src/communication` contains all sources for communication with the web server.
+
+`src/main/gui` contains all sources for firmwares GUI ie. all windows and frames.
+
+`src/main/lwip_conf` contains configuration files for LwIP library.
+
+`src/main/main` contains main application sources.
+
+`src/main/hardware` contains low-level sources for example one_wire.
+
+### lib directory
+Contains cryptography libraries from STM.
+
+### proj directory
+Contains root CMake files and also Eclipse CDT project files.
+
 # Architecture
 
 ![](common/arch_pic.png)

@@ -60,8 +60,12 @@ static void eeprom_fill_intervals()
 {
 	EEPROM &eeprom = EEPROM::getInstance();
 
-	IntervalFrameData data(600, 660, 21);
-	eeprom.save(&data, 1, 457, false);
+	// Full EEPROM, timestamp = 1, timesynced = false
+	IntervalFrameData data[INTERVALS_NUM];
+	for (size_t i = 0; i < INTERVALS_NUM; i++) {
+		data[i] = IntervalFrameData(i*60 + 60, i*60 + 120, i+10);
+	}
+	eeprom.save(data, INTERVALS_NUM, 1, false);
 }
 
 static void eeprom_fill_key()
@@ -159,6 +163,7 @@ int main()
 
 	Application app;
 	app.run();
+	//eeprom_clear();
 
 	volatile int a = 0;
 	while (1) {

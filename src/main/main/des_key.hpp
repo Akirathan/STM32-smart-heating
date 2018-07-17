@@ -10,6 +10,9 @@
 #include <cstdint>
 #include <cstddef> // For size_t
 
+/**
+ * Wrapper for DES key.
+ */
 class DesKey {
 public:
 	static const size_t SIZE = 8;
