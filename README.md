@@ -3,6 +3,9 @@ This project builds into firmware for [STM3210C Eval board](http://www.st.com/en
 
 There is a possibility for the user to set certain temperature for a time interval, and currently measured temperature is compared to this preset temperature. Depending on result of that comparison, the relay that should be connected to a boiler is switched on or off.
 
+In my other repository [STM server] there is a web server that this device communicates with.
+STM3210C-Eval board periodically sends temperature and synchronizes its interval settings with server.
+
 Project is written in C++ and uses [HAL library](http://www.st.com/en/embedded-software/stm32cubef1.html).
 
 **Documentation** is accessible through this [link](https://akirathan.github.io/STM32-smart-heating/)
@@ -50,13 +53,20 @@ When one of those buttons is pressed, "Interval setting" frame is displayed, and
 - arm-none-eabi-gcc - Current version (6.3.1) is used.  
 - openocd - Current version (0.9.0) is used.  
   - There is a config file stm3210c_eval.cfg for openocd. This file sets openocd to flash data through st-link debugger.
-- HAL library included in [STM32 Cube F1](http://www.st.com/en/embedded-software/stm32cubef1.html).
+- All used libraries are included in this repository
 
 For convenience there are .project and .cproject Eclipse CDT files included, there is also a launch file for Eclipse CDT (but you need ARM MCU plugin to use this launch file for debugging).
 
 # Build
 
-There is just one Makefile that builds all the necessary HAL sources along with sources from this repository and links them together. It is sufficient to adjust tool paths in Makefile and run debug or flash.
+CMake is used as build system.
+CMake files necessary for build can be found in `proj/cmake` directory.
+For convenience there is located `config.bat` script.
+Before running this script, you will most likely have to modify some options in `toolchain.cmake` or in `config.cmake`.
+Running `config.bat` will create another script `build.bat` and running this will build whole project -
+creating a new `build` directory and putting all the object files inside.
+
+`flash.bat` can be used for flashing built firmware into STM3210C-Eval board.
 
 # Architecture
 
@@ -96,13 +106,7 @@ The term Frame stands for a display view i.e. what is displayed in current time.
 It is basically just a container that holds windows and is responsible for their displaying.
 There is no restriction on controlling the windows, however there is a prefered way - to initialize all the windows and pass them to `WindowSystem` that reads user input and cycles through the windows accordingly until `Message::EXIT` is returned from one of the windows.
 One can then simply investigate windows' values and end the whole frame.
-Note that this all is done in `passControl` method.
-
 
 ### (Second) interrupts
 Class can get (second or minute) notifications (implemented as interrupts) if it implements `ISecCallback` or `IMinCallback` interface. 
 Implementation of one of those interfaces forces the implementer to register the class for (second or minute) callbacks to `RTCController`.
-
-# Possible improvements
-
-There are many places where some error handler would be appropriate - for example when initializing RTC peripheral. Note that many of there places are annotated with TODOs.
