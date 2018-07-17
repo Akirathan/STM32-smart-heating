@@ -16,7 +16,7 @@ TimeWindow::TimeWindow(const Coord& coord)
 */
 void TimeWindow::noFontDraw() const
 {
-	char text[5];
+	char text[6];
 	sprintf(text, "%02lu:%02lu", hours, minutes);
 
 	LCD::print_string(coord.x, coord.y, reinterpret_cast<uint8_t *>(text), LEFT_MODE, LCD::NORMAL_FONT);
@@ -29,7 +29,7 @@ void TimeWindow::draw() const
 {
 	noFontDraw();
 
-	char text[2];
+	char text[3];
 	sFONT *font = LCD::get_font();
 
 	switch (selected) {

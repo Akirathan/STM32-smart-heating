@@ -21,6 +21,7 @@ public:
 	void draw()const override;
 	void setFocus(Message msg) override;
 	uint32_t getTemp() const;
+	void setTemp(uint32_t temp);
 private:
 	uint32_t temp;
 	// Temperature higher boundary

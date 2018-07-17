@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <cstddef> // For size_t
+#include "body.hpp"
 
 /**
  * DES enryption/decryption static class.
@@ -24,7 +25,7 @@ private:
 	static const size_t BLOCK_SIZE = KEY_SIZE;
 	static const size_t MAX_BLOCKS = 20;
 public:
-	static const size_t MAX_BUFFER_SIZE = MAX_BLOCKS * BLOCK_SIZE;
+	static const size_t MAX_BUFFER_SIZE = (http::Body::MAX_SIZE + BLOCK_SIZE) - (http::Body::MAX_SIZE % BLOCK_SIZE);
 
 	static void init(const uint8_t *key);
 	static bool encrypt(const uint8_t *in_buff, const int32_t in_len, uint8_t *out_buff, int32_t *out_size);

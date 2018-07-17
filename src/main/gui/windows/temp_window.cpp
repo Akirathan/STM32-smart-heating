@@ -5,6 +5,7 @@
  */
 
 #include "temp_window.hpp"
+#include "rt_assert.h"
 
 TempWindow::TempWindow(const Coord &coord)
 	: IControlWindow(coord), temp(lowBond)
@@ -84,4 +85,11 @@ void TempWindow::setFocus(Message msg)
 uint32_t TempWindow::getTemp() const
 {
 	return temp;
+}
+
+void TempWindow::setTemp(uint32_t temp)
+{
+	rt_assert(temp >= lowBond && temp <= highBond, "temp out of bounds");
+
+	this->temp = temp;
 }

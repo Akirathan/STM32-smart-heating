@@ -15,6 +15,7 @@
 #include "http/response_buffer.hpp"
 #include "client_timer.hpp" // For ClientTimer::checkTimeout
 #include "client_error_timer.hpp" // For ClientErrorTimer::checkTimeout
+#include "client_receive_timeout_timer.hpp" // For ClientReceiveTimeoutTimer::checkTimeout
 #include "application.hpp" // For Application::emitEvent
 #include "communication_error_event.hpp"
 #include "eth_link_up_event.hpp"
@@ -125,6 +126,7 @@ void TcpDriver::poll()
 	sys_check_timeouts();
 	ClientTimer::checkTimeout();
 	ClientErrorTimer::checkTimeout();
+	ClientReceiveTimeoutTimer::checkTimeout();
 }
 
 

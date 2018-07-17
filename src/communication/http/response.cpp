@@ -6,6 +6,7 @@
 
 #include <cstring>
 #include "response.hpp"
+#include "rt_assert.h"
 
 namespace http {
 
@@ -35,6 +36,8 @@ Response::status_code_t Response::getStatusCode() const
  */
 void Response::copyIntoBody(const uint8_t *buff, const size_t buff_size)
 {
+	rt_assert(buff_size <= Body::MAX_SIZE, "buffer overflow");
+
     std::memcpy(body, buff, buff_size);
     bodySize = buff_size;
 }

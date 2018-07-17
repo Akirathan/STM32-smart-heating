@@ -8,6 +8,8 @@
 #define BODY_HPP_
 
 #include <cstddef> // For size_t
+#include "settings.hpp" // For INTERVALS_NUM
+#include "interval.hpp" // For Interval::SIZE
 
 namespace http {
 
@@ -16,7 +18,11 @@ namespace http {
  */
 class Body {
 public:
-    static const size_t MAX_SIZE = 50;
+	/**
+	 * "POST intervals" is the message with the biggest body. Some overhead is
+	 * also considered.
+	 */
+    static const size_t MAX_SIZE = INTERVALS_NUM * Interval::SIZE + 30;
 };
 
 } // namespace http

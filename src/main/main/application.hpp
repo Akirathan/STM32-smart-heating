@@ -53,10 +53,8 @@ private:
 	static IFrame* currFrame;
 	static bool clearDisplayFlag;
 	static CommunicationDevice communicationDevice;
-	/// These intervals are set in emitEvent(IntervalsChangedEvent) when time is
-	/// not synchronized. They are pending until the device is connected to the
-	/// server and time is synchronized - after this timestamp of pendingIntervals
-	/// is fixed and they are sent to the server.
+	/// These intervals are initialized from EEPROM so when there is ConnectedEvent,
+	/// they can be immediately set to communicationDevice.
 	static IntervalList pendingIntervals;
 	static SwTimerOwner * swTimerOwners[SW_TIMERS_NUM];
 	static size_t swTimerOwnersIdx;

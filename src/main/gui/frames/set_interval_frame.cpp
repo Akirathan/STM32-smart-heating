@@ -105,7 +105,21 @@ void SetIntervalFrame::getData(IntervalFrameData data[], size_t* count)
 
 void SetIntervalFrame::passControl()
 {
+	reset();
 	processInterval();
+}
+
+void SetIntervalFrame::reset()
+{
+	for (size_t i = 0; i < INTERVALS_NUM; i++) {
+		data[i] = IntervalFrameData();
+	}
+	dataCount = 0;
+	timeFromWindow.setHours(0);
+	timeFromWindow.setMinutes(0);
+	timeToWindow.setHours(0);
+	timeToWindow.setMinutes(0);
+	tempWindow.setTemp(8);
 }
 
 

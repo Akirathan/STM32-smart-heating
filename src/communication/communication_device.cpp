@@ -127,11 +127,11 @@ const IntervalList & CommunicationDevice::getIntervals() const
  */
 void CommunicationDevice::connectedCb(uint32_t server_real_time)
 {
-	ConnectedEvent connectedEvent(getCurrentTimestamp(), server_real_time);
-	Application::emitEvent(connectedEvent);
-
     connected = true;
 	timeSynced = true;
+
+	ConnectedEvent connectedEvent(getCurrentTimestamp(), server_real_time);
+	Application::emitEvent(connectedEvent);
 }
 
 /**

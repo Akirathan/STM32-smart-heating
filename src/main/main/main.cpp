@@ -48,7 +48,7 @@ void static_time_window_test()
 	while (true) ;
 }
 
-static void eeprom_reset()
+static void eeprom_clear()
 {
 	EEPROM &eeprom = EEPROM::getInstance();
 	eeprom.reset();
@@ -62,6 +62,22 @@ static void eeprom_fill_intervals()
 
 	IntervalFrameData data(600, 660, 21);
 	eeprom.save(&data, 1, 457, false);
+}
+
+static void eeprom_fill_key()
+{
+	EEPROM &eeprom = EEPROM::getInstance();
+	const uint8_t key[8] = {0x9E, 0x59, 0xfb, 0xc4, 0x99, 0x00, 0x98, 0xd7};
+
+	eeprom.saveKey(key);
+	rt_assert(eeprom.isKeySet(), "");
+}
+
+static void eeprom_reset()
+{
+	eeprom_clear();
+	eeprom_fill_intervals();
+	eeprom_fill_key();
 }
 
 /**
@@ -114,48 +130,6 @@ static void eeprom_read()
 	if (!eeprom.isEmpty()) {
 		eeprom.load(data, &data_size, &timestamp_load, &time_synced);
 	}
-}
-
-void fat_try(bool formatted, const std::string& fname)
-{
-	char path[5];
-	if (FATFS_LinkDriver(&SD_Driver, path) != 0) {
-		error_handler();
-	}
-
-	// Mount.
-	FATFS fs;
-	FRESULT res;
-	if ((res = f_mount(&fs, path, 0)) != F_OK) {
-		error_handler();
-	}
-
-	// Format.
-	if (!formatted) {
-		if ((res = f_mkfs(path, 0, 0)) != F_OK) {
-			error_handler();
-		}
-	}
-
-	// Open.
-	FIL file;
-	if ((res = f_open(&file, fname.c_str(), FA_READ)) != F_OK) {
-		error_handler();
-	}
-
-	// Read.
-	uint8_t rxbuff[512];
-	UINT br;
-	f_read(&file, rxbuff, 512, &br);
-
-	// Fill wrbuffer.
-	uint8_t wrbuff[512];
-	for (int i = 0; i < 512; ++i) {
-		wrbuff[i] = i;
-	}
-
-	// Write.
-	f_write(&file, wrbuff, 512, &br);
 }
 
 void tests()
