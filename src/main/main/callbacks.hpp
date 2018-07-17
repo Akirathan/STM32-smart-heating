@@ -89,6 +89,10 @@ public:
 	virtual void registerInputCallback() = 0;
 };
 
+/**
+ * Objects implementing this interfaces gets notified when a source frame
+ * terminates.
+ */
 class IFrameTerminateCallback : public ICallbackReceiver {
 public:
 	inline virtual void callback(void *param) override
@@ -102,6 +106,10 @@ public:
 	virtual void registerFrameTerminateCallback() = 0;
 };
 
+/**
+ * Objects implementing this interface (typically frames) gets notified when
+ * some of the windows in @ref WindowSystem emits EXIT message.
+ */
 class IExitMessageCallback : public ICallbackReceiver {
 public:
 	inline virtual void callback(void *param) override

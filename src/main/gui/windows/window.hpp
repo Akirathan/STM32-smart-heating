@@ -8,7 +8,6 @@
 #define WINDOW_HPP_
 
 #include "stm3210c_eval_lcd.h"
-#include "stats.hpp"
 
 /**
  * @brief Enum representing messeges between Window and WindowSystem.

@@ -10,6 +10,7 @@
 #include "rt_assert.h"
 
 /**
+ * Helper class for any type that is capable of registering other types for callbacks.
  * receiver_t must be subclass of ICallbackReceiver (must contain callback method).
  */
 template <size_t size, typename receiver_t>

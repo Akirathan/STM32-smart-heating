@@ -15,8 +15,8 @@
 /**
  * @brief Class representing EEPROM compoment.
  *
- * This class is used for storing interval frame data into EEPROM. Data are
- * written as words (32 bits). First and last words are @ref FRAME_DELIM.
+ * Used for storing interval data and metadata (timestamp, timesynced flag)
+ * and DES key.
  *
  * @note Implemented as a singleton class.
  */
@@ -48,6 +48,7 @@ private:
 	const uint16_t INTERVALS_START_ADDR = INTERVALS_NUM_ADDR + 4;
 	const uint16_t INTERVALS_END_ADDR = INTERVALS_START_ADDR + 12 * INTERVALS_NUM;
 
+	/// This flag is necessary for "locking" I2C peripheral
 	bool operationInProgress;
 
 	EEPROM();

@@ -61,6 +61,13 @@ void IO::unregisterInputCallback(IInputCallback* inputCallback)
 	callbackReceivers.remove(inputCallback);
 }
 
+/**
+ * Run as a timer interrupt handler this method checks whether any joystick
+ * button is currently pressed, and if so, pass this information to any
+ * object that has registered to receive input callbacks.
+ *
+ * @note Currently only joystick input is supported.
+ */
 void IO::task()
 {
 	if (!joystickInitialized) {
