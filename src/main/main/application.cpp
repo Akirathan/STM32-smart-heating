@@ -30,6 +30,12 @@ static IntervalList retrieve_intervals_from_eeprom()
 {
 	EEPROM &eeprom = EEPROM::getInstance();
 
+	// No intervals set in EEPROM --> save dummy intervals
+	if (eeprom.isEmpty()) {
+		IntervalFrameData dummy_interval(0, 60, 10);
+		eeprom.save(&dummy_interval, 1, 0, false);
+	}
+
 	IntervalFrameData data[INTERVALS_NUM];
 	size_t data_count = 0;
 	uint32_t timestamp = 0;
