@@ -65,10 +65,15 @@ void TempController::registerMinCallback()
 TempController::TempController() :
 	dataCount(0)
 {
+	for (size_t i = 0; i < INTERVALS_NUM; i++) {
+		data[i] = IntervalFrameData(0, 0, 0);
+	}
+
 	EEPROM& eeprom = EEPROM::getInstance();
 
-	rt_assert(!eeprom.isEmpty(), "EEPROM must contain data");
-	eeprom.load(data, &dataCount, nullptr, nullptr);
+	if (!eeprom.isEmpty()) {
+		eeprom.load(data, &dataCount, nullptr, nullptr);
+	}
 }
 
 /**
