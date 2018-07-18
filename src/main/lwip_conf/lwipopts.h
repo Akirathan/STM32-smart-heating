@@ -124,10 +124,13 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- UDP options ---------- */
-#define LWIP_UDP				0
+#define LWIP_UDP				1
 
 /* ---------- ICMP options ---------- */
-#define LWIP_ICMP                       1
+#define LWIP_ICMP               1
+
+/* ---------- DNS options ---------- */
+#define LWIP_DNS                1
 
 /* ---------- Statistics options ---------- */
 #define LWIP_STATS 0
