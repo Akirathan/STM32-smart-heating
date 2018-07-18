@@ -30,12 +30,6 @@ static IntervalList retrieve_intervals_from_eeprom()
 {
 	EEPROM &eeprom = EEPROM::getInstance();
 
-	// No intervals set in EEPROM --> save dummy intervals
-	if (eeprom.isEmpty()) {
-		IntervalFrameData dummy_interval(0, 60, 10);
-		eeprom.save(&dummy_interval, 1, 0, false);
-	}
-
 	IntervalFrameData data[INTERVALS_NUM];
 	size_t data_count = 0;
 	uint32_t timestamp = 0;
@@ -188,11 +182,12 @@ void Application::emitEvent(const ConnectedEvent &event)
 	updateIntervalsMetadataInEEPROM(event);
 
 	// Fix pendingInterval's timestamp and set them into communicationDevice.
-	rt_assert(!pendingIntervals.isEmpty(), "pendingIntervals must be initialized");
-	uint32_t curr_timestamp = pendingIntervals.getTimestamp();
-	rt_assert(curr_timestamp <= event.getServerTime(), "");
-	pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
-	communicationDevice.setIntervals(pendingIntervals);
+	if (!pendingIntervals.isEmpty()) {
+		uint32_t curr_timestamp = pendingIntervals.getTimestamp();
+		rt_assert(curr_timestamp <= event.getServerTime(), "");
+		pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
+		communicationDevice.setIntervals(pendingIntervals);
+	}
 }
 
 /**
