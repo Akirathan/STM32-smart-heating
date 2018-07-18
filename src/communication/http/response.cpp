@@ -36,11 +36,15 @@ Response::status_code_t Response::getStatusCode() const
  */
 void Response::copyIntoBody(const uint8_t *buff, const size_t buff_size)
 {
-	// TODO: copy just part of the buffer if it is too long?
-	rt_assert(buff_size <= Body::MAX_SIZE, "buffer overflow");
-
-    std::memcpy(body, buff, buff_size);
-    bodySize = buff_size;
+	if (buff_size < Body::MAX_SIZE) {
+		std::memcpy(body, buff, buff_size);
+		bodySize = buff_size;
+	}
+	else {
+		// Copy just part of the buffer
+		std::memcpy(body, buff, Body::MAX_SIZE);
+		bodySize = Body::MAX_SIZE;
+	}
 }
 
 void Response::setHeader(const Header &header)
