@@ -9,7 +9,7 @@
 #include "rt_assert.h"
 #include "lwip/init.h"
 #include "lwip/tcp.h"
-#include "lwip/dhcp.h"
+#include "lwip/dns.h"
 #include "lwip/lwip_timers.h"  // For sys_check_timeouts
 #include "netif/etharp.h" // For ethernet_input
 #include "ethernetif.h"
@@ -23,17 +23,20 @@
 #include "settings.hpp"
 
 const uint32_t  TcpDriver::ip[4] = {192, 168, 0, 2};
+const uint32_t  TcpDriver::destinationIp[4] = {192, 168, 0, 1};
 const uint32_t  TcpDriver::netMask[4] = {255, 255, 255, 0};
 const uint32_t  TcpDriver::gw[4] = {192, 168, 0, 1};
+const char     *TcpDriver::destinationHost = "u-pl17.ms.mff.cuni.cz";
 
 struct ip_addr  TcpDriver::destIpAddress {0};
 uint16_t        TcpDriver::destPort = 0;
-struct netif    TcpDriver::netInterface;
-struct dhcp     TcpDriver::dhcp;
+struct netif    TcpDriver::netInterface = {0};
+struct dhcp     TcpDriver::dhcp = {0};
 struct pbuf    *TcpDriver::writePacketBuffer = nullptr;
 bool            TcpDriver::initialized = false;
 bool            TcpDriver::linkUp = false;
 bool            TcpDriver::addressesSet = false;
+bool            TcpDriver::destinationResolved = false;
 struct tcp_pcb *TcpDriver::tmpTcpPcb = nullptr;
 
 /**
@@ -109,28 +112,25 @@ void TcpDriver::linkDownCallback()
  */
 void TcpDriver::statusChangedCallback(struct netif *netif)
 {
-	if (addressesSet || netif->dhcp->state == DHCP_BOUND) {
-		addressesSet = true;
-	}
-	else {
-		struct ip_addr ip_addr;
-		struct ip_addr netmask;
-		struct ip_addr gw_addr;
-
-		IP4_ADDR(&ip_addr, ip[0], ip[1], ip[2], ip[3]);
-		IP4_ADDR(&netmask, netMask[0], netMask[1], netMask[2], netMask[3]);
-		IP4_ADDR(&gw_addr, gw[0], gw[1], gw[2], gw[3]);
-
-		netif_set_addr(&netInterface, &ip_addr, &netmask, &gw_addr);
-		addressesSet = true;
-	}
-
 	if (netif_is_link_up(&netInterface)) {
 		linkUp = true;
 	}
 	else {
 		linkUp = false;
 	}
+
+	if (addressesSet) {
+		return;
+	}
+
+	if (netif->dhcp->state != DHCP_BOUND) {
+		manualSetAddress();
+	}
+	addressesSet = true;
+
+	struct ip_addr dns_ip;
+	err_t err = dns_gethostbyname(destinationHost, &dns_ip, dnsFoundCallback, nullptr);
+	rt_assert(err == ERR_INPROGRESS, "dns_gethostbyname failed");
 }
 
 bool TcpDriver::isLinkUp()
@@ -159,6 +159,8 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 {
 	rt_assert(initialized, "TcpDriver must be initialized before sending");
 	rt_assert(linkUp, "ETH link must be up before sending");
+	rt_assert(destinationResolved, "Destination IP not yet resolved");
+	rt_assert(addressesSet, "IP address of this device is not set");
 
 	// Copy data into packet buffer (pbuf).
 	writePacketBuffer = pbuf_alloc(PBUF_TRANSPORT, static_cast<uint16_t>(buff_size), PBUF_POOL);
@@ -191,6 +193,19 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 void TcpDriver::wholeMessageReceivedCb()
 {
 
+}
+
+void TcpDriver::dnsFoundCallback(const char *name, ip_addr_t *ip_addr, void *arg)
+{
+	(void) arg;
+
+	if (ip_addr == nullptr) {
+		IP4_ADDR(&destIpAddress, destinationIp[0], destinationIp[1], destinationIp[2], destinationIp[3]);
+	}
+	else {
+		destIpAddress = *ip_addr;
+	}
+	destinationResolved = true;
 }
 
 /**
@@ -303,3 +318,21 @@ void TcpDriver::reset()
 		pbuf_free(writePacketBuffer);
 	}
 }
+
+/**
+ * Sets IP address of this device, netmask and gateway.
+ * This method should be called when DHCP fails.
+ */
+void TcpDriver::manualSetAddress()
+{
+	struct ip_addr ip_addr;
+	struct ip_addr netmask;
+	struct ip_addr gw_addr;
+
+	IP4_ADDR(&ip_addr, ip[0], ip[1], ip[2], ip[3]);
+	IP4_ADDR(&netmask, netMask[0], netMask[1], netMask[2], netMask[3]);
+	IP4_ADDR(&gw_addr, gw[0], gw[1], gw[2], gw[3]);
+
+	netif_set_addr(&netInterface, &ip_addr, &netmask, &gw_addr);
+}
+
