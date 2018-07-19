@@ -67,13 +67,6 @@ else()
 	)
 endif()
 
-set(FATFS_SOURCES
-	"${FATFS_PATH}/src/drivers/sd_diskio.c"
-	"${FATFS_PATH}/src/diskio.c"
-	"${FATFS_PATH}/src/ff.c"
-	"${FATFS_PATH}/src/ff_gen_drv.c"
-)
-
 set(LWIP_SOURCES
 	"${LWIP_PATH}/src/netif/ethernetif.c"
 	"${LWIP_PATH}/src/netif/etharp.c"
@@ -112,7 +105,6 @@ set_source_files_properties(
 set(SOURCES
 	"${BSP_SOURCES}"
 	"${HAL_SOURCES}"
-	"${FATFS_SOURCES}"
 	"${LWIP_SOURCES}"
 )
 if(USE_CUBE_MX)
