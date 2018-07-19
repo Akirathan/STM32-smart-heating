@@ -57,13 +57,19 @@ add_compile_options(
   -g # TODO
 )
 
+# Supress warnings in LwIP library
+string(CONCAT CMAKE_C_FLAGS
+  "-Wno-format "
+  "-Wno-address "
+)
+
 # Specific options for CXX
 string(CONCAT CMAKE_CXX_FLAGS
   "-std=c++14 "
   "-fno-exceptions "
   "-fno-threadsafe-statics "
   # "-fno-rtti "
-  "-fpermissive "             # For FAT library
+  "-Wno-literal-suffix "
 )
 
 # Specific options for linker

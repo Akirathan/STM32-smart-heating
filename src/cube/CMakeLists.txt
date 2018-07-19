@@ -67,13 +67,6 @@ else()
 	)
 endif()
 
-set(FATFS_SOURCES
-	"${FATFS_PATH}/src/drivers/sd_diskio.c"
-	"${FATFS_PATH}/src/diskio.c"
-	"${FATFS_PATH}/src/ff.c"
-	"${FATFS_PATH}/src/ff_gen_drv.c"
-)
-
 set(LWIP_SOURCES
 	"${LWIP_PATH}/src/netif/ethernetif.c"
 	"${LWIP_PATH}/src/netif/etharp.c"
@@ -85,6 +78,9 @@ set(LWIP_SOURCES
 	"${LWIP_PATH}/src/core/netif.c"
 	"${LWIP_PATH}/src/core/pbuf.c"
 	"${LWIP_PATH}/src/core/raw.c"
+	"${LWIP_PATH}/src/core/udp.c"
+	"${LWIP_PATH}/src/core/dns.c"
+	"${LWIP_PATH}/src/core/dhcp.c"
 	"${LWIP_PATH}/src/core/tcp.c"
 	"${LWIP_PATH}/src/core/tcp_in.c"
 	"${LWIP_PATH}/src/core/tcp_out.c"
@@ -96,20 +92,9 @@ set(LWIP_SOURCES
 	"${LWIP_PATH}/src/core/ipv6/inet6.c"
 )
 
-set_source_files_properties(
-	"${LWIP_PATH}/src/core/tcp.c"
-	"${LWIP_PATH}/src/core/tcp_in.c"
-	"${LWIP_PATH}/src/core/tcp_out.c"
-	"${LWIP_PATH}/src/core/ipv4/icmp.c"
-	"${LWIP_PATH}/src/core/ipv4/ip.c"
-	PROPERTIES COMPILE_FLAGS
-	"-Wno-format"
-)
-
 set(SOURCES
 	"${BSP_SOURCES}"
 	"${HAL_SOURCES}"
-	"${FATFS_SOURCES}"
 	"${LWIP_SOURCES}"
 )
 if(USE_CUBE_MX)

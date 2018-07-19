@@ -182,11 +182,12 @@ void Application::emitEvent(const ConnectedEvent &event)
 	updateIntervalsMetadataInEEPROM(event);
 
 	// Fix pendingInterval's timestamp and set them into communicationDevice.
-	rt_assert(!pendingIntervals.isEmpty(), "pendingIntervals must be initialized");
-	uint32_t curr_timestamp = pendingIntervals.getTimestamp();
-	rt_assert(curr_timestamp <= event.getServerTime(), "");
-	pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
-	communicationDevice.setIntervals(pendingIntervals);
+	if (!pendingIntervals.isEmpty()) {
+		uint32_t curr_timestamp = pendingIntervals.getTimestamp();
+		rt_assert(curr_timestamp <= event.getServerTime(), "");
+		pendingIntervals.setTimestamp(curr_timestamp + event.getTimeShift());
+		communicationDevice.setIntervals(pendingIntervals);
+	}
 }
 
 /**

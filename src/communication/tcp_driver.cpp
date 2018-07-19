@@ -9,6 +9,7 @@
 #include "rt_assert.h"
 #include "lwip/init.h"
 #include "lwip/tcp.h"
+#include "lwip/dns.h"
 #include "lwip/lwip_timers.h"  // For sys_check_timeouts
 #include "netif/etharp.h" // For ethernet_input
 #include "ethernetif.h"
@@ -21,12 +22,22 @@
 #include "eth_link_up_event.hpp"
 #include "settings.hpp"
 
-struct ip_addr  TcpDriver::destIpAddress;
+const uint32_t  TcpDriver::ip[4] = {192, 168, 0, 2};
+const uint32_t  TcpDriver::destinationIp[4] = {192, 168, 0, 1};
+const uint32_t  TcpDriver::netMask[4] = {255, 255, 255, 0};
+const uint32_t  TcpDriver::gw[4] = {192, 168, 0, 1};
+const char     *TcpDriver::destinationHost = "u-pl17.ms.mff.cuni.cz";
+
+struct ip_addr  TcpDriver::destIpAddress {0};
 uint16_t        TcpDriver::destPort = 0;
-struct netif    TcpDriver::netInterface;
+struct netif    TcpDriver::netInterface = {0};
+struct dhcp     TcpDriver::dhcp = {0};
 struct pbuf    *TcpDriver::writePacketBuffer = nullptr;
 bool            TcpDriver::initialized = false;
 bool            TcpDriver::linkUp = false;
+bool            TcpDriver::addressesSet = false;
+bool            TcpDriver::destinationResolved = false;
+bool            TcpDriver::pendingWriteBuffer = false;
 struct tcp_pcb *TcpDriver::tmpTcpPcb = nullptr;
 
 /**
@@ -47,37 +58,21 @@ extern "C" void ethernetif_notify_conn_changed(struct netif *netif)
 /**
  * Configures the network interface for LwIP.
  *
- * Given parameters represents destination IP address. TODO: Note that this address
- * will be later resolved by DNS.
- *
  * @param port ... destination port
  */
-void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8_t ip_addr3, uint16_t port)
+void TcpDriver::init(uint16_t port)
 {
-	IP4_ADDR(&destIpAddress, ip_addr0, ip_addr1, ip_addr2, ip_addr3);
 	destPort = port;
 
-	// Init IP address.
-	struct ip_addr ip;
-	struct ip_addr netmask;
-	struct ip_addr gw;
-	// TODO: resolve these addresses with DHCP.
-	IP4_ADDR(&ip, 192, 168, 0, 2);
-	IP4_ADDR(&netmask, 255, 255, 255, 0);
-	IP4_ADDR(&gw, 192, 168, 0, 1);
-
 	// Try to initialize the HW and add network interface.
-	netif_add(&netInterface, &ip, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
+	netif_add(&netInterface, nullptr, nullptr, nullptr, nullptr, &ethernetif_init, &ethernet_input);
 	netif_set_link_callback(&netInterface, ethernetif_update_config);
+	netif_set_status_callback(&netInterface, statusChangedCallback);
 	netif_set_default(&netInterface);
 
-	if (netif_is_link_up(&netInterface)) {
-		netif_set_up(&netInterface);
-		linkUp = true;
-	}
-	else {
-		netif_set_down(&netInterface);
-	}
+	dhcp_set_struct(&netInterface, &dhcp);
+	err_t err = dhcp_start(&netInterface);
+	rt_assert(err == ERR_OK, "dhcp_start failed");
 
 	initialized = true;
 }
@@ -108,6 +103,35 @@ void TcpDriver::linkDownCallback()
 	Application::emitEvent(event);
 }
 
+/**
+ * The only purpose of this method is to set IP address if it was not already done.
+ * @note Should be called from DHCP module.
+ * @param netif
+ */
+void TcpDriver::statusChangedCallback(struct netif *netif)
+{
+	if (netif_is_link_up(&netInterface)) {
+		linkUp = true;
+	}
+	else {
+		linkUp = false;
+	}
+
+	if (addressesSet) {
+		return;
+	}
+
+	if (netif->dhcp->state != DHCP_BOUND && netif->dhcp->state != DHCP_CHECKING) {
+		// Almost unreachable code
+		manualSetAddress();
+	}
+	addressesSet = true;
+
+	struct ip_addr dns_ip;
+	err_t err = dns_gethostbyname(destinationHost, &dns_ip, dnsFoundCallback, nullptr);
+	rt_assert(err == ERR_INPROGRESS, "dns_gethostbyname failed");
+}
+
 bool TcpDriver::isLinkUp()
 {
 	return linkUp;
@@ -129,31 +153,49 @@ void TcpDriver::poll()
 	ClientReceiveTimeoutTimer::checkTimeout();
 }
 
-
+/**
+ *
+ * May be called when DHCP or DNS requests are not finished yet. In those cases
+ * this method literaly queues the buffer for future sending that will be sent
+ * immediately after IP of this device and IP of the server are resolved.
+ * @param buff
+ * @param buff_size
+ * @return
+ */
 bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 {
 	rt_assert(initialized, "TcpDriver must be initialized before sending");
 	rt_assert(linkUp, "ETH link must be up before sending");
 
-	// Copy data into packet buffer (pbuf).
-	writePacketBuffer = pbuf_alloc(PBUF_TRANSPORT, static_cast<uint16_t>(buff_size), PBUF_POOL);
-	if (writePacketBuffer == nullptr) {
-		return false;
-	}
-	err_t err = pbuf_take(writePacketBuffer, buff, buff_size);
-	if (err != ERR_OK) {
-		return false;
+	if (!pendingWriteBuffer) {
+		rt_assert(buff != nullptr, "");
+		rt_assert(buff_size > 0, "");
+
+		// Copy data into packet buffer (pbuf).
+		writePacketBuffer = pbuf_alloc(PBUF_TRANSPORT, static_cast<uint16_t>(buff_size), PBUF_POOL);
+		if (writePacketBuffer == nullptr) {
+			return false;
+		}
+		err_t err = pbuf_take(writePacketBuffer, buff, buff_size);
+		if (err != ERR_OK) {
+			return false;
+		}
+		pendingWriteBuffer = true;
 	}
 
-	struct tcp_pcb * pcb;
-	pcb = tcp_new();
-	err = tcp_connect(pcb, &destIpAddress, destPort, connectedCb);
-	if (err != ERR_OK) {
-		return false;
-	}
+	if (destinationResolved && addressesSet) {
+		struct tcp_pcb * pcb;
+		pcb = tcp_new();
+		err_t err = tcp_connect(pcb, &destIpAddress, destPort, connectedCb);
+		if (err != ERR_OK) {
+			return false;
+		}
 
-	// Set error callback
-	tcp_err(pcb, errorCb);
+		// Set error callback
+		tcp_err(pcb, errorCb);
+
+		pendingWriteBuffer = false;
+	}
 
 	return true;
 }
@@ -166,6 +208,24 @@ bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 void TcpDriver::wholeMessageReceivedCb()
 {
 
+}
+
+void TcpDriver::dnsFoundCallback(const char *name, ip_addr_t *ip_addr, void *arg)
+{
+	(void) arg;
+
+	if (ip_addr == nullptr) {
+		IP4_ADDR(&destIpAddress, destinationIp[0], destinationIp[1], destinationIp[2], destinationIp[3]);
+	}
+	else {
+		destIpAddress = *ip_addr;
+	}
+	destinationResolved = true;
+
+	// Flush writePacketBuffer if necessary
+	if (pendingWriteBuffer) {
+		queueForSend(nullptr, 0);
+	}
 }
 
 /**
@@ -278,3 +338,21 @@ void TcpDriver::reset()
 		pbuf_free(writePacketBuffer);
 	}
 }
+
+/**
+ * Sets IP address of this device, netmask and gateway.
+ * This method should be called when DHCP fails.
+ */
+void TcpDriver::manualSetAddress()
+{
+	struct ip_addr ip_addr;
+	struct ip_addr netmask;
+	struct ip_addr gw_addr;
+
+	IP4_ADDR(&ip_addr, ip[0], ip[1], ip[2], ip[3]);
+	IP4_ADDR(&netmask, netMask[0], netMask[1], netMask[2], netMask[3]);
+	IP4_ADDR(&gw_addr, gw[0], gw[1], gw[2], gw[3]);
+
+	netif_set_addr(&netInterface, &ip_addr, &netmask, &gw_addr);
+}
+
