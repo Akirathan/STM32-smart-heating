@@ -54,6 +54,8 @@
 									<listOptionValue builtIn="false" value="STM3210C_EVAL"/>
 									<listOptionValue builtIn="false" value="HAL_I2C_MODULE_ENABLED"/>
 									<listOptionValue builtIn="false" value="HAL_MODULE_ENABLED"/>
+									<listOptionValue builtIn="false" value="LWIP_DHCP=1"/>
+									<listOptionValue builtIn="false" value="LWIP_DNS=1"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.119943232" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -90,6 +92,8 @@
 									<listOptionValue builtIn="false" value="STM3210C_EVAL"/>
 									<listOptionValue builtIn="false" value="HAL_I2C_MODULE_ENABLED"/>
 									<listOptionValue builtIn="false" value="HAL_MODULE_ENABLED"/>
+									<listOptionValue builtIn="false" value="LWIP_DHCP=1"/>
+									<listOptionValue builtIn="false" value="LWIP_DNS=1"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1768712905" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -186,6 +190,8 @@
 									<listOptionValue builtIn="false" value="STM3210C_EVAL"/>
 									<listOptionValue builtIn="false" value="HAL_I2C_MODULE_ENABLED"/>
 									<listOptionValue builtIn="false" value="HAL_MODULE_ENABLED"/>
+									<listOptionValue builtIn="false" value="LWIP_DHCP=1"/>
+									<listOptionValue builtIn="false" value="LWIP_DNS=1"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1270127278" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -220,6 +226,8 @@
 									<listOptionValue builtIn="false" value="STM3210C_EVAL"/>
 									<listOptionValue builtIn="false" value="HAL_I2C_MODULE_ENABLED"/>
 									<listOptionValue builtIn="false" value="HAL_MODULE_ENABLED"/>
+									<listOptionValue builtIn="false" value="LWIP_DHCP=1"/>
+									<listOptionValue builtIn="false" value="LWIP_DNS=1"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.952358126" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
