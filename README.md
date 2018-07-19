@@ -94,6 +94,16 @@ Contains cryptography libraries from STM.
 ### proj directory
 Contains root CMake files and also Eclipse CDT project files.
 
+# Running with server
+The simplest way is to start server on your machine and also start DHCP server.
+Note that DHCP server is needed because LwIP does DHCP discovery forever - there is
+no DHCP timeout callback.
+Moreover setting private IP address without DHCP is not good idea any way.
+
+STM will try to resolve host "u-pl17.ms.mff.cuni.cz" - that server was used for testing -
+and if the DNS lookup does not suceed, it falls back to 192.168.0.1 destination IP address
+(you should set this IP address to your machine).
+
 # Architecture
 
 ![](common/arch_pic.png)
