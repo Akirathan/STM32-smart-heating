@@ -44,6 +44,8 @@ private:
 	/// DHCP module may not set the address.
 	static bool addressesSet;
 	static bool destinationResolved;
+	/// This flag is true when queueForSend was called before DHCP and DNS finished.
+	static bool pendingWriteBuffer;
 	/// Temporary storage for TCP PCB, needed when @ref Client calls
 	/// @ref wholeMessageReceivedCb and we want to disconnect.
 	static struct tcp_pcb *tmpTcpPcb;

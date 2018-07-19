@@ -37,6 +37,7 @@ bool            TcpDriver::initialized = false;
 bool            TcpDriver::linkUp = false;
 bool            TcpDriver::addressesSet = false;
 bool            TcpDriver::destinationResolved = false;
+bool            TcpDriver::pendingWriteBuffer = false;
 struct tcp_pcb *TcpDriver::tmpTcpPcb = nullptr;
 
 /**
@@ -123,7 +124,7 @@ void TcpDriver::statusChangedCallback(struct netif *netif)
 		return;
 	}
 
-	if (netif->dhcp->state != DHCP_BOUND) {
+	if (netif->dhcp->state != DHCP_BOUND && netif->dhcp->state != DHCP_CHECKING) {
 		manualSetAddress();
 	}
 	addressesSet = true;
@@ -154,33 +155,49 @@ void TcpDriver::poll()
 	ClientReceiveTimeoutTimer::checkTimeout();
 }
 
-
+/**
+ *
+ * May be called when DHCP or DNS requests are not finished yet. In those cases
+ * this method literaly queues the buffer for future sending that will be sent
+ * immediately after IP of this device and IP of the server are resolved.
+ * @param buff
+ * @param buff_size
+ * @return
+ */
 bool TcpDriver::queueForSend(const uint8_t buff[], const size_t buff_size)
 {
 	rt_assert(initialized, "TcpDriver must be initialized before sending");
 	rt_assert(linkUp, "ETH link must be up before sending");
-	rt_assert(destinationResolved, "Destination IP not yet resolved");
-	rt_assert(addressesSet, "IP address of this device is not set");
 
-	// Copy data into packet buffer (pbuf).
-	writePacketBuffer = pbuf_alloc(PBUF_TRANSPORT, static_cast<uint16_t>(buff_size), PBUF_POOL);
-	if (writePacketBuffer == nullptr) {
-		return false;
-	}
-	err_t err = pbuf_take(writePacketBuffer, buff, buff_size);
-	if (err != ERR_OK) {
-		return false;
-	}
+	if (!pendingWriteBuffer) {
+		rt_assert(buff != nullptr, "");
+		rt_assert(buff_size > 0, "");
 
-	struct tcp_pcb * pcb;
-	pcb = tcp_new();
-	err = tcp_connect(pcb, &destIpAddress, destPort, connectedCb);
-	if (err != ERR_OK) {
-		return false;
+		// Copy data into packet buffer (pbuf).
+		writePacketBuffer = pbuf_alloc(PBUF_TRANSPORT, static_cast<uint16_t>(buff_size), PBUF_POOL);
+		if (writePacketBuffer == nullptr) {
+			return false;
+		}
+		err_t err = pbuf_take(writePacketBuffer, buff, buff_size);
+		if (err != ERR_OK) {
+			return false;
+		}
+		pendingWriteBuffer = true;
 	}
 
-	// Set error callback
-	tcp_err(pcb, errorCb);
+	if (destinationResolved && addressesSet) {
+		struct tcp_pcb * pcb;
+		pcb = tcp_new();
+		err_t err = tcp_connect(pcb, &destIpAddress, destPort, connectedCb);
+		if (err != ERR_OK) {
+			return false;
+		}
+
+		// Set error callback
+		tcp_err(pcb, errorCb);
+
+		pendingWriteBuffer = false;
+	}
 
 	return true;
 }
@@ -206,6 +223,11 @@ void TcpDriver::dnsFoundCallback(const char *name, ip_addr_t *ip_addr, void *arg
 		destIpAddress = *ip_addr;
 	}
 	destinationResolved = true;
+
+	// Flush writePacketBuffer if necessary
+	if (pendingWriteBuffer) {
+		queueForSend(nullptr, 0);
+	}
 }
 
 /**
