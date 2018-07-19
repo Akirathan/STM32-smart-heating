@@ -87,6 +87,7 @@ set(LWIP_SOURCES
 	"${LWIP_PATH}/src/core/raw.c"
 	"${LWIP_PATH}/src/core/udp.c"
 	"${LWIP_PATH}/src/core/dns.c"
+	"${LWIP_PATH}/src/core/dhcp.c"
 	"${LWIP_PATH}/src/core/tcp.c"
 	"${LWIP_PATH}/src/core/tcp_in.c"
 	"${LWIP_PATH}/src/core/tcp_out.c"

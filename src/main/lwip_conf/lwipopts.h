@@ -132,6 +132,9 @@ a lot of data that needs to be copied, this should be set high. */
 /* ---------- DNS options ---------- */
 #define LWIP_DNS                1
 
+/* ---------- DHCP options ---------- */
+#define LWIP_DHCP               1
+
 /* ---------- Statistics options ---------- */
 #define LWIP_STATS 0
 #define LWIP_PROVIDE_ERRNO 1
@@ -141,6 +144,9 @@ a lot of data that needs to be copied, this should be set high. */
  * whenever the link changes (i.e., link down)
  */
 #define LWIP_NETIF_LINK_CALLBACK        1
+
+/* Status callback should be called from DHCP module */
+#define LWIP_NETIF_STATUS_CALLBACK      1
 
 /*
    --------------------------------------
