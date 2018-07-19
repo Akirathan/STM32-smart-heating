@@ -19,10 +19,6 @@
 #include "init.h"
 #include "tcp.h"
 
-// FAT includes.
-#include "ff_gen_drv.h"
-#include "sd_diskio.h"
-
 // My includes.
 #include "interval_frame.hpp"
 #include "main_frame.hpp"

@@ -10,43 +10,8 @@
 #include "application.hpp"
 #include "tcp_driver.hpp"
 
-/* Testing includes (can be removed in release) */
-#include "char_stream_test.hpp"
-#include "response_buffer_test.hpp"
-
-// TODO: remove
-#include <string>
-
-
 void SystemClock_Config();
 static void board_init();
-
-void error_handler() {
-	BSP_LED_Init(LED_RED);
-	BSP_LED_On(LED_RED);
-
-	while (true) ;
-}
-
-void static_time_window_test()
-{
-	/* Clock setting */
-	ClkFrame clk_frame;
-	clk_frame.passControl();
-	Time::Time time = clk_frame.getTime();
-	// Save time into rtc
-	RTCController::getInstance().setTime(time);
-
-	/* static_time_window initialization */
-	BSP_LCD_Clear(LCD_COLOR_BLACK);
-
-	StaticTimeWindow time_window{Coord{10,BSP_LCD_GetYSize()/2}};
-	time_window.draw();
-
-	// rtc keeps calling back time_window, and time_window
-	// keeps updating seconds value.
-	while (true) ;
-}
 
 static void eeprom_clear()
 {
@@ -68,56 +33,6 @@ static void eeprom_fill_intervals()
 	eeprom.save(data, INTERVALS_NUM, 1, false);
 }
 
-static void eeprom_fill_key()
-{
-	EEPROM &eeprom = EEPROM::getInstance();
-	const uint8_t key[8] = {0x9E, 0x59, 0xfb, 0xc4, 0x99, 0x00, 0x98, 0xd7};
-
-	eeprom.saveKey(key);
-	rt_assert(eeprom.isKeySet(), "");
-}
-
-static void eeprom_reset()
-{
-	eeprom_clear();
-	eeprom_fill_intervals();
-	eeprom_fill_key();
-}
-
-/**
- * Reads whole contents of EEPROM - debugging.
- */
-static void eeprom_try()
-{
-	EEPROM &eeprom = EEPROM::getInstance();
-
-	eeprom.reset();
-
-	rt_assert(eeprom.isEmpty(), "");
-	rt_assert(!eeprom.isKeySet(), "");
-
-	/* Key storing/loading */
-	uint8_t key_buffer[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-	eeprom.saveKey(key_buffer);
-	rt_assert(eeprom.isKeySet(), "");
-
-	DesKey des_key = eeprom.loadKey();
-
-	/* Intervals storing */
-	IntervalFrameData interval_data[2];
-	interval_data[0] = IntervalFrameData(540, 600, 19);
-	interval_data[1] = IntervalFrameData(600, 660, 21);
-	uint32_t timestamp = 1530817;
-	eeprom.save(interval_data, 2, timestamp, true);
-
-	/* Intervals loading */
-	IntervalFrameData data[INTERVALS_NUM];
-	size_t data_size = 0;
-	bool time_synced = false;
-	uint32_t timestamp_load = 0;
-	eeprom.load(data, &data_size, &timestamp_load, &time_synced);
-}
-
 static void eeprom_read()
 {
 	EEPROM &eeprom = EEPROM::getInstance();
@@ -136,22 +51,6 @@ static void eeprom_read()
 	}
 }
 
-void tests()
-{
-	CharStreamTest test;
-	test.runAll();
-}
-
-static void lcd_try()
-{
-	uint16_t x = 30;
-	uint16_t y = 40;
-	LCD::print_string(x, y, (uint8_t *)"Nazdar", LEFT_MODE, LCD::NORMAL_FONT);
-
-	sFONT *font = LCD::get_font();
-	LCD::fill_rectangle(x, y, 6 * font->Width, font->Height);
-}
-
 extern "C" {
 	extern int cube_main();
 }
@@ -164,11 +63,6 @@ int main()
 	Application app;
 	app.run();
 	//eeprom_clear();
-
-	volatile int a = 0;
-	while (1) {
-		a++;
-	}
 }
 
 static void board_init()

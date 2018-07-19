@@ -301,7 +301,6 @@ void Client::readIntervalTimestampResp(const http::Response &response)
     }
     else if (intervalList.getTimestamp() > server_timestamp) {
         // Upload intervals to server.
-        // TODO: what if intervals are empty?
         send(createPostIntervalsReq(intervalList), false);
         state = AWAIT_INTERVALS_ACK;
         callIntervalsSentCb();

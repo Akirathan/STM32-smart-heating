@@ -58,9 +58,6 @@ extern "C" void ethernetif_notify_conn_changed(struct netif *netif)
 /**
  * Configures the network interface for LwIP.
  *
- * Given parameters represents destination IP address. TODO: Note that this address
- * will be later resolved by DNS.
- *
  * @param port ... destination port
  */
 void TcpDriver::init(uint16_t port)
@@ -125,6 +122,7 @@ void TcpDriver::statusChangedCallback(struct netif *netif)
 	}
 
 	if (netif->dhcp->state != DHCP_BOUND && netif->dhcp->state != DHCP_CHECKING) {
+		// Almost unreachable code
 		manualSetAddress();
 	}
 	addressesSet = true;
