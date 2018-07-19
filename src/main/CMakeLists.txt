@@ -64,6 +64,12 @@ set(MAIN_SOURCES
 	"${MAIN_PATH}/sw_timer_owner.cpp"
 )
 
+set_source_files_properties(
+	"${MAIN_PATH}/main.cpp"
+	PROPERTIES COMPILE_FLAGS
+	"-Wno-unused-function"
+)
+
 # TODO: TEST_SOURCES - these sources do not have to be in release binary
 set(TEST_SOURCES
 	"${TESTS_PATH}/char_stream_test.cpp"
