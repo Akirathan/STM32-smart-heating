@@ -179,7 +179,7 @@ static void board_init()
 	LCD::init();
 
 	lwip_init();
-	TcpDriver::init(192, 168, 0, 1, 8000);
+	TcpDriver::init(8000);
 }
 
 /**

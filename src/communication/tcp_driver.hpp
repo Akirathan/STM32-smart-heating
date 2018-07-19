@@ -17,7 +17,7 @@
 
 class TcpDriver {
 public:
-	static void init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8_t ip_addr3, uint16_t port);
+	static void init(uint16_t port);
 	static void linkUpCallback();
 	static void linkDownCallback();
 	static void statusChangedCallback(struct netif *netif);

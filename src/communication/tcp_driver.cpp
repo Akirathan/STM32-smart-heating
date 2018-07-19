@@ -26,7 +26,7 @@ const uint32_t  TcpDriver::ip[4] = {192, 168, 0, 2};
 const uint32_t  TcpDriver::netMask[4] = {255, 255, 255, 0};
 const uint32_t  TcpDriver::gw[4] = {192, 168, 0, 1};
 
-struct ip_addr  TcpDriver::destIpAddress;
+struct ip_addr  TcpDriver::destIpAddress {0};
 uint16_t        TcpDriver::destPort = 0;
 struct netif    TcpDriver::netInterface;
 struct dhcp     TcpDriver::dhcp;
@@ -59,9 +59,8 @@ extern "C" void ethernetif_notify_conn_changed(struct netif *netif)
  *
  * @param port ... destination port
  */
-void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8_t ip_addr3, uint16_t port)
+void TcpDriver::init(uint16_t port)
 {
-	IP4_ADDR(&destIpAddress, ip_addr0, ip_addr1, ip_addr2, ip_addr3);
 	destPort = port;
 
 	// Try to initialize the HW and add network interface.
