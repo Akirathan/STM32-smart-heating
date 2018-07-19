@@ -33,7 +33,7 @@ execute_process(COMMAND
 
 # Enable parallel build
 if (GENERATOR STREQUAL "Unix Makefiles")
-	set(BUILD_CMD "${CMAKE} --build ${BUILD_DIR} -- -j5")
+	set(BUILD_CMD "${CMAKE} --build ${BUILD_DIR} -- -j4")
 else()
 	set(BUILD_CMD "${CMAKE} --build ${BUILD_DIR}")
 endif()
