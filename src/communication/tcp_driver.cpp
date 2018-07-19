@@ -9,6 +9,7 @@
 #include "rt_assert.h"
 #include "lwip/init.h"
 #include "lwip/tcp.h"
+#include "lwip/dhcp.h"
 #include "lwip/lwip_timers.h"  // For sys_check_timeouts
 #include "netif/etharp.h" // For ethernet_input
 #include "ethernetif.h"
@@ -21,12 +22,18 @@
 #include "eth_link_up_event.hpp"
 #include "settings.hpp"
 
+const uint32_t  TcpDriver::ip[4] = {192, 168, 0, 2};
+const uint32_t  TcpDriver::netMask[4] = {255, 255, 255, 0};
+const uint32_t  TcpDriver::gw[4] = {192, 168, 0, 1};
+
 struct ip_addr  TcpDriver::destIpAddress;
 uint16_t        TcpDriver::destPort = 0;
 struct netif    TcpDriver::netInterface;
+struct dhcp     TcpDriver::dhcp;
 struct pbuf    *TcpDriver::writePacketBuffer = nullptr;
 bool            TcpDriver::initialized = false;
 bool            TcpDriver::linkUp = false;
+bool            TcpDriver::addressesSet = false;
 struct tcp_pcb *TcpDriver::tmpTcpPcb = nullptr;
 
 /**
@@ -57,27 +64,15 @@ void TcpDriver::init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8
 	IP4_ADDR(&destIpAddress, ip_addr0, ip_addr1, ip_addr2, ip_addr3);
 	destPort = port;
 
-	// Init IP address.
-	struct ip_addr ip;
-	struct ip_addr netmask;
-	struct ip_addr gw;
-	// TODO: resolve these addresses with DHCP.
-	IP4_ADDR(&ip, 192, 168, 0, 2);
-	IP4_ADDR(&netmask, 255, 255, 255, 0);
-	IP4_ADDR(&gw, 192, 168, 0, 1);
-
 	// Try to initialize the HW and add network interface.
-	netif_add(&netInterface, &ip, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
+	netif_add(&netInterface, nullptr, nullptr, nullptr, nullptr, &ethernetif_init, &ethernet_input);
 	netif_set_link_callback(&netInterface, ethernetif_update_config);
+	netif_set_status_callback(&netInterface, statusChangedCallback);
 	netif_set_default(&netInterface);
 
-	if (netif_is_link_up(&netInterface)) {
-		netif_set_up(&netInterface);
-		linkUp = true;
-	}
-	else {
-		netif_set_down(&netInterface);
-	}
+	dhcp_set_struct(&netInterface, &dhcp);
+	err_t err = dhcp_start(&netInterface);
+	rt_assert(err == ERR_OK, "dhcp_start failed");
 
 	initialized = true;
 }
@@ -106,6 +101,37 @@ void TcpDriver::linkDownCallback()
 
 	CommunicationErrorEvent event(CommunicationErrorEvent::ETH_LINK_DOWN);
 	Application::emitEvent(event);
+}
+
+/**
+ * The only purpose of this method is to set IP address if it was not already done.
+ * @note Should be called from DHCP module.
+ * @param netif
+ */
+void TcpDriver::statusChangedCallback(struct netif *netif)
+{
+	if (addressesSet || netif->dhcp->state == DHCP_BOUND) {
+		addressesSet = true;
+	}
+	else {
+		struct ip_addr ip_addr;
+		struct ip_addr netmask;
+		struct ip_addr gw_addr;
+
+		IP4_ADDR(&ip_addr, ip[0], ip[1], ip[2], ip[3]);
+		IP4_ADDR(&netmask, netMask[0], netMask[1], netMask[2], netMask[3]);
+		IP4_ADDR(&gw_addr, gw[0], gw[1], gw[2], gw[3]);
+
+		netif_set_addr(&netInterface, &ip_addr, &netmask, &gw_addr);
+		addressesSet = true;
+	}
+
+	if (netif_is_link_up(&netInterface)) {
+		linkUp = true;
+	}
+	else {
+		linkUp = false;
+	}
 }
 
 bool TcpDriver::isLinkUp()

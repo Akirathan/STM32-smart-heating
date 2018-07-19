@@ -11,6 +11,7 @@
 #include <cstddef>
 #include "lwip/err.h"
 #include "lwip/tcp.h"
+#include "lwip/dhcp.h"
 #include "lwip/pbuf.h"
 #include "lwip/netif.h"
 
@@ -19,17 +20,27 @@ public:
 	static void init(uint8_t ip_addr0, uint8_t ip_addr1, uint8_t ip_addr2, uint8_t ip_addr3, uint16_t port);
 	static void linkUpCallback();
 	static void linkDownCallback();
+	static void statusChangedCallback(struct netif *netif);
 	static bool isLinkUp();
 	static void poll();
 	static bool queueForSend(const uint8_t buff[], const size_t buff_size);
 	static void wholeMessageReceivedCb();
 private:
+	/// Fallback IP address when DHCP module fails.
+	const static uint32_t ip[4];
+	const static uint32_t netMask[4];
+	const static uint32_t gw[4];
+
 	static struct ip_addr destIpAddress;
 	static uint16_t destPort;
 	static struct netif netInterface;
+	static struct dhcp dhcp;
 	static struct pbuf *writePacketBuffer;
 	static bool initialized;
 	static bool linkUp;
+	/// True when any address was set to netInterface. This flag is needed because
+	/// DHCP module may not set the address.
+	static bool addressesSet;
 	/// Temporary storage for TCP PCB, needed when @ref Client calls
 	/// @ref wholeMessageReceivedCb and we want to disconnect.
 	static struct tcp_pcb *tmpTcpPcb;
